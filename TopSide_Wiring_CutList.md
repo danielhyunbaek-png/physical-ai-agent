@@ -4,7 +4,7 @@
 
 Companion files: `Cell_TopSide_Routing.svg` (the visual target), `Driver_Cell_Perfboard_Layout.svg` (pin map), `Soldering_Plan.md` / `OneCell_595_ULN_Build_and_Fire_Guide.md` (the build itself).
 
-> **Layout — ULN flipped 180° (notch RIGHT).** Inputs (IN) now sit on the ULN's **top** row facing the 595; outputs (OUT) on the **bottom** row facing the solenoids. This shortens the output drops and turns COM and ULN-GND into clean short taps. **Side effect:** the channel order scrambles — wire each Q to its *nearest* IN and set the logical order in firmware (the channel table / `MAP`). Every Q→IN→OUT→solenoid chain stays intact; only the numbering moves. (The 595 is unchanged, notch LEFT.)
+> **Layout — ULN flipped 180° (notch RIGHT).** Inputs (IN) now sit on the ULN's **top** row facing the 595; outputs (OUT) on the **bottom** row facing the solenoids. This shortens the output drops and turns COM and ULN-GND into clean short taps. **AS-BUILT (July 2026): canonical wiring — Q0→IN1, Q1→IN2 … Q7→IN8** — so channel order stays sequential (FIRE N → OUT(N+1), nothing to fix in firmware). The trade: the flipped IN row runs right-to-left, so the 8 jumpers are a symmetric crossing fan of unique lengths (see §4), not a parallel batch. (The 595 is unchanged, notch LEFT.)
 
 > **Spacing — chips moved 1 row apart (11-row gap).** Middle rails use **2 empty rows** between each chip and the nearest rail, and **2 between each rail**: 595 →2→ SH_CP →2→ ST_CP →2→ GND →2→ ULN. You had 10 rows between the chips; nudge to 11 (ULN down one, or 595 up one). The wider gap lengthens the logic bundle slightly (13 holes vs 9) — the trade for clean rail separation.
 
@@ -23,7 +23,7 @@ Because the wire body lies on top and only the ends dive through, wires **fly fr
 Not every wire should be on top. Put the **photogenic** wires up top and hide the **set-and-forget** ties underneath. The result looks intentional and is far easier to build.
 
 **On top (the wire art):**
-- The 8 logic jumpers Q→IN (the signature parallel bundle)
+- The 8 logic jumpers Q→IN (the signature crossing fan)
 - Signal taps: SH_CP, ST_CP, DS
 - The 8 output drops OUT1–8 → solenoid landing holes
 - Power taps: VCC→+5V, MR→+5V, 595 GND→GND, and — thanks to the flip — ULN GND→GND and COM→+12V (both now short, clean taps)
@@ -57,14 +57,20 @@ The 15 mm covers ~7.5 mm at each end for the strip + the 90° down-bend + insert
 
 ## 4. Cut list — one cell
 
-Columns C1–C9 = board columns left→right. The 595 is notch-**LEFT**; the ULN is flipped notch-**RIGHT**, so its IN row is on top. "Holes" = Manhattan span between endpoints. Cut = suggested length to cut, then trim. (Q→IN pairs below reflect *nearest-IN* wiring; fix the logical order in firmware.)
+Columns C1–C9 = board columns left→right. The 595 is notch-**LEFT**; the ULN is flipped notch-**RIGHT**, so its IN row is on top. "Holes" = Manhattan span between endpoints. Cut = suggested length to cut, then trim. (Q→IN pairs below are **canonical, as-built**: a symmetric crossing fan — Q0–Q4 cross right, Q5–Q7 cross left. Batch the length-pairs: 2×50, 2×55, 2×60.)
 
 ### On-board, top side
 
 | # | Wire | Color | From | To | Holes | Cut | Bend |
 |---|------|-------|------|-----|:----:|:---:|------|
-| 1–7 | **Q1→IN8 … Q7→IN2** (batch of 7, identical) | grey | 595 pins 1–7 | ULN pins 8–2 (top row) | 13 | **50 mm ×7** | L (down, over 1) |
-| 8 | Q0→IN1 | grey | 595 pin 15 | ULN pin 1 | 22 | 70 mm | L (the one long jumper) |
+| 1 | Q0→IN1 | grey | 595 pin 15 (top row) | ULN pin 1 | 22 | **70 mm** | L (the long one — flies over the 595, over 7 →) |
+| 2 | Q1→IN2 | grey | 595 pin 1 | ULN pin 2 | 19 | **65 mm** | L (down, over 7 →) |
+| 3 | Q2→IN3 | grey | 595 pin 2 | ULN pin 3 | 17 | **60 mm** | L (down, over 5 →) |
+| 4 | Q3→IN4 | grey | 595 pin 3 | ULN pin 4 | 15 | **55 mm** | L (down, over 3 →) |
+| 5 | Q4→IN5 | grey | 595 pin 4 | ULN pin 5 | 13 | **50 mm** | L (down, over 1 →) |
+| 6 | Q5→IN6 | grey | 595 pin 5 | ULN pin 6 | 13 | **50 mm** | L (down, over 1 ←) |
+| 7 | Q6→IN7 | grey | 595 pin 6 | ULN pin 7 | 15 | **55 mm** | L (down, over 3 ←) |
+| 8 | Q7→IN8 | grey | 595 pin 7 | ULN pin 8 | 17 | **60 mm** | L (down, over 5 ←) |
 | 9 | VCC→+5V | red | 595 pin 16 | +5V rail | 2 | 20 mm | I (straight up) |
 | 10 | MR→+5V | red | 595 pin 10 | +5V rail | 2 | 20 mm | I |
 | 11 | 595 GND→GND | black | 595 pin 8 | GND spine | 9 | 40 mm | I (crosses SH, ST) |
@@ -110,17 +116,17 @@ Columns C1–C9 = board columns left→right. The 595 is notch-**LEFT**; the ULN
 
 ## 5. Work order
 
-1. **Shape & cut** the whole cell from this list (batch the 7 logic jumpers). Lay each set out on tape in order — you're pre-building the whole cell before any heat.
+1. **Shape & cut** the whole cell from this list (batch the fan's length-pairs: 2×50, 2×55, 2×60). Lay each set out on tape in order — you're pre-building the whole cell before any heat.
 2. **Dry-fit** the shaped wires on the board (chips still out) to confirm every length reaches. Trim.
 3. **Solder the sockets** — 595 notch **LEFT**, ULN notch **RIGHT** (flipped). Tack 2 corners, check flat, finish.
 4. **Lay the 5 rails** (buses). Keep +5 V and +12 V apart; GND and +12 V get the doubled-wire + solder-bead treatment.
-5. **Place the top bundle**: logic jumpers first (each Q to its *nearest* IN — the order is fixed later in firmware), then the signal and power taps. Ends into the adjacent free holes, tails soldered across to the pins underneath.
+5. **Place the top bundle**: logic jumpers first, in **canonical order (Q0→IN1 … Q7→IN8), longest-first** so the fan's crossings layer consistently; then the signal and power taps. Ends into the adjacent free holes, tails soldered across to the pins underneath.
 6. **Bottom housekeeping**: OE→GND, both 0.1 µF caps, reservoir cap. (COM and ULN-GND are now top taps.)
 7. **Outputs**: OUT1–8 drop straight down to their solenoid landing holes.
 8. **Flying leads** last: DS/clock/latch/GND to the Mega, cascade to the next cell.
 9. **Cold-test** per `OneCell_595_ULN_Build_and_Fire_Guide.md` §4 → 5 V only → 12 V last.
 
-Then repeat cells 2–11: rails just extend right, and the batch of 7 logic jumpers is identical every time.
+Then repeat cells 2–11: rails just extend right, and the 8-jumper fan set is identical every time.
 
 ---
 

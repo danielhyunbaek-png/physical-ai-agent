@@ -155,10 +155,11 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, and redesi
 - Chain: **Arduino Mega → 11× 74HC595 (cascaded off D11/D12/D13) → 11× ULN2803A → 84 solenoids** (88 channels, 4 spare). The ULN2803A is "the driver": 8 Darlington channels, 500 mA each, built-in flyback diodes enabled by COM (pin 10) → +12V — never skip.
 - Current build: **cell #1, top-side wire-art routing, ULN FLIPPED** (notch RIGHT → IN row faces the 595, OUT row faces the outputs), 2-2-2-2 middle-rail spacing, 11-row chip gap. Source docs: `TopSide_Wiring_CutList.md`, `Cell_TopSide_Routing.svg`, `OneCell_595_ULN_Build_and_Fire_Guide.md`, `Soldering_Plan.md`.
 
-### Q→IN wiring with the flipped ULN — nearest-IN vs canonical
+### Q→IN wiring with the flipped ULN — CANONICAL (as-built)
 
-- Cut-list scheme (**recommended**): each Q → its *nearest* IN (Q0→IN1, Q1→IN8 … Q7→IN2) → 7 identical parallel 50 mm jumpers, batch-cut; the channel scramble is absorbed ONCE in firmware `MAP` (same table for all 11 cells).
-- Daniel proposed canonical order (Q0→IN1, Q1→IN2 …) despite the flip: **electrically identical**, but the flipped IN row runs right-to-left, so the 8 jumpers become unique-length crossing wires (a fan) × 11 cells, and the cut-list lengths are void. Advice: stick with nearest-IN. Either way, **same scheme on all 11 cells** — consistency beats the choice.
+- **AS-BUILT (cell #1 dry-fit, July 1, 2026): canonical order — Q0→IN1, Q1→IN2 … Q7→IN8. Applies to all 11 cells.** (Nearest-IN was the cut list's recommendation; Daniel chose canonical.)
+- Physical result: with the flipped IN row running right-to-left, the 8 jumpers form a **symmetric crossing fan** of unique lengths — **70/65/60/55/50/50/55/60 mm** (Q0…Q7; verified against `Cell_TopSide_Routing.svg`, chips left-aligned). Cut list updated to match. Solder longest-first (IN1→IN8) and layer crossings consistently.
+- Payoff: channel order is sequential — **FIRE N → OUT(N+1)**, no scramble table needed; firmware `keymap[]` only maps channels→keys for TYPE.
 - OUT landing holes physically run **right-to-left (OUT1 far right)** regardless of jumper scheme — that's chip-internal.
 
 ### MAP discipline — label holes, not wires
