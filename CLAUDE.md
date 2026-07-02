@@ -12,8 +12,7 @@ Budget ceiling: $1,500. Current estimate: ~$1,366.
 - `Build_Walkthrough_Physical_AI_Agent.docx` — Week-by-week operational guide. Source of truth for *how* and *when*.
 - `Wave_1_Order_Checklist.xlsx` — Parts spreadsheet with audit trail. Wave 1 (essentials, order now), Wave 2 (deferred to Week 6), Tools, Optional. Audit Trail tab maps every line back to PRD/walkthrough.
 - `CLAUDE.md` (this file) — Conversational context and design decisions accumulated across sessions.
-- `Week3_2x2_Prototype_Plan.md` — Step-by-step Week 3 prototype plan (2×2 tilted plate). Supersedes the earlier single-row/4×4 plan, which was deleted.
-- `CAD_Design_Brief_2x2_Prototype.md` — Self-contained CAD spec for the 2×2 mounting plate: every dimension, parameter, and modeling step needed to do the Fusion 360 work in a fresh session with no other context.
+- `Project_Timeline.md` — **The project's history**: every phase, mistake, dead end (incl. the abandoned card-cage architecture), and fix, plus the July 2026 folder-cleanup record. Read this instead of hunting for old planning docs — they were deleted (recoverable from git commit `84a796c`).
 - `2x2_Prototype_Dimensions.md` — Master dimension reference for the finished one-piece 2×2 prototype (`Prototype_2x2.stl`): simplified names + exact values for keys, plate, walls, screw holes, legs, solenoid, and keyboard fit. Use this when asked for any 2×2 dimension.
 
 ## Owner
@@ -122,7 +121,7 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, and redesi
 
 ## Pipeline of upcoming CAD work (Week 3)
 
-**Authoritative, self-contained CAD spec: `CAD_Design_Brief_2x2_Prototype.md`.** That file has the full parameter table, coordinates, and modeling steps. Summary below.
+*(Historical — the 2×2 phase is complete. Its CAD brief and Week 3 plan were retired in the July 2026 cleanup; see `Project_Timeline.md`. Parameters below are kept because they carry into the 84-key build.)*
 
 **Prototype scope: 2×2 (not the walkthrough's flat 4×4).** Decided to test 4 solenoids over a 2×2 key block (front S, D / back W, E) so the prototype also exercises tilt AND stagger — the two hardest parts of the full build — not just "does a solenoid press a key." Tilt within a single row is zero, so a single-row test would have skipped it; the 2×2 forces a two-row, tilted, staggered mount.
 
