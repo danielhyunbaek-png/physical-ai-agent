@@ -8,19 +8,24 @@ Campsite-testable end-to-end with ZERO hardware:
     python agent_loop.py --goal "open spotlight and type hello" --dry-run
 uses the built-in camera and a dry-run keyboard driver (actions are printed).
 
-Requires ANTHROPIC_API_KEY in the environment for real decisions;
-without it, --scripted replays a fixed action list (pure plumbing test).
+The brain is pluggable (see llm.py):
+    --provider ollama     free, local (needs: ollama pull qwen3-vl:8b)
+    --provider gemini     cheap cloud (GEMINI_API_KEY)
+    --provider deepseek   cheap cloud (DEEPSEEK_API_KEY)
+    --provider qwen       cheap cloud (DASHSCOPE_API_KEY)
+    --provider anthropic  smartest, priciest (ANTHROPIC_API_KEY) [default]
+Without any key, --scripted replays a fixed action list (pure plumbing test).
 """
 
 import argparse
 import base64
 import json
-import os
 import time
 
 import cv2
 
 from keyboard_driver import KeyboardDriver
+from llm import LLM, PRESETS
 from vision import Vision
 
 SYSTEM = """You control a PHYSICAL robot keyboard pressing keys on a real \
@@ -48,25 +53,6 @@ def screenshot_b64(vision, max_px=1568):
     return base64.b64encode(buf).decode()
 
 
-def decide(client, goal, img_b64, history):
-    msg = client.messages.create(
-        model="claude-sonnet-5",
-        max_tokens=500,
-        system=SYSTEM,
-        messages=history + [{
-            "role": "user",
-            "content": [
-                {"type": "image", "source": {"type": "base64",
-                 "media_type": "image/jpeg", "data": img_b64}},
-                {"type": "text", "text": f"Goal: {goal}\nWhat next?"},
-            ],
-        }],
-    )
-    text = msg.content[0].text
-    start, end = text.find("{"), text.rfind("}") + 1
-    return json.loads(text[start:end])
-
-
 def act(kb, actions):
     for a in actions:
         kind = a.get("type")
@@ -89,6 +75,10 @@ def main():
                     help="Arduino serial port; omit for dry-run")
     ap.add_argument("--camera", type=int, default=0)
     ap.add_argument("--max-turns", type=int, default=15)
+    ap.add_argument("--provider", default="anthropic", choices=list(PRESETS),
+                    help="which brain to use (see llm.py for costs/keys)")
+    ap.add_argument("--model", default=None,
+                    help="override the provider's default model name")
     ap.add_argument("--scripted", action="store_true",
                     help="skip Claude; run a fixed demo action list")
     ap.add_argument("--dry-run", action="store_true",
@@ -107,13 +97,13 @@ def main():
         vision.save_frame("scripted_after.png")
         return
 
-    import anthropic                      # deferred: not needed for --scripted
-    client = anthropic.Anthropic()        # needs ANTHROPIC_API_KEY
+    brain = LLM(args.provider, args.model)
+    print(f"[agent] brain: {args.provider} / {brain.model}")
 
     history = []
     for turn in range(args.max_turns):
         img_b64 = screenshot_b64(vision)
-        plan = decide(client, args.goal, img_b64, history)
+        plan = brain.decide(SYSTEM, args.goal, img_b64, history)
         print(f"[agent] turn {turn}: {plan.get('reason', '')}")
         if plan.get("done"):
             print("[agent] GOAL COMPLETE")

@@ -8,7 +8,23 @@ MacBook alone, then pointed at the real rig when home).
 |---|---|---|
 | `keyboard_driver.py` | Python wrapper for the `keyboard_v1` serial protocol | None (dry-run mode) → Mega later |
 | `vision.py` | C920 capture → screen rectification → template match + OCR | Built-in Mac camera works |
-| `agent_loop.py` | The agent: screenshot → Claude decides → solenoids act | None (`--dry-run --scripted`) |
+| `llm.py` | Pluggable brain: local Ollama / cheap cloud / Claude | None |
+| `agent_loop.py` | The agent: screenshot → LLM decides → solenoids act | None (`--dry-run --scripted`) |
+
+### Choosing a brain (`--provider`)
+
+| Provider | Cost per ~700-turn TFT game | Needs |
+|---|---|---|
+| `ollama` | $0 (local Qwen3-VL) | `brew install ollama && ollama pull qwen3-vl:8b` (~6GB, do on WiFi) |
+| `gemini` / `deepseek` / `qwen` | ~$0.10–0.50 | API key env var (see `llm.py` header) |
+| `anthropic` (default) | ~$4–8 | `ANTHROPIC_API_KEY` |
+
+Strategy: **develop on `ollama` (free), play on a cheap cloud tier, escalate to
+Claude only for tuning sessions.** Example:
+
+```bash
+python agent_loop.py --goal "open spotlight and type hello" --dry-run --provider ollama
+```
 
 ## Setup
 
