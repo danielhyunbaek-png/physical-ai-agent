@@ -1,0 +1,196 @@
+<svg viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="holes" width="30" height="30" patternUnits="userSpaceOnUse" x="60" y="150">
+      <circle cx="15" cy="15" r="2.6" fill="#CFCFCF"/>
+    </pattern>
+  </defs>
+
+  <!-- page -->
+  <rect x="0" y="0" width="1200" height="860" fill="#FFFFFF"/>
+
+  <!-- title -->
+  <text x="60" y="46" font-size="23" font-weight="700" fill="#1A1A1A">DRIVER CELL — PERFBOARD LAYOUT</text>
+  <text x="60" y="70" font-size="13" fill="#666">Cell 1 of 11 · pad-per-hole · top (component-side) view · Physical AI Agent driver board</text>
+  <text x="60" y="88" font-size="13" fill="#666">Place at the FAR-LEFT of the board so the other 10 cells repeat to the right. Pencil your jumpers using the rail-tap key.</text>
+
+  <!-- perfboard grid -->
+  <rect x="60" y="150" width="600" height="610" fill="url(#holes)"/>
+  <rect x="60" y="150" width="600" height="610" fill="none" stroke="#E2E2E2"/>
+
+  <!-- ===================== RAILS ===================== -->
+  <!-- +5V -->
+  <rect x="150" y="161" width="282" height="8" rx="4" fill="#E03B3B"/>
+  <line x1="52" y1="165" x2="150" y2="165" stroke="#E03B3B" stroke-width="2"/>
+  <text x="8" y="169" font-size="13" font-weight="700" fill="#E03B3B">+5V</text>
+  <!-- SH_CP -->
+  <rect x="150" y="371" width="282" height="8" rx="4" fill="#2EA84F"/>
+  <line x1="52" y1="375" x2="150" y2="375" stroke="#2EA84F" stroke-width="2"/>
+  <text x="6" y="379" font-size="12" font-weight="700" fill="#2EA84F">SH_CP</text>
+  <!-- ST_CP (white) -->
+  <rect x="150" y="401" width="282" height="8" rx="4" fill="#FFFFFF" stroke="#444" stroke-width="1"/>
+  <line x1="52" y1="405" x2="150" y2="405" stroke="#777" stroke-width="2"/>
+  <text x="6" y="409" font-size="12" font-weight="700" fill="#555">ST_CP</text>
+  <!-- GND spine -->
+  <rect x="150" y="460" width="282" height="11" rx="5" fill="#2A2A2A"/>
+  <line x1="52" y1="465" x2="150" y2="465" stroke="#2A2A2A" stroke-width="2"/>
+  <text x="8" y="469" font-size="13" font-weight="700" fill="#2A2A2A">GND</text>
+  <text x="437" y="469" font-size="10" fill="#2A2A2A">★ spine</text>
+  <!-- +12V -->
+  <rect x="150" y="699" width="282" height="12" rx="6" fill="#F08A24"/>
+  <line x1="46" y1="705" x2="150" y2="705" stroke="#F08A24" stroke-width="2"/>
+  <text x="4" y="709" font-size="13" font-weight="700" fill="#D9760F">+12V</text>
+  <text x="437" y="709" font-size="10" fill="#D9760F">heavy</text>
+
+  <!-- ===================== 595 SOCKET (DIP-16) ===================== -->
+  <text x="165" y="200" font-size="12" font-weight="700" fill="#333">74HC595  (DIP-16)</text>
+  <rect x="153" y="215" width="234" height="110" rx="6" fill="#EFE9DD" stroke="#8A7F6B" stroke-width="1.5"/>
+  <path d="M153 261 A9 9 0 0 1 153 279" fill="#FFFFFF" stroke="#8A7F6B" stroke-width="1.5"/>
+  <text x="392" y="312" font-size="9" fill="#8A7F6B">notch = pin-1 end (LEFT)</text>
+
+  <!-- 595 top row pins: 16 15 14 13 12 11 10 9 -->
+  <g font-size="9" fill="#333" text-anchor="middle">
+    <circle cx="165" cy="225" r="5.5" fill="#E03B3B"/><text x="165" y="208">16</text>
+    <circle cx="195" cy="225" r="5.5" fill="#9AA0A6"/><text x="195" y="208">15</text>
+    <circle cx="225" cy="225" r="5.5" fill="#2D6CDF"/><text x="225" y="208">14</text>
+    <circle cx="255" cy="225" r="5.5" fill="#2A2A2A"/><text x="255" y="208">13</text>
+    <circle cx="285" cy="225" r="5.5" fill="#FFFFFF" stroke="#444"/><text x="285" y="208">12</text>
+    <circle cx="315" cy="225" r="5.5" fill="#2EA84F"/><text x="315" y="208">11</text>
+    <circle cx="345" cy="225" r="5.5" fill="#E03B3B"/><text x="345" y="208">10</text>
+    <circle cx="375" cy="225" r="5.5" fill="#FFFFFF" stroke="#9AA0A6"/><text x="375" y="208">9</text>
+  </g>
+  <!-- 595 bottom row pins: 1..8 -->
+  <g font-size="9" fill="#333" text-anchor="middle">
+    <circle cx="165" cy="315" r="5.5" fill="#9AA0A6"/><text x="165" y="338">1</text>
+    <circle cx="195" cy="315" r="5.5" fill="#9AA0A6"/><text x="195" y="338">2</text>
+    <circle cx="225" cy="315" r="5.5" fill="#9AA0A6"/><text x="225" y="338">3</text>
+    <circle cx="255" cy="315" r="5.5" fill="#9AA0A6"/><text x="255" y="338">4</text>
+    <circle cx="285" cy="315" r="5.5" fill="#9AA0A6"/><text x="285" y="338">5</text>
+    <circle cx="315" cy="315" r="5.5" fill="#9AA0A6"/><text x="315" y="338">6</text>
+    <circle cx="345" cy="315" r="5.5" fill="#9AA0A6"/><text x="345" y="338">7</text>
+    <circle cx="375" cy="315" r="5.5" fill="#2A2A2A"/><text x="375" y="338">8</text>
+  </g>
+  <!-- 595 anchor labels -->
+  <text x="165" y="197" font-size="8" fill="#777" text-anchor="middle"> </text>
+  <text x="150" y="247" font-size="8" fill="#E03B3B" text-anchor="end">VCC</text>
+  <text x="389" y="318" font-size="8" fill="#2A2A2A">GND</text>
+
+  <!-- +5V tap stubs (clean, short) -->
+  <line x1="165" y1="219" x2="165" y2="169" stroke="#E03B3B" stroke-width="1.5"/>
+  <line x1="345" y1="219" x2="345" y2="169" stroke="#E03B3B" stroke-width="1.5"/>
+
+  <!-- Q -> IN routing note -->
+  <text x="165" y="360" font-size="10" font-weight="600" fill="#5A5A5A">Q0–Q7 (pins 15,1–7) → ULN IN1–IN8 (pins 1–8): 8 insulated jumpers</text>
+
+  <!-- 595 decoupling cap -->
+  <rect x="394" y="246" width="74" height="22" rx="3" fill="#FFF6D8" stroke="#D7C36B"/>
+  <text x="431" y="261" font-size="9" fill="#6B5B12" text-anchor="middle">0.1µF · 16↔8</text>
+
+  <!-- ===================== ULN SOCKET (DIP-18) ===================== -->
+  <text x="165" y="528" font-size="12" font-weight="700" fill="#333">ULN2803A  (DIP-18)</text>
+  <rect x="153" y="545" width="264" height="110" rx="6" fill="#EFE9DD" stroke="#8A7F6B" stroke-width="1.5"/>
+  <path d="M153 591 A9 9 0 0 1 153 609" fill="#FFFFFF" stroke="#8A7F6B" stroke-width="1.5"/>
+  <text x="422" y="642" font-size="9" fill="#8A7F6B">notch = pin-1 end (LEFT)</text>
+
+  <!-- ULN top row pins: 18 17 16 15 14 13 12 11 10 -->
+  <g font-size="9" fill="#333" text-anchor="middle">
+    <circle cx="165" cy="555" r="5.5" fill="#9AA0A6"/><text x="165" y="538">18</text>
+    <circle cx="195" cy="555" r="5.5" fill="#9AA0A6"/><text x="195" y="538">17</text>
+    <circle cx="225" cy="555" r="5.5" fill="#9AA0A6"/><text x="225" y="538">16</text>
+    <circle cx="255" cy="555" r="5.5" fill="#9AA0A6"/><text x="255" y="538">15</text>
+    <circle cx="285" cy="555" r="5.5" fill="#9AA0A6"/><text x="285" y="538">14</text>
+    <circle cx="315" cy="555" r="5.5" fill="#9AA0A6"/><text x="315" y="538">13</text>
+    <circle cx="345" cy="555" r="5.5" fill="#9AA0A6"/><text x="345" y="538">12</text>
+    <circle cx="375" cy="555" r="5.5" fill="#9AA0A6"/><text x="375" y="538">11</text>
+    <circle cx="405" cy="555" r="5.5" fill="#F08A24"/><text x="405" y="538">10</text>
+  </g>
+  <!-- ULN bottom row pins: 1..9 -->
+  <g font-size="9" fill="#333" text-anchor="middle">
+    <circle cx="165" cy="645" r="5.5" fill="#9AA0A6"/><text x="165" y="668">1</text>
+    <circle cx="195" cy="645" r="5.5" fill="#9AA0A6"/><text x="195" y="668">2</text>
+    <circle cx="225" cy="645" r="5.5" fill="#9AA0A6"/><text x="225" y="668">3</text>
+    <circle cx="255" cy="645" r="5.5" fill="#9AA0A6"/><text x="255" y="668">4</text>
+    <circle cx="285" cy="645" r="5.5" fill="#9AA0A6"/><text x="285" y="668">5</text>
+    <circle cx="315" cy="645" r="5.5" fill="#9AA0A6"/><text x="315" y="668">6</text>
+    <circle cx="345" cy="645" r="5.5" fill="#9AA0A6"/><text x="345" y="668">7</text>
+    <circle cx="375" cy="645" r="5.5" fill="#9AA0A6"/><text x="375" y="668">8</text>
+    <circle cx="405" cy="645" r="5.5" fill="#2A2A2A"/><text x="405" y="668">9</text>
+  </g>
+  <!-- ULN anchor labels -->
+  <text x="405" y="528" font-size="8" fill="#D9760F" text-anchor="middle">COM</text>
+  <text x="419" y="648" font-size="8" fill="#2A2A2A">GND</text>
+  <text x="165" y="528" font-size="8" fill="#777"> </text>
+  <text x="270" y="528" font-size="9" fill="#777" text-anchor="middle">OUT1–8 (18→11)</text>
+  <text x="265" y="685" font-size="9" fill="#777" text-anchor="middle">IN1–8 (1–8) ← 595 Q0–Q7</text>
+
+  <!-- ULN decoupling cap (10<->9, same column) -->
+  <rect x="424" y="585" width="78" height="22" rx="3" fill="#FFF6D8" stroke="#D7C36B"/>
+  <text x="463" y="600" font-size="9" fill="#6B5B12" text-anchor="middle">0.1µF · 10↔9</text>
+
+  <!-- reservoir cap -->
+  <rect x="424" y="664" width="120" height="30" rx="3" fill="#FDE8CF" stroke="#E0A05A"/>
+  <text x="484" y="678" font-size="9" fill="#8A4B12" text-anchor="middle">470µF electrolytic</text>
+  <text x="484" y="690" font-size="9" fill="#8A4B12" text-anchor="middle">+ → +12V · stripe → GND</text>
+
+  <!-- ===================== OUTPUT HEADER ===================== -->
+  <g font-size="8" fill="#333" text-anchor="middle">
+    <rect x="160" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="165" y="725">O1</text>
+    <rect x="190" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="195" y="725">O2</text>
+    <rect x="220" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="225" y="725">O3</text>
+    <rect x="250" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="255" y="725">O4</text>
+    <rect x="280" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="285" y="725">O5</text>
+    <rect x="310" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="315" y="725">O6</text>
+    <rect x="340" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="345" y="725">O7</text>
+    <rect x="370" y="730" width="10" height="10" fill="#D9DDE1" stroke="#888"/><text x="375" y="725">O8</text>
+  </g>
+  <text x="392" y="739" font-size="9" fill="#555">8-pin output header → solenoids (2×2 uses O1–O4)</text>
+
+  <!-- ===================== RIGHT PANEL ===================== -->
+  <line x1="678" y1="140" x2="678" y2="824" stroke="#DDD"/>
+
+  <!-- legend -->
+  <text x="700" y="160" font-size="13" font-weight="700" fill="#1A1A1A">WIRE / NET COLORS</text>
+  <g font-size="12" fill="#333">
+    <rect x="700" y="170" width="20" height="12" fill="#E03B3B"/><text x="728" y="180">+5V — logic power</text>
+    <rect x="700" y="192" width="20" height="12" fill="#F08A24"/><text x="728" y="202">+12V — solenoid power (heavy)</text>
+    <rect x="700" y="214" width="20" height="12" fill="#2A2A2A"/><text x="728" y="224">GND — common spine / star point</text>
+    <rect x="700" y="236" width="20" height="12" fill="#2EA84F"/><text x="728" y="246">SH_CP — shift clock → Mega D12</text>
+    <rect x="700" y="258" width="20" height="12" fill="#FFFFFF" stroke="#444"/><text x="728" y="268">ST_CP — latch → Mega D13</text>
+    <rect x="700" y="280" width="20" height="12" fill="#2D6CDF"/><text x="728" y="290">DS — serial data → Mega D11</text>
+    <rect x="700" y="302" width="20" height="12" fill="#9AA0A6"/><text x="728" y="312">signal I/O (Q→IN, OUT→header)</text>
+  </g>
+
+  <!-- rail-tap key -->
+  <text x="700" y="350" font-size="13" font-weight="700" fill="#1A1A1A">RAIL TAPS — pencil these jumpers</text>
+  <g font-size="11.5" fill="#333">
+    <text x="700" y="372">+5V   ← 595 pin 16 (VCC), pin 10 (MR)</text>
+    <text x="700" y="391">GND   ← 595 pin 8, pin 13 (OE) · ULN pin 9</text>
+    <text x="715" y="408">· both cap − legs · reservoir − · PSU GND · Mega GND</text>
+    <text x="700" y="427">+12V  ← ULN pin 10 (COM) · every solenoid + · reservoir +</text>
+    <text x="700" y="446">SH_CP ← 595 pin 11  → Mega D12  (green)</text>
+    <text x="700" y="465">ST_CP ← 595 pin 12  → Mega D13  (white)</text>
+    <text x="700" y="484">DS    ← 595 pin 14  → Mega D11  (blue)</text>
+    <text x="700" y="503">Logic ← 595 Q0–Q7 (15,1–7) → ULN IN1–8 (1–8)</text>
+    <text x="700" y="522">Out   ← ULN OUT1–8 (18→11) → header → solenoid</text>
+  </g>
+
+  <!-- build order -->
+  <text x="700" y="556" font-size="13" font-weight="700" fill="#1A1A1A">BUILD ORDER (this cell)</text>
+  <g font-size="11.5" fill="#333">
+    <text x="700" y="577">1. Sockets in — notch = pin 1, both same way. Tack 2 corners,</text>
+    <text x="715" y="592">check flat, finish all pins. Chips go in LAST.</text>
+    <text x="700" y="611">2. Lay the 5 rails (bare bus wire). Keep +5V and +12V apart.</text>
+    <text x="700" y="630">3. 595 power: 16→+5V, 10→+5V, 8→GND, 13→GND; 0.1µF 16↔8.</text>
+    <text x="700" y="649">4. ULN power: 9→GND, 10→+12V; 0.1µF 10↔9.</text>
+    <text x="700" y="668">5. Logic: Q0–Q7 → IN1–IN8 (8 jumpers).</text>
+    <text x="700" y="687">6. Control: DS→D11, SH_CP→D12, ST_CP→D13, GND→Mega.</text>
+    <text x="700" y="706">7. Outputs: OUT1–8 → header; solenoid other lead → +12V.</text>
+    <text x="700" y="725">8. Reservoir 470µF: + to +12V, stripe to GND, near ULN.</text>
+    <text x="700" y="744">9. Star ground: PSU GND → GND rail at one point.</text>
+    <text x="700" y="763">10. Test COLD (meter) → power 5V only → add 12V LAST.</text>
+  </g>
+
+  <!-- footer cardinal rule -->
+  <rect x="60" y="784" width="1080" height="48" rx="6" fill="#FBF1F1" stroke="#E7C7C7"/>
+  <text x="74" y="804" font-size="12" font-weight="700" fill="#B23B3B">CARDINAL RULE</text>
+  <text x="74" y="822" font-size="12" fill="#7A3A3A">+5V and +12V share NO copper — the only link between the 5V and 12V worlds is the GND rail, tied at one star point. Before power, meter +5V↔+12V and expect OPEN (no beep).</text>
+</svg>

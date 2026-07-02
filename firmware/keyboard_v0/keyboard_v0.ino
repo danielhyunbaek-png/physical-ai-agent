@@ -45,7 +45,7 @@ const uint8_t PIN_LATCH = 13;  // 595 ST_CP
 const uint8_t NUM_CHANNELS = 8;        // one SR for now
 
 // ---- TUNABLE TIMING (Option 1: shorter pulse = less heat/power) -------------
-uint16_t       defaultPulseMs = 22;    // working pulse, runtime-settable via PULSE
+uint16_t       defaultPulseMs = 40;    // working pulse, runtime-settable via PULSE
 const uint16_t MAX_PULSE_MS   = 200;   // hard safety ceiling
 const uint16_t MIN_GAP_MS     = 20;    // enforced cooldown between fires
 const uint16_t BURST_GAP_MS   = 100;   // default gap between channels in BURST
