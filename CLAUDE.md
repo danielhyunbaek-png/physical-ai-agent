@@ -187,6 +187,45 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, and redesi
 
 ---
 
+## Camping-trip session (July 2, 2026) — software sprint + trip plan
+
+**Context: Daniel is camping until Sunday July 5, MacBook only (no hardware access). Deadlines: 2x Fable 5 usage ends July 5; Fable 5 access ends July 7. Plan: front-load heavy AI-assisted work during the trip.**
+
+### Ultimate goal revealed: the agent plays TFT (Teamfight Tactics)
+
+- This DECIDES the Wave 2 mouse debate: TFT is drag-and-drop (bench→board), needs real 2D precision → **trackball-spinner option is dead; gantry or pantograph favored.** Wave 2 decision session still pending — design against the drag requirement.
+- Cost reality: naive Sonnet loop ≈ $4–8 per TFT game. Strategy adopted: **develop on local Ollama (free) → play on cheap cloud (Gemini/DeepSeek/Qwen, ~$0.10–0.50/game) → Claude only for hard decisions/tuning.** Cost levers: observe only during planning phases (~70% fewer calls), cheap model for routine turns, downscaled screenshots, spend cap in console.
+
+### Built this session (all committed & verified)
+
+- **`firmware/keyboard_v1/keyboard_v1.ino`** — 88-channel production firmware: 11-cell cascade, canonical FIRE N → cell(N/8+1)/OUT(N%8+1), TYPE with real LShift chords, KEY/CHORD/HOLD/RELEASE, WALK mode (MAP verification), EEPROM-persisted keymap (MAP/SAVE/LOAD — no recompile during solder-time logging), per-channel 60ms cooldown + MAX_ON=7 PSU guard. Host-side mock-compile clean (-Wall -Wextra) + functional checks pass. **Read the header before flashing: power-on rule (Arduino/USB first, THEN 12V — 595s output random data until cleared) and CASCADE_REVERSED flag if WALK shows flipped cell order.**
+- **`agent/`** — observe→decide→act stack, every layer hardware-free-testable: `keyboard_driver.py` (serial wrapper, dry-run mode, `load_map_from_log()` takes cell,out,key CSV → MAP+SAVE), `vision.py` (capture → screen rectification → multi-scale template match + OCR; works on built-in Mac camera), `agent_loop.py` (screenshot → LLM JSON plan → actions; `--scripted --dry-run` = zero-cost plumbing test), `llm.py` (**provider-pluggable brain**: ollama/gemini/deepseek/qwen/anthropic/openai presets, OpenAI-compatible path + Anthropic path, robust JSON extraction for chatty small models).
+- Commits: `7023389` (fw v1 + agent), `41bc82c` (.gitignore), `11a5193` (llm.py). Push of `11a5193` was in his final checklist — **verify pushed next session.**
+
+### Daniel's machine setup (done, on his real Mac)
+
+- Repo pushed through `41bc82c` (confirmed; earlier July 1 cleanup commits had never been pushed — went up with it).
+- `agent/.venv` created (Python 3.9); requirements installed incl. opencv 5.0, anthropic, openai. **Reminder: venv must be re-activated every new Terminal (`source .venv/bin/activate`) — #1 predicted failure mode.**
+- Homebrew installed; tesseract 5.5.2 confirmed. Ollama installed via brew, `brew services start ollama`, pulled `qwen3-vl:8b` (local free brain).
+- Anthropic API key created and saved in Notes. Optional Gemini key (aistudio.google.com) suggested.
+- **Unconfirmed: whether the 3 campsite tests (keyboard_driver / vision / scripted loop) ran clean on his Mac, and camera permission granted — ask next session.**
+
+### Campsite agenda (agreed)
+
+1. Offline: run test ladder; brain-comparison experiment (same goal, `--provider ollama` vs `anthropic`, save outputs).
+2. Session #1 (before Jul 5): agent prompt/JSON tuning using those outputs.
+3. Session #2 (before Jul 5): **Wave 2 mouse decision** + CAD brief, TFT drag requirement in hand.
+4. Session #3 (by Jul 7): return-day prep — MAP log CSV template, cell #1 soldering + cold-continuity checklist.
+5. `git push` after each session (milestone rule).
+
+### Back-home queue (hardware, post-trip)
+
+- Cell #1: rails, solder, continuity gate, first fire from soldered board (milestone — film it).
+- Flash keyboard_v1, WALK pass to verify MAP, `load_map_from_log()` workflow.
+- C920 tripod setup + `Vision.calibrate_screen()` + template capture.
+
+---
+
 ## Workflow notes
 
 - User says "ask first" before making sweeping spreadsheet changes — single-cell edits get confirmed before being applied.
