@@ -1,0 +1,58 @@
+{
+  "_readme": [
+    "TFT UI layout in NORMALIZED screen coords (0..1 of the rectified",
+    "1920x1080 screen). Defaults below are eyeballed for TFT at 1920x1080",
+    "borderless with default HUD scale -- VERIFY before real games:",
+    "  python calibrate.py tft --still tft_screenshot.png",
+    "draws every point on a screenshot so you can nudge these numbers.",
+    "The agent re-observes after every action, so being ~10px off is fine;",
+    "being a whole slot off is not."
+  ],
+  "shop_slots": {
+    "_comment": "centers of the 5 shop cards, left to right",
+    "y": 0.926,
+    "x": [0.301, 0.401, 0.5, 0.599, 0.699]
+  },
+  "bench": {
+    "_comment": "centers of the 9 bench slots, left to right",
+    "y": 0.755,
+    "x0": 0.245,
+    "x_step": 0.0532
+  },
+  "board": {
+    "_comment": [
+      "player half: 4 rows x 7 hexes. row 0 = BACK (nearest center line),",
+      "row 3 = FRONT (nearest bench). Odd rows shift right a half step",
+      "(hex grid). Perspective squeezes the back rows slightly; the",
+      "flat col_step is close enough for vision-corrected clicking."
+    ],
+    "row_y": [0.412, 0.474, 0.542, 0.611],
+    "col_step": 0.0625,
+    "odd_row_offset": 0.03125
+  },
+  "buttons": {
+    "buy_xp": [0.163, 0.906],
+    "reroll": [0.163, 0.963],
+    "lock":   [0.72, 0.87]
+  },
+  "augments": {
+    "_comment": "centers of the 3 augment choice cards",
+    "y": 0.45,
+    "x": [0.34, 0.5, 0.66]
+  },
+  "regions": {
+    "_comment": "OCR regions as (nx, ny, nw, nh)",
+    "gold":  [0.465, 0.868, 0.07, 0.033],
+    "stage": [0.455, 0.007, 0.09, 0.035],
+    "level": [0.145, 0.845, 0.09, 0.03]
+  },
+  "sell_area": [0.5, 0.93],
+  "item_bench": [0.035, 0.55],
+  "hotkeys": {
+    "_comment": "TFT native hotkeys -- pressed on the PHYSICAL keyboard",
+    "reroll": "D",
+    "buy_xp": "F",
+    "sell_hovered": "E",
+    "bench_hovered": "W"
+  }
+}

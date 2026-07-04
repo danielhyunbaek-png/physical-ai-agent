@@ -1,0 +1,36 @@
+{
+  "_readme": [
+    "Editable TFT set knowledge injected into the agent's system prompt.",
+    "PLACEHOLDER DATA -- fill in the live set before real games:",
+    "  1. Set 'set' and 'patch' to the current rotation.",
+    "  2. Replace 'champions' with the real roster: name, gold cost, traits.",
+    "  3. Replace 'traits' with real breakpoints (e.g. [2,4,6]).",
+    "  4. Add meta comps you want the agent to steer toward in 'comps'.",
+    "Sources: the in-client set overview, or community sites (tactics.tools,",
+    "mobalytics). Keep entries SHORT -- every champion line costs prompt",
+    "tokens on every turn. 'economy' is set-agnostic and rarely changes.",
+    "_placeholder: true entries are examples of the expected shape only."
+  ],
+  "set": "PLACEHOLDER -- update me",
+  "patch": "0.0",
+  "economy": {
+    "interest_breakpoints": [10, 20, 30, 40, 50],
+    "max_interest": 5,
+    "xp_per_buy": 4,
+    "gold_per_xp_buy": 4,
+    "reroll_cost": 2,
+    "win_streak_gold": [0, 0, 1, 1, 2, 3],
+    "notes": "hold gold at breakpoints; streaks compound; roll-down at 4-1/4-5 or when hp forces it"
+  },
+  "champions": [
+    {"_placeholder": true, "name": "ExampleFrontliner", "cost": 1, "traits": ["ExampleTank", "ExampleOrigin"]},
+    {"_placeholder": true, "name": "ExampleCarry", "cost": 4, "traits": ["ExampleDamage", "ExampleOrigin"]}
+  ],
+  "traits": [
+    {"_placeholder": true, "name": "ExampleTank", "breakpoints": [2, 4, 6]},
+    {"_placeholder": true, "name": "ExampleDamage", "breakpoints": [2, 4]}
+  ],
+  "comps": [
+    {"_placeholder": true, "name": "Example Comp", "core": ["ExampleCarry", "ExampleFrontliner"], "notes": "example only"}
+  ]
+}

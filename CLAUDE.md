@@ -218,11 +218,27 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, and redesi
 4. Session #3 (by Jul 7): return-day prep — MAP log CSV template, cell #1 soldering + cold-continuity checklist.
 5. `git push` after each session (milestone rule).
 
+### July 4 session — full production stack built (Fable sprint, campsite)
+
+**"Run the agent entirely": the complete software stack now exists; all 20 ladder tests pass hardware-free.** Scope confirmed via questions: full production stack + gantry-backed mouse abstraction + generic TFT layer with editable set data.
+
+- **New `agent/actions.py`** — single action vocabulary (keyboard + mouse primitives), validation, `Actuators` dispatch. New action types get added here once, work everywhere.
+- **New `agent/mouse_driver.py`** — `MouseDriver` interface; backends: `dry`, **`mousekeys`** (macOS Mouse Keys pressed BY THE SOLENOIDS — real click/drag with Wave 1 hardware only; auto-toggles off around typing via 5×Option), `gantry` (serial, px→mm affine). `fit_affine`/`apply_affine` helpers.
+- **New `agent/runtime.py`** — `Session` engine: JSONL + per-turn-frame logging under `agent/logs/` (gitignored, as is `agent/calibration/`), budget guards (`--budget-usd`/turns/minutes), stuck detection (frame dHash), validation-error feedback to the model, escalation tier (`--escalate-to`, or plan `"escalate": true`), clean Ctrl-C. `agent_loop.py` is now a thin CLI over it (old flags kept; new: `--mouse`, `--still`, `--budget-usd`, `--calib`, `--escalate-to`).
+- **Upgraded `llm.py`** (retries+backoff, JSON-repair re-ask, token/$ metering — `PRICES` is editable ballpark) **and `vision.py`** (`still=` image mode for zero-hardware runs, `frame_hash`/`wait_settle`, normalized-region OCR, screen-quad save/load).
+- **New `agent/tft/`** — `layout.json` (normalized UI coords, eyeballed DEFAULTS — verify with calibrate overlay), `set_data.json` (**placeholder — fill in the live set before games**), `tft_agent.py` (semantic actions tft_buy/sell/place/move/bench/roll/level/lock/augment → primitives; hotkeys D/F/E/W go through the physical keyboard, only buys/placements need the mouse; combat-phase hook skips LLM calls once `tft/templates/combat_marker.png` is captured — the 70% cost lever), `play_tft.py` entrypoint (defaults: ollama, 800 turns).
+- **New `agent/calibrate.py`** — `screen` / `tft` (overlay PNG check) / `gantry` (3-probe affine) / `mousekeys` (speed measurement) flows, all prompt-driven, no GUI.
+- **New `firmware/mouse_gantry_v0/`** — Wave 2 gantry firmware written AHEAD of the hardware decision; the serial protocol (HOME/MOVE/JOG/BTN/CLICK/SPEED/STATUS/STOP → OK/ERR) is the contract with `GantryMouse`, so a pantograph swap would only rewrite motion code. CNC-shield pins, zero library deps, `HAVE_ENDSTOPS 0` until switches are wired. Mock-compiles clean (-Wall -Wextra).
+- **New `agent/tests/run_tests.py`** — 20-test ladder: actions, mouse backends (incl. Mouse Keys typing-coexistence + fake-serial gantry protocol), extract_json, cost metering, vision still/hash/calibration round-trip, TFT layout math + translator, and four end-to-end Session runs (done / budget-stop / stuck-abort / TFT-translated). Zero hardware, network, or keys. **All pass; all files verified Python 3.9-compatible (`ast` feature_version check — his venv is 3.9).**
+- **Verify on his Mac next session:** `cd agent && source .venv/bin/activate && python tests/run_tests.py`.
+- TFT pre-game checklist is in `agent/README.md` (calibrate screen → verify layout overlay → fill set_data → capture combat marker → calibrate mouse).
+
 ### Back-home queue (hardware, post-trip)
 
 - Cell #1: rails, solder, continuity gate, first fire from soldered board (milestone — film it).
 - Flash keyboard_v1, WALK pass to verify MAP, `load_map_from_log()` workflow.
 - C920 tripod setup + `Vision.calibrate_screen()` + template capture.
+- Enable macOS Mouse Keys on the target Mac + `calibrate.py mousekeys` → first physical mouse-free click (film it — the "robot refuses to touch the mouse" gag now has a working driver).
 
 ---
 

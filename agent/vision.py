@@ -5,11 +5,17 @@ it back via template matching (find UI elements) and OCR (read text).
 
 Campsite-testable: camera_index=0 uses the MacBook's built-in camera. Point it
 at anything with text to exercise capture -> deskew -> OCR without the C920.
+Fully hardware-free: Vision(still="shot.png") serves a saved image instead of
+a camera -- the whole agent stack (and the test ladder) runs on screenshots.
 
 Install:  pip install opencv-python pytesseract numpy
           brew install tesseract          (macOS)
 """
 
+from __future__ import annotations
+
+import json
+import os
 import time
 
 import cv2
@@ -22,18 +28,34 @@ except ImportError:
 
 
 class Vision:
-    def __init__(self, camera_index=0, warm_up_frames=10):
-        self.cap = cv2.VideoCapture(camera_index)
-        if not self.cap.isOpened():
-            raise RuntimeError(f"camera {camera_index} not available")
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)   # C920 native
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+    def __init__(self, camera_index=0, warm_up_frames=10, still=None,
+                 calib_path=None):
+        """still: path to an image (or a numpy array) served instead of a
+        camera -- zero-hardware mode. calib_path: screen-quad JSON saved by
+        calibrate.py; loaded automatically if it exists."""
+        self.still = None
+        self.cap = None
+        if still is not None:
+            self.still = cv2.imread(still) if isinstance(still, str) else still
+            if self.still is None:
+                raise FileNotFoundError("still image not readable: "
+                                        "{}".format(still))
+        else:
+            self.cap = cv2.VideoCapture(camera_index)
+            if not self.cap.isOpened():
+                raise RuntimeError(f"camera {camera_index} not available")
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)   # C920 native
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+            for _ in range(warm_up_frames):            # let auto-exposure settle
+                self.cap.read()
         self.screen_quad = None        # 4 corners of the monitor in camera space
-        for _ in range(warm_up_frames):                # let auto-exposure settle
-            self.cap.read()
+        if calib_path and os.path.exists(calib_path):
+            self.load_screen_calibration(calib_path)
 
     # ---- capture ---------------------------------------------------------------
     def frame(self):
+        if self.still is not None:
+            return self.still.copy()
         ok, img = self.cap.read()
         if not ok:
             raise RuntimeError("frame grab failed")
@@ -131,8 +153,80 @@ class Vision:
         cv2.imwrite(path, self.screen() if rectified else self.frame())
         return path
 
+    # ---- change detection (stuck detection + settle waits) ---------------------
+    @staticmethod
+    def frame_hash(img, hash_size=8):
+        """64-bit perceptual dHash of an image. Near-identical frames give
+        near-identical hashes; compare with hash_distance()."""
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if img.ndim == 3 else img
+        small = cv2.resize(gray, (hash_size + 1, hash_size),
+                           interpolation=cv2.INTER_AREA)
+        diff = small[:, 1:] > small[:, :-1]
+        return int(np.packbits(diff.flatten()).tobytes().hex(), 16)
+
+    @staticmethod
+    def hash_distance(h1, h2):
+        """Hamming distance between two frame hashes (0 = identical;
+        <= 5 is 'visually the same screen' in practice)."""
+        return bin(h1 ^ h2).count("1")
+
+    def screen_hash(self):
+        return self.frame_hash(self.screen())
+
+    def wait_settle(self, timeout_s=8.0, interval_s=0.4, threshold=4):
+        """Block until two consecutive frames match (UI stopped animating).
+        Returns True if settled, False on timeout. No-op in still mode."""
+        if self.still is not None:
+            return True
+        prev = self.screen_hash()
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            time.sleep(interval_s)
+            cur = self.screen_hash()
+            if self.hash_distance(prev, cur) <= threshold:
+                return True
+            prev = cur
+        return False
+
+    # ---- normalized regions (resolution-independent, used by the TFT layer) ----
+    @staticmethod
+    def crop_norm(img, region):
+        """Crop by normalized (nx, ny, nw, nh) in 0..1 of the image size."""
+        h, w = img.shape[:2]
+        nx, ny, nw, nh = region
+        x, y = int(nx * w), int(ny * h)
+        return img[y:y + max(1, int(nh * h)), x:x + max(1, int(nw * w))]
+
+    def read_region_norm(self, region, psm=7):
+        """OCR a normalized region of the rectified screen (single line)."""
+        if pytesseract is None:
+            raise RuntimeError("pytesseract missing: pip install pytesseract "
+                               "&& brew install tesseract")
+        img = self.crop_norm(self.screen(), region)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.resize(gray, None, fx=3, fy=3)
+        gray = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                     cv2.THRESH_BINARY, 31, 11)
+        return pytesseract.image_to_string(gray,
+                                           config=f"--psm {psm}").strip()
+
+    # ---- calibration persistence ------------------------------------------------
+    def save_screen_calibration(self, path):
+        if self.screen_quad is None:
+            raise RuntimeError("calibrate_screen() first")
+        with open(path, "w") as f:
+            json.dump({"screen_quad": self.screen_quad.tolist()}, f, indent=2)
+        return path
+
+    def load_screen_calibration(self, path):
+        with open(path) as f:
+            self.screen_quad = np.array(json.load(f)["screen_quad"],
+                                        dtype=np.float32)
+        return self.screen_quad
+
     def close(self):
-        self.cap.release()
+        if self.cap is not None:
+            self.cap.release()
 
 
 def _order_quad(pts):
