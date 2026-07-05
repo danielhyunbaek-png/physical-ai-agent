@@ -48,8 +48,8 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 **Hardware:** 2×2 prototype printed and redesigned (fit+fastening fixes locked); solenoids partially mounted on plate (leads need triage — see wiring section); driver cell #1 dry-fit with canonical Q→IN order; **soldering not started**. FIRE test (reliable key presses) still pending.
 
 **UNVERIFIED — ask Daniel / check first:**
-1. Did `python tests/run_tests.py` (20 tests) run clean on HIS Mac (venv is Python 3.9)? Also the 3 earlier campsite tests + camera permission.
-2. Is the repo fully pushed? Last known state: ahead of origin by 1 (commit `e6a46fb`, the production stack). **Remind him to push.**
+1. ~~Did `python tests/run_tests.py` (20 tests) run clean on HIS Mac?~~ **RESOLVED Jul 4 (Opus): 20/20 OK in the 3.9 venv on Daniel's Mac.** Still open: the 3 earlier campsite tests + camera permission.
+2. ~~Is the repo fully pushed?~~ **RESOLVED Jul 4 (Opus): pushed to origin/main; handoff package committed too (`353494b`). Repo in sync.**
 3. FIRE test of the 2×2 (reliable presses at ~5mm bottom-out) — pending hardware time.
 4. M3×3 flat-head actually holds in the re-measured ~1mm tab (~2 threads) — confirm at assembly.
 
@@ -244,3 +244,11 @@ Daniel's machine setup (done): repo pushed through `41bc82c`; `agent/.venv` (Pyt
 ### July 4 session (later) — Fable→Opus handoff package
 
 Daniel asked Fable to "leave part of its brain" for Opus before access ends Jul 7. Built: this restructured CLAUDE.md (rules + current state up top), `docs/PLAYBOOK.md` (12 reasoning patterns distilled from the project's real errors), `docs/briefs/` (5 milestone briefs + README), `.claude/commands/` (session-start / session-end / verify / brief). All facts preserved from the pre-handoff CLAUDE.md (in git history if needed).
+
+### July 4 session (Opus) — push + Mac verification of the handoff
+
+First Opus session. Two UNVERIFIED items closed (struck through above):
+- **Handoff package was uncommitted and unpushed.** Caught via `git status -sb`: CLAUDE.md modified + `.claude/`, `docs/PLAYBOOK.md`, `docs/briefs/` all untracked — i.e. Fable's entire brain existed only in the working tree, one crash from gone before the Jul 7 cliff. Staged + committed as `353494b` (cleared a stale `.git/index.lock` first), then Daniel pushed origin/main from his own Terminal (sandbox network blocks GitHub). Repo now in sync; nothing ahead of origin.
+- **Test ladder verified on the real machine.** Ran green in the sandbox (Py 3.10 / numpy 2.2 / cv2 4.13, 20/20 OK) as a pre-check, then Daniel confirmed on his Mac venv (Py 3.9): `Ran 20 tests ... OK`. Software stack now verified end-to-end on the machine it runs on — no version-drift surprises.
+
+Still open for any remaining Fable time (hardware-free genius work): brief 03 interior-row fastening scheme (unsolved) and `agent/tft/set_data.json` (placeholder). Everything else is gated on hardware (cell #1 solder → first fire, WALK/MAP). **Reminder: this CLAUDE.md edit is itself an unpushed change — push again after this session.**
