@@ -39,19 +39,17 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 
 ---
 
-## CURRENT STATE — as of July 4, 2026 (end of Fable campsite sprint)
+## CURRENT STATE — as of July 7, 2026
 
-**Context:** Daniel camping until Sun Jul 5, MacBook only. 2× Fable usage ends Jul 5; Fable access ends Jul 7 (this handoff exists because of that).
+**Software: COMPLETE production stack, all 20 ladder tests pass** (verified on Daniel's Mac Jul 4). Firmware `keyboard_v1` + `mouse_gantry_v0` mock-compile clean. Full detail in the July 2/July 4 session records below.
 
-**Software: COMPLETE production stack, all 20 ladder tests pass** (in the build sandbox — see UNVERIFIED). Firmware `keyboard_v1` + `mouse_gantry_v0` mock-compile clean. Full detail in the July 2/July 4 session records below.
-
-**Hardware:** 2×2 prototype printed and redesigned (fit+fastening fixes locked); solenoids partially mounted on plate (leads need triage — see wiring section); driver cell #1 dry-fit with canonical Q→IN order; **soldering not started**. FIRE test (reliable key presses) still pending.
+**Hardware (Jul 7): FULL 84-KEY PLATE PRINTED AND FULLY POPULATED — all 84 solenoids screwed on.** As-built = the 2×2 scheme scaled up: **6 walls + M3×3 flat-head tab screws + counterbores, assembled bottom row → top row** (was: brief 03 drop-in pockets + clamp bars — NOT used; brief 03's scheme is shelved). Counterbores confirmed to clear adjacent bodies. Consequence: interior-row swap = unscrew the rows behind it. Solenoid leads untouched/tangled — tidy plan in the Jul 7 session record. Driver cell #1 dry-fit with canonical Q→IN order; **soldering not started**. BOSYTRO 12V PSU in hand. FIRE test still pending.
 
 **UNVERIFIED — ask Daniel / check first:**
 1. ~~Did `python tests/run_tests.py` (20 tests) run clean on HIS Mac?~~ **RESOLVED Jul 4 (Opus): 20/20 OK in the 3.9 venv on Daniel's Mac.** Still open: the 3 earlier campsite tests + camera permission.
 2. ~~Is the repo fully pushed?~~ **RESOLVED Jul 4 (Opus): pushed to origin/main; handoff package committed too (`353494b`). Repo in sync.**
-3. FIRE test of the 2×2 (reliable presses at ~5mm bottom-out) — pending hardware time.
-4. M3×3 flat-head actually holds in the re-measured ~1mm tab (~2 threads) — confirm at assembly.
+3. FIRE test (reliable presses at ~5mm bottom-out) — pending cell #1 solder.
+4. ~~M3×3 flat-head actually holds in the re-measured ~1mm tab (~2 threads)~~ **RESOLVED Jul 7: all 168 driven on the 84-key plate, bite firm, counterbores clear.**
 
 **Pending TODOs gated on ask-first (spreadsheet NOT yet edited):**
 - Row 39: hardware → **M3×3 flat-head** (history: M2 → M2.5 → M3×6 cap → M3×3 flat-head + counterbore) + refresh search link.
@@ -63,7 +61,7 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 2. Flash keyboard_v1, MAP via solder-time CSV, WALK verification — brief 02.
 3. C920 tripod + `Vision.calibrate_screen()` + template capture; enable Mouse Keys + `calibrate.py mousekeys` → first physical mouse-free click (film — the "robot refuses to touch the mouse" gag).
 4. Wave 2 mouse decision (TFT drag requirement decides it) — brief 04.
-5. 84-key plate CAD (tilt accuracy + interior-row fastening are the problems) — brief 03.
+5. ~~84-key plate CAD~~ **DONE Jul 7 (as-built deviates from brief 03 — see Jul 7 record): 6-wall + tab screws, plate printed and fully populated.**
 6. TFT bring-up — brief 05.
 
 ---
@@ -167,7 +165,7 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, redesigned
 6. Keyboard tilt angle — **RESOLVED: 4° spec / ~4.5° measured.**
 7. Keycap height above desk (with VHB) — placeholder ~18mm; not blocking (gap is shimmed); measure cleanly at assembly.
 8. `wall_offset` (8mm) — **RESOLVED: validated at test-fit.**
-9. Screw thread engagement in tab — **RESOLVED (M3 bites). Committed screw now M3×3 flat-head; tab re-measured ~1mm → ~2-thread engagement. Confirm the M3×3 holds at assembly.**
+9. Screw thread engagement in tab — **RESOLVED (M3 bites). Committed screw now M3×3 flat-head; tab re-measured ~1mm → ~2-thread engagement. Confirm the M3×3 holds at assembly. Jul 5: MOOT for the 84-key build — the drop-in scheme (brief 03) uses no tab screws; only the 2×2 still relies on them.**
 10. Mounting hole size/thread — **RESOLVED: tapped M3. Wall clearance Ø3.3.**
 
 ## Driver board + solenoid wiring architecture (July 2026)
@@ -252,3 +250,26 @@ First Opus session. Two UNVERIFIED items closed (struck through above):
 - **Test ladder verified on the real machine.** Ran green in the sandbox (Py 3.10 / numpy 2.2 / cv2 4.13, 20/20 OK) as a pre-check, then Daniel confirmed on his Mac venv (Py 3.9): `Ran 20 tests ... OK`. Software stack now verified end-to-end on the machine it runs on — no version-drift surprises.
 
 Still open for any remaining Fable time (hardware-free genius work): brief 03 interior-row fastening scheme (unsolved) and `agent/tft/set_data.json` (placeholder). Everything else is gated on hardware (cell #1 solder → first fire, WALK/MAP). **Reminder: this CLAUDE.md edit is itself an unpushed change — push again after this session.**
+
+### July 5 session (Fable) — interior-row fastening SOLVED (design only, no hardware)
+
+Brief 03's open problem worked out and written into `docs/briefs/03_84key_plate_cad.md` (§"Fastening scheme"). Summary:
+
+- **Root cause of the non-scaling:** the 2×2's fastener axis is horizontal (Y) — interior screws would have to be driven inside the 16.55mm inter-wall slot (~320mm long, closed ends), and any interior swap = teardown of the rows behind. One cause, both symptoms.
+- **Scheme: rotate everything to Z — drop-in pockets + top clamp bars.** Y captured by the existing wall sandwich (16.55 slot / 16 body / 0.55 float — geometry already validated on the 2×2; only new part: front stub rail at y=−46.65 for the space row). X captured by 3mm printed ribs in the inter-body gaps (CSV-verified min gap 4.04mm across all 84; positions generated from `Full_84Key_Hole_Coordinates.csv`). Z down-stop by seat ledges of height **7−d** where d = body-bottom→lower-tab-hole (proved d ≤ 7 from the in-hand 2×2, so always feasible). +Z recoil taken by per-row-half clamp bars (M3 heat-set inserts in raised-wall bosses, M3×8 vertical, 3mm EVA foam ~1mm crush) — fastener on the load axis; bars can bridge the L/R plate seam for free rigidity.
+- **Payoffs:** rows order-independent; any solenoid swaps by lifting one bar; deletes all 168 horizontal tab screws → open question #9 (M3×3 in ~1mm tab) moot for the 84-key build.
+- **Fallback documented:** T-stud keyhole hang (exact datum, but 168 depth-set screws + 1.2mm webs) if the coupon shows slop. Other rejects (bolt-on walls, snap clips, magnets) written into the brief.
+- **Gates before CAD (10 min calipers on the 2×2):** d; body-top height (sets wall raise, ≈Z36 if d=7 since body top hits Z34 > current Z32); lead exit points (bar slots). Then the 3-wall × 2-column coupon incl. a swap cycle + fire with cell #1.
+- Also edited: CLAUDE.md milestone 5 + open question #9; brief 03 assembly-order note + definition of done. Spreadsheet impact (row 39 qty drop; new inserts/pan-heads/foam) NOTED in the brief only — not edited, per ask-first.
+- UNVERIFIED: everything above is paper until the coupon. **Push after this session (milestone).**
+
+### July 7 session (Fable) — 84-key plate populated; as-built correction; wiring tidy plan; cell-#1 test strategy
+
+**MILESTONE: full 84-key plate printed and fully populated — all 84 solenoids mounted.** Session was Q&A + record-keeping; no files built besides this CLAUDE.md update.
+
+- **As-built correction (was X, now Y):** was = brief 03 drop-in pockets + clamp bars (Jul 5 design, never built). Now = **6 walls + M3×3 flat-head tab screws + flat counterbores, i.e. the 2×2 scheme scaled up.** Daniel confirmed: counterbores clear the adjacent bodies; assembly order bottom (front) row → top (back) row, same as the 2×2. Brief 03's pocket/clamp scheme is SHELVED (kept on file as the swap-friendly alternative). Consequences: (a) open question #9 CLOSED — ~2-thread engagement holds across all 168 screws; (b) interior-row solenoid swap = unscrew the rows behind it — accepted cost, 16 spares on hand; (c) brief 03's clamp-bar hardware (inserts/pan-heads/foam) no longer needed for Wave 1.
+- **Wiring state:** all 168 leads factory-length, tangled, frayed tips. **Tidy plan agreed (uses the locked §Harness design unchanged):** Phase 0 snip/tape every frayed tip (168). Phase 1 velcro per-row bundles, one wall at a time; no wire labels (holes get labels, not wires). Phase 2 build the +12V buses NOW — bare 16 AWG along each of the 6 walls, trunk at one end, one 18 AWG orange pigtail taped off until the board rail exists; per solenoid, trim the more convenient lead to ~5cm at the moment of soldering (kills 84 of 168 danglers; coil is non-polarized so either lead works). Phase 3 low sides stay parked full-length until cells are soldered — golden rule unchanged (cut only at landing; Sharpie key at hole; log `cell · OUT · key`). Routing rule new to the 84-key: interior-row leads exit **up and over the wall top**, never along the slot floor. Phase 4 optional printed wall-top combs (offered, not requested yet).
+- **Cell #1 test strategy (decided):** nothing soldered yet. Do NOT solder any solenoid for testing. Sequence: solder cell #1 → cold-continuity gate → first fire with **one SPARE solenoid on alligator clips** (high side to +12V rail, low side to OUT1; USB before 12V) → walk the same spare across OUT1–OUT8 → only then land the first 8 plate solenoids permanently (8 convenient keys, cut-to-length, label + log). The clipped spare = reusable test rig for all 11 cells.
+- **PSU:** BOSYTRO 12V confirmed IN HAND — nothing blocks brief 01. (Spreadsheet rows 33/34 still not edited, per ask-first.)
+- Next steps: brief 01 (cell #1 solder → fire), Phases 0–2 of the wire tidy in parallel.
+- **Push after this session — populated-plate milestone + this record are unpushed.**
