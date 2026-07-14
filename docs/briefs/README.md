@@ -9,5 +9,6 @@ Each brief is a ready-to-run session starter written by Fable 5 (July 2026) with
 | `03_84key_plate_cad.md` | Full 84-key plate CAD (the big one) | 2×2 FIRE test passed |
 | `04_wave2_mouse_decision.md` | Pick the Wave 2 mouse mechanism (TFT drag requirement) | None — do anytime |
 | `05_tft_bringup.md` | First TFT game: calibration → set data → cheap-brain game | Vision + mouse working |
+| `06_driver_pcb.md` | Custom driver PCB (replaces perfboard for all 11 cells) + interim breadboard fire test | None — design now, breadboard this week |
 
 Always pair a brief with `docs/PLAYBOOK.md` (reasoning patterns) and CLAUDE.md (current facts). If a brief contradicts CLAUDE.md, CLAUDE.md is newer — trust it and fix the brief.

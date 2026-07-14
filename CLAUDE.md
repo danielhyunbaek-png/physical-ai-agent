@@ -25,7 +25,7 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 ## Key files in this folder
 
 - `docs/PLAYBOOK.md` — **Reasoning patterns + working style.** The "how to think" half of this brain.
-- `docs/briefs/` — Milestone briefs: 01 cell-#1 solder/fire · 02 WALK/MAP · 03 84-key plate CAD · 04 Wave 2 mouse decision · 05 TFT bring-up.
+- `docs/briefs/` — Milestone briefs: 01 cell-#1 solder/fire (amended by 06) · 02 WALK/MAP · 03 84-key plate CAD · 04 Wave 2 mouse decision · 05 TFT bring-up · 06 driver PCB (replaces perfboard).
 - `.claude/commands/` — Claude Code slash commands: session-start, session-end, verify, brief.
 - `PRD_v2_Physical_AI_Agent.docx` — Product Requirements Document. Source of truth for *what* and *why*.
 - `Build_Walkthrough_Physical_AI_Agent.docx` — Week-by-week operational guide. Source of truth for *how* and *when*.
@@ -39,25 +39,30 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 
 ---
 
-## CURRENT STATE — as of July 7, 2026
+## CURRENT STATE — as of July 13, 2026
 
 **Software: COMPLETE production stack, all 20 ladder tests pass** (verified on Daniel's Mac Jul 4). Firmware `keyboard_v1` + `mouse_gantry_v0` mock-compile clean. Full detail in the July 2/July 4 session records below.
 
-**Hardware (Jul 7): FULL 84-KEY PLATE PRINTED AND FULLY POPULATED — all 84 solenoids screwed on.** As-built = the 2×2 scheme scaled up: **6 walls + M3×3 flat-head tab screws + counterbores, assembled bottom row → top row** (was: brief 03 drop-in pockets + clamp bars — NOT used; brief 03's scheme is shelved). Counterbores confirmed to clear adjacent bodies. Consequence: interior-row swap = unscrew the rows behind it. Solenoid leads untouched/tangled — tidy plan in the Jul 7 session record. Driver cell #1 dry-fit with canonical Q→IN order; **soldering not started**. BOSYTRO 12V PSU in hand. FIRE test still pending.
+**Hardware (Jul 7): FULL 84-KEY PLATE PRINTED AND FULLY POPULATED — all 84 solenoids screwed on.** As-built = the 2×2 scheme scaled up: **6 walls + M3×3 flat-head tab screws + counterbores, assembled bottom row → top row** (was: brief 03 drop-in pockets + clamp bars — NOT used; brief 03's scheme is shelved). Counterbores confirmed to clear adjacent bodies. Consequence: interior-row swap = unscrew the rows behind it. Solenoid leads untouched/tangled — tidy plan in the Jul 7 session record. BOSYTRO 12V PSU in hand.
+
+**Driver build (Jul 10): PERFBOARD CANCELLED → CUSTOM PCB — see `docs/briefs/06_driver_pcb.md`.** Daniel found perfboard interconnect soldering untenable (components fine, point-to-point routing not). Decision: one 6-cell PCB design (595+ULN+screw terminals, DIP sockets for his existing chips), ordered ×5 bare from JLCPCB, 2 populated (6+5 cells = 11), ~$35–60, ~2wk lead. Interconnects become copper; remaining solder is all easy through-hole. Interim: **breadboard fire test with the dry-fit cell #1 chips + clipped spare solenoid — the new immediate milestone.** Firmware unchanged (canonical Q→IN preserved; FIRE N → cell/OUT mapping intact).
+
+**Jul 13 updates: (a) BREADBOARD FIRE TEST DONE — full 595+ULN chain (dry-fit cell #1 chips), repeated reliable key presses at real mounting geometry, characters on screen. UNVERIFIED #3 CLOSED. (b) Soldering unblocked** (root cause was technique — see Jul 13 record); **cell #1 fully soldered on perfboard (~4h) except final rail taps** (595 pins 16/10→+5V, 13→GND, 14→Mega DATA; ULN COM→+12V) — in progress. **(c) PCB route RE-CONFIRMED with data:** 4h/cell measured → ~25h+ for 10 more cells + 84 solder landings, declined. Cell #1's role: interim driver (8 keys during the ~2wk PCB lead), then reference/spare. Cell #1 still needs its own continuity gate + fire verify (workmanship check, not design risk).
 
 **UNVERIFIED — ask Daniel / check first:**
 1. ~~Did `python tests/run_tests.py` (20 tests) run clean on HIS Mac?~~ **RESOLVED Jul 4 (Opus): 20/20 OK in the 3.9 venv on Daniel's Mac.** Still open: the 3 earlier campsite tests + camera permission.
 2. ~~Is the repo fully pushed?~~ **RESOLVED Jul 4 (Opus): pushed to origin/main; handoff package committed too (`353494b`). Repo in sync.**
-3. FIRE test (reliable presses at ~5mm bottom-out) — pending cell #1 solder.
+3. ~~FIRE test (reliable presses at ~5mm bottom-out)~~ **RESOLVED Jul 13 (reported; test run during the Jul 10–13 wait window): breadboard, dry-fit cell #1 chips (595+ULN chain, Mega FIRE commands), solenoid at real 2×2 mounting geometry — repeated reliable presses, characters on screen.**
 4. ~~M3×3 flat-head actually holds in the re-measured ~1mm tab (~2 threads)~~ **RESOLVED Jul 7: all 168 driven on the 84-key plate, bite firm, counterbores clear.**
 
 **Pending TODOs gated on ask-first (spreadsheet NOT yet edited):**
 - Row 39: hardware → **M3×3 flat-head** (history: M2 → M2.5 → M3×6 cap → M3×3 flat-head + counterbore) + refresh search link.
 - Row 33: PSU → "Ordered"; row 34 (IEC cord) → "Skip" (bundled with BOSYTRO).
 - Row 40 (M5 standoffs): SKIP — replaced by side rails. M5 *screws* still needed (260pc assortment covers plate→rails, rails→base, Wave 2 V-slot).
+- NEW (Jul 10, brief 06 buy list): PCB order ~$20–40 + 5.08mm screw terminals ~$12 + DIP sockets ~$6 (reuse perfboard sockets if on hand) + 6-pin cascade cable. Perfboard line items for cells 2–11 become spares/unneeded.
 
 **Next milestones (each has a brief in `docs/briefs/`):**
-1. Back home: cell #1 rails→solder→cold-continuity gate→first fire from soldered board (film it) — brief 01.
+1. ~~Cell #1 perfboard solder~~ **REPLACED Jul 10 by brief 06:** (a) ~~breadboard fire test~~ **DONE (Jul 13 record — UNVERIFIED #3 closed)**; (b) finish cell #1 rail taps → continuity gate → fire verify via clipped spare on OUT stubs; (c) PCB design session (EasyEDA, Claude drives) → order 5 boards **same day the cell #1 walk passes**; (d) during ~2wk lead: land first 8 plate keys on cell #1, flash keyboard_v1, MAP/WALK on 8 channels; (e) boards arrive → sockets/terminals → continuity gate → WALK all 88.
 2. Flash keyboard_v1, MAP via solder-time CSV, WALK verification — brief 02.
 3. C920 tripod + `Vision.calibrate_screen()` + template capture; enable Mouse Keys + `calibrate.py mousekeys` → first physical mouse-free click (film — the "robot refuses to touch the mouse" gag).
 4. Wave 2 mouse decision (TFT drag requirement decides it) — brief 04.
@@ -146,7 +151,7 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, redesigned
 - **Bottom-row assembly order:** screw the bottom (front) row FIRST, then drop in the top (back) row — flush heads clear and the back body seats. (Chosen over flipping the row or a top hold-down bar.)
 - **Gussets: NOT needed.** Firing recoil pushes the body straight UP (+Z), the wall's stiff in-plane direction. (Reversed an earlier "add gussets" call once the load direction was clear.)
 - **Plate trimmed 5mm per end: 158 → 148mm** (ends Y84.5 / Y-63.5). Holes are origin-anchored, unmoved. **Legs moved in 5mm each**; heights unchanged (front 23.9, back 34.5). Straddle inner gap 146 → 136mm (clears the 128.9mm keyboard, ~3.5mm/side); leg spacing 152 → 142mm → tilt drifts 4.0° → ~4.28° — negligible over 2 rows (~0.09mm), and nearer the measured ~4.5° keycap tilt.
-- **Stroke check (supersedes "~3mm useful"):** key bottoms out at ~5mm of ball-tip travel, ~5mm buffer. Fine: keycap limits the plunger, buffer prevents missed presses, and this pull solenoid is weakest at start of extension / strongest near seat, so bottoming at 5mm is well up the force curve. **FIRE test still pending.**
+- **Stroke check (supersedes "~3mm useful"):** key bottoms out at ~5mm of ball-tip travel, ~5mm buffer. Fine: keycap limits the plunger, buffer prevents missed presses, and this pull solenoid is weakest at start of extension / strongest near seat, so bottoming at 5mm is well up the force curve. **FIRE test PASSED Jul 13 (breadboard, real geometry, characters on screen — see UNVERIFIED #3).**
 - **For the final 84-key plate:** `lower_hole_z=7` (ball ~4mm below plate) carries over. Legs scale up. **TILT is the thing to NAIL over the full ~129mm depth** — 0.5° ≈ 1mm gap variation — build to the measured ~4.5° or make legs shimmable. **Wall-per-row does NOT scale to interior rows** (heads can't fit between rows) — needs a top-clamp/pocket scheme. See brief 03.
 
 ### Locked CAD parameters (carry into the 84-key build)
@@ -173,7 +178,7 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, redesigned
 ### Driver design
 
 - Chain: **Arduino Mega → 11× 74HC595 (cascaded off D11/D12/D13) → 11× ULN2803A → 84 solenoids** (88 channels, 4 spare). ULN2803A = "the driver": 8 Darlington channels, 500mA each, built-in flyback diodes enabled by COM (pin 10) → +12V — **never skip**.
-- Current build: **cell #1, top-side wire-art routing, ULN FLIPPED** (notch RIGHT → IN row faces the 595, OUT row faces the outputs), 2-2-2-2 middle-rail spacing, 11-row chip gap. Source docs: `TopSide_Wiring_CutList.md`, `Cell_TopSide_Routing.svg`, `OneCell_595_ULN_Build_and_Fire_Guide.md`, `Soldering_Plan.md`.
+- **BUILD METHOD CHANGED Jul 10: custom PCB (brief 06), perfboard cancelled.** The chain/architecture above is unchanged — only its physical realization moved to copper. Two 6-cell boards (A = cells 1–6, B = 7–11 + empty last slot), DIP sockets, 5.08mm screw terminals for the 84 grey low-side wires, OE pullup improvement. Perfboard docs below are HISTORICAL: `TopSide_Wiring_CutList.md`, `Cell_TopSide_Routing.svg`, `Soldering_Plan.md` (the flipped-ULN + jumper-fan scheme was a perfboard artifact). `OneCell_595_ULN_Build_and_Fire_Guide.md`'s fire protocol still applies.
 
 ### Q→IN wiring with the flipped ULN — CANONICAL (as-built)
 
@@ -272,4 +277,32 @@ Brief 03's open problem worked out and written into `docs/briefs/03_84key_plate_
 - **Cell #1 test strategy (decided):** nothing soldered yet. Do NOT solder any solenoid for testing. Sequence: solder cell #1 → cold-continuity gate → first fire with **one SPARE solenoid on alligator clips** (high side to +12V rail, low side to OUT1; USB before 12V) → walk the same spare across OUT1–OUT8 → only then land the first 8 plate solenoids permanently (8 convenient keys, cut-to-length, label + log). The clipped spare = reusable test rig for all 11 cells.
 - **PSU:** BOSYTRO 12V confirmed IN HAND — nothing blocks brief 01. (Spreadsheet rows 33/34 still not edited, per ask-first.)
 - Next steps: brief 01 (cell #1 solder → fire), Phases 0–2 of the wire tidy in parallel.
-- **Push after this session — populated-plate milestone + this record are unpushed.**
+- **Push after this session — populated-plate milestone + this record are unpushed.** *(Done — `61b63d5` pushed, verified Jul 10.)*
+
+### July 10 session (Fable) — perfboard cancelled → custom PCB; breadboard fire test plan
+
+**Trigger:** Daniel hit a wall soldering cell #1 — component soldering fine, point-to-point interconnects (jumper fan, rails, cascade) not tenable ×11 cells. Researched alternatives, decided with Daniel via options question.
+
+- **Decision (was X, now Y):** was = 11 perfboard cells (3-board split). Now = **custom PCB: one 6-cell design (595→ULN canonical, DIP sockets, 5.08mm screw terminals), ordered ×5 bare from JLCPCB, boards A (cells 1–6) + B (cells 7–11, last slot empty at END of cascade), 3 spare boards.** All interconnects become traces; remaining solder = sockets/terminals/caps (easy THT). ~$35–60 total, within ~$134 headroom. Full spec in `docs/briefs/06_driver_pcb.md` — nets match the keyboard_v1.ino header; ZERO firmware changes (canonical Q→IN kept; FIRE N → cell(N/8+1)/OUT(N%8+1) preserved).
+- **Rationale over alternatives:** fully-assembled PCBA (~$60–100) unnecessary — DIP sockets reuse his chips and keep chip-swap repair; off-the-shelf modules ruled out (combined 595+ULN modules basically not sold; 22 breakouts + dupont = new rat's nest); stripboard/wire-wrap = still 10 more cells of hated handwork. Proven pattern: Electronics-Lab's 72-ch 595+ULN board = same design, 9 cells.
+- **PCB design improvements over perfboard as-built:** OE bus + 10k pullup to 5V routed to a 6-pin cascade header (5V·GND·DATA·CLK·LATCH·OE) → wire OE to a Mega pin (D10 suggested), set `PIN_OE`, kills the power-on random-fire risk properly (USB-first rule stays as habit). "ULN flipped" + jumper-fan lengths are perfboard artifacts — irrelevant on copper, do not re-litigate.
+- **Solenoid → board connection:** screw terminals, strip-and-screw, no crimp/solder; silkscreen `S{n}-OUT{m}` + Sharpie box per terminal. §Harness and MAP discipline unchanged (84 grey + 1 orange; cut at landing; log `cell · OUT · key`).
+- **Interim (THIS WEEK): breadboard fire test** — dry-fit cell #1 chips onto Daniel's breadboard, Mega D11/12/13, BOSYTRO 12V, clipped spare solenoid; USB first, then 12V; FIRE 0 → walk OUT1–8. Closes UNVERIFIED #3 (force at ~5mm bottom-out) ~2wk before boards land. Film it. Brief 01's failure modes apply.
+- **Also in the wait window:** wire-tidy Phases 0–2, vision calibration (milestone 3 non-driver parts), `set_data.json`.
+- Stale note to fix later: keyboard_v1.ino header comment "Cells 1-4 = Board A, 5-8 = B, 9-11 = C" → 2-board split; comment-only, edit when boards verified.
+- Spreadsheet NOT edited (ask-first); brief 06 buy list added to Pending TODOs above.
+- Next session: **EasyEDA design session (Claude drives via Chrome; Daniel needs a JLCPCB account)** → DRC → order.
+- **Push after this session — brief 06 + this record are unpushed (milestone: driver route decision).** *(Found still uncommitted Jul 13 — committed then.)*
+
+### July 13 session (Fable) — soldering unblocked; cell #1 built; breadboard fire test CONFIRMED DONE; PCB order greenlit
+
+**Two milestones + one record correction.** Session was live soldering coaching + decision re-check; no code changes.
+
+- **Soldering unblocked (root cause found).** Daniel opened wanting to abandon the PCB and "solder like a man" — symptoms: solder wouldn't stick, dull weak joints, melted insulation. Diagnosis: technique loop, not gear (YIHUA 939D+ / leaded / flux all fine; HiFind 22 AWG tinned-copper PVC wire fine, PVC just punishes dwell). Root causes: (a) oxidized/untinned iron tip; (b) top-side **lap joints** — tacking wire into an anchor hole then reheating old flux-spent solder on an already-soldered pin. **Working protocol now:** 350°C, tip tinned shiny (brass wool), pre-tin all wire ends (flux + heat-bridge blob + feed fresh solder into the wire), both wire ends terminate THROUGH a hole adjacent to the target pin, tail bent to lie against the pin's SIDE (clinch = mechanical hold, no tack joint), fresh flux + fresh solder, iron touching both, 2–3s, solder off first then iron. Perpendicular-to-row bends only (2.54mm neighbor bridge hazard).
+- **Cell #1 fully soldered on perfboard (~4 hours)** — interconnect fan + components done; remaining at session end: rail taps 595 pins 16/10→+5V, 13→GND, 14→Mega DATA jumper, ULN pin 10 (COM)→+12V (the never-skip flyback joint); 595 pin 9 (cascade out) deliberately left empty. Hookup decisions: **spare DIP socket soldered on-board as the Mega connector** (logic only — DATA/CLK/LATCH, Mega 5V, Mega GND; 22 AWG solid press-fits both DIP sockets and Mega female headers); **PSU 12V/GND stay soldered** (18 AWG silicone to rails, stranded-lands-at-board rule) — DIP contacts ~1A, never for solenoid current. Single common ground: PSU V− and Mega GND both on the GND rail; +5↔+12 must meter open.
+- **Record correction (was X, now Y):** was = "FIRE test still pending" (Jul 10). Now = **breadboard fire test was DONE during the Jul 10–13 wait window, exactly per brief 06 §Interim: dry-fit cell #1 chips, full Mega→595→ULN chain, solenoid at real 2×2 mounting geometry, repeated reliable key presses, characters on screen. UNVERIFIED #3 CLOSED.** Claude argued from the stale record until Daniel corrected it — the architecture and force questions were already answered; cell #1's electrical validation was partially redundant in hindsight.
+- **PCB decision RE-CONFIRMED, now with data:** 4h for cell #1 (first-cell learning curve included) → even at ~2.5h/cell, 10 more cells ≈ 25h + 84 soldered low-side landings vs. screw terminals. Perfboard route declined from competence, not defeat. **Cell #1's actual value, honestly re-derived:** soldering skill (needed for buses/PSU/repairs regardless), the 4h data point, a permanent interim driver for the PCB lead window, and a known-good reference cell. Not: design validation (breadboard got there first).
+- **Test plan for cell #1 (workmanship gate, not design gate):** bare-wire stubs soldered into OUT1–8 landing holes as clip points → chips-out continuity gate (3 shorts tests incl. +5↔+12 open; all nets; canonical Q0→IN1…Q7→IN8; adjacent-pin isolation) → chips in (notch!) → flash keyboard_v1 → USB first THEN 12V → clipped spare walks FIRE 0–7 → **order PCBs the same day the walk passes** → land 8 real keys during the lead (label + log `cell · OUT · key`).
+- Also covered: solder-fume safety (rosin irritant not lead vapor — lead risk is hands→mouth; use the 80mm USB fan crosswind, wash hands).
+- Git: Jul 10 work (brief 06, CLAUDE.md, briefs README) found **uncommitted** in the working tree at session start — committed with this record. **Daniel: push origin/main from your Terminal (sandbox can't reach GitHub). Two milestones in this one: fire test + soldering unblock.**
+- Next steps: (1) finish the 5 remaining cell #1 joints; (2) continuity gate + walk; (3) EasyEDA design session → DRC → order 5 boards; (4) wait-window work: land 8 keys + MAP/WALK, wire-tidy Phases 0–2, vision calibration, `set_data.json`.
