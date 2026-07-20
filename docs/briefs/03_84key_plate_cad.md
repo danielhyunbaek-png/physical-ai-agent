@@ -1,5 +1,7 @@
 # Brief 03 — Full 84-key plate CAD
 
+> **STATUS (July 15, 2026, later): SUPERSEDED AGAIN — the fastening scheme for the rebuild is now brief 08's groove-sandwich removable walls (Daniel's design: keep tab screws, walls drop into plate grooves, captured by the deck).** The drop-in pocket + clamp-bar scheme below is FALLBACK #2 (after T-studs). Still current in this brief: the locked parameters, the three real problems (tilt / per-key positions), the caliper-gate concept, and the print/assembly realities. Earlier history: designed Jul 5 → shelved Jul 7 → revived Jul 13 → superseded Jul 15 by brief 08. Amendments marked **[Jul 15]**.
+
 **Goal:** scale the validated 2×2 design to all 84 keys of the Air75 V3. The hardest carry-over is TILT ACCURACY; the unsolved problem is INTERIOR-ROW FASTENING.
 
 ## Locked parameters (validated on prototype — do not re-derive)
@@ -32,8 +34,8 @@ The fastener axis is horizontal (Y): interior screws must be driven inside the 1
 - Raise walls to clear body tops: **wall top = measured body top + ~2mm** (if d=7, body top ≈ Z34 → walls Z36, i.e. 32 above plate top, was 28).
 - **Bosses** at wall ends + every ~60mm: M3 **heat-set inserts**, boss bulges +Y only ABOVE body-top height (below that, the 16.55 slot is exactly full of body).
 - **Bar** = flat skeleton strip per row-half (~160mm, matches the L/R plate split; bars can deliberately BRIDGE the seam to tie the halves — free rigidity). Underside: **3mm closed-cell EVA foam tape**, compressed ~1mm onto body tops — absorbs ±0.5 body-height batch variance, damps recoil clatter, avoids rigid preload creep in PLA. M3×8 pan heads, driven vertically from open air.
-- Bar needs **lead-exit slots** (check on bench where coil leads leave the body) and **airflow cutouts** (thermal risk is documented; 80mm fan planned).
-- **+12V wall bus vs bars:** the harness plan runs bare bus wire along each wall — route it below boss height or through printed notches; confirm no pinch under the bar.
+- Bar needs **lead-exit slots** — **[Jul 15] these are now VERTICAL pass-throughs: both leads route straight UP through/past the bar to the deck (brief 07), not sideways over walls.** Check on bench where coil leads leave the body (caliper gate #3) and size the slots so a landed wire doesn't block bar removal. Plus **airflow cutouts** (thermal risk is documented; 80mm fan planned).
+- ~~**+12V wall bus vs bars:** route bus wire below boss height or through printed notches~~ **[Jul 15] SUPERSEDED: the +12V bus moves to the deck (brief 07). Walls carry no bus wire; bars only need lead pass-throughs + airflow.**
 
 ### Assembly / service (the payoff)
 
@@ -55,7 +57,7 @@ Rows are fully order-independent. Per row: drop 14–16 bodies straight down int
 
 ### Coupon (playbook §6 — must contain the failure mode)
 
-Print a 3-wall × 2-column interior section: exercises sandwich fit, ribs, seat ledges, insert boss, bar preload, AND the vertical swap motion. Fire it with driver cell #1. Only then draw the full plate.
+Print a 3-wall × 2-column interior section: exercises sandwich fit, ribs, seat ledges, insert boss, bar preload, AND the vertical swap motion. Fire it with the breadboard driver (**[Jul 15]** cell #1 is parked — use the dry-fit chips on the breadboard, same rig as the Jul 13 fire test). Only then draw the full plate. **[Jul 15] The coupon is also the TEARDOWN GATE: the old tab-screw plate stays fully assembled until the coupon passes swap + fire (brief 07).**
 
 ### Spreadsheet impact (NOTE ONLY — ask-first before editing)
 

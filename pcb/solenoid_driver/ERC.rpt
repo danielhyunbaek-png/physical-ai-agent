@@ -1,0 +1,207 @@
+ERC report (2026-07-20T14:46:01, Encoding UTF8)
+Report includes: Warnings
+
+***** Sheet /
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(800 mils, 3300 mils): Symbol C11 [C]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(800 mils, 8000 mils): Symbol C41 [C]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 2800 mils): Symbol J11 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 2800 mils): Symbol J11 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 3000 mils): Symbol J12 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 3000 mils): Symbol J12 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 3200 mils): Symbol J13 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 3200 mils): Symbol J13 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 3400 mils): Symbol J14 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 3400 mils): Symbol J14 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 7500 mils): Symbol J41 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 7500 mils): Symbol J41 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 7700 mils): Symbol J42 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 7700 mils): Symbol J42 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 7900 mils): Symbol J43 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 7900 mils): Symbol J43 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(4800 mils, 8100 mils): Symbol J44 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(4800 mils, 8100 mils): Symbol J44 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(5900 mils, 3300 mils): Symbol C21 [C]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(5900 mils, 8000 mils): Symbol C51 [C]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 2800 mils): Symbol J21 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 2800 mils): Symbol J21 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 3000 mils): Symbol J22 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 3000 mils): Symbol J22 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 3200 mils): Symbol J23 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 3200 mils): Symbol J23 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 3400 mils): Symbol J24 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 3400 mils): Symbol J24 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 7500 mils): Symbol J51 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 7500 mils): Symbol J51 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 7700 mils): Symbol J52 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 7700 mils): Symbol J52 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 7900 mils): Symbol J53 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 7900 mils): Symbol J53 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(9900 mils, 8100 mils): Symbol J54 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(9900 mils, 8100 mils): Symbol J54 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(11000 mils, 3300 mils): Symbol C31 [C]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(11000 mils, 8000 mils): Symbol C61 [C]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 2800 mils): Symbol J31 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 2800 mils): Symbol J31 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 3000 mils): Symbol J32 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 3000 mils): Symbol J32 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 3200 mils): Symbol J33 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 3200 mils): Symbol J33 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 3400 mils): Symbol J34 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 3400 mils): Symbol J34 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 7500 mils): Symbol J61 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 7500 mils): Symbol J61 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 7700 mils): Symbol J62 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 7700 mils): Symbol J62 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 7900 mils): Symbol J63 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 7900 mils): Symbol J63 [Screw_Terminal_01x02]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(15000 mils, 8100 mils): Symbol J64 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(15000 mils, 8100 mils): Symbol J64 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'R' doesn't match copy in library 'Device'
+    ; warning
+    @(16500 mils, 2400 mils): Symbol R1 [R]
+[lib_symbol_mismatch]: Symbol 'C_Polarized' doesn't match copy in library 'Device'
+    ; warning
+    @(16500 mils, 6300 mils): Symbol CB1 [C_Polarized]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(17100 mils, 2400 mils): Symbol CB3 [C]
+[lib_symbol_mismatch]: Symbol 'C' doesn't match copy in library 'Device'
+    ; warning
+    @(17100 mils, 6300 mils): Symbol CB2 [C]
+[lib_symbol_mismatch]: Symbol 'PWR_FLAG' doesn't match copy in library 'power'
+    ; warning
+    @(17700 mils, 6300 mils): Symbol #FLG002 [PWR_FLAG]
+[lib_symbol_mismatch]: Symbol 'PWR_FLAG' doesn't match copy in library 'power'
+    ; warning
+    @(18000 mils, 2400 mils): Symbol #FLG001 [PWR_FLAG]
+[lib_symbol_mismatch]: Symbol 'PWR_FLAG' doesn't match copy in library 'power'
+    ; warning
+    @(18000 mils, 6400 mils): Symbol #FLG003 [PWR_FLAG]
+[lib_symbol_mismatch]: Symbol 'Conn_01x06' doesn't match copy in library 'Connector_Generic'
+    ; warning
+    @(18500 mils, 2400 mils): Symbol J71 [Conn_01x06]
+[lib_symbol_mismatch]: Symbol 'Conn_01x06' doesn't match copy in library 'Connector_Generic'
+    ; warning
+    @(18500 mils, 4400 mils): Symbol J72 [Conn_01x06]
+[footprint_link_issues]: Footprint 'TerminalBlock_bornier-2_P5.08mm' not found in library 'TerminalBlock'
+    ; warning
+    @(18500 mils, 6300 mils): Symbol J70 [Screw_Terminal_01x02]
+[lib_symbol_mismatch]: Symbol 'Screw_Terminal_01x02' doesn't match copy in library 'Connector'
+    ; warning
+    @(18500 mils, 6300 mils): Symbol J70 [Screw_Terminal_01x02]
+
+ ** ERC messages: 65  Errors 0  Warnings 65
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

@@ -25,7 +25,7 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 ## Key files in this folder
 
 - `docs/PLAYBOOK.md` — **Reasoning patterns + working style.** The "how to think" half of this brain.
-- `docs/briefs/` — Milestone briefs: 01 cell-#1 solder/fire (amended by 06) · 02 WALK/MAP · 03 84-key plate CAD · 04 Wave 2 mouse decision · 05 TFT bring-up · 06 driver PCB (replaces perfboard).
+- `docs/briefs/` — Milestone briefs: 01 cell-#1 solder/fire (amended by 06) · 02 WALK/MAP · 03 84-key plate CAD (revived Jul 15, amended for the rebuild) · 04 Wave 2 mouse decision · 05 TFT bring-up · 06 driver PCB (replaces perfboard) · **07 plate rebuild + top deck (MASTER PLAN — read this first for anything hardware)**.
 - `.claude/commands/` — Claude Code slash commands: session-start, session-end, verify, brief.
 - `PRD_v2_Physical_AI_Agent.docx` — Product Requirements Document. Source of truth for *what* and *why*.
 - `Build_Walkthrough_Physical_AI_Agent.docx` — Week-by-week operational guide. Source of truth for *how* and *when*.
@@ -61,12 +61,12 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 - Row 40 (M5 standoffs): SKIP — replaced by side rails. M5 *screws* still needed (260pc assortment covers plate→rails, rails→base, Wave 2 V-slot).
 - NEW (Jul 10, brief 06 buy list): PCB order ~$20–40 + 5.08mm screw terminals ~$12 + DIP sockets ~$6 (reuse perfboard sockets if on hand) + 6-pin cascade cable. Perfboard line items for cells 2–11 become spares/unneeded.
 
-**Next milestones (each has a brief in `docs/briefs/`):**
-1. ~~Cell #1 perfboard solder~~ **REPLACED Jul 10 by brief 06:** (a) ~~breadboard fire test~~ **DONE (Jul 13 record — UNVERIFIED #3 closed)**; (b) finish cell #1 rail taps → continuity gate → fire verify via clipped spare on OUT stubs; (c) PCB design session (EasyEDA, Claude drives) → order 5 boards **same day the cell #1 walk passes**; (d) during ~2wk lead: land first 8 plate keys on cell #1, flash keyboard_v1, MAP/WALK on 8 channels; (e) boards arrive → sockets/terminals → continuity gate → WALK all 88.
-2. Flash keyboard_v1, MAP via solder-time CSV, WALK verification — brief 02.
-3. C920 tripod + `Vision.calibrate_screen()` + template capture; enable Mouse Keys + `calibrate.py mousekeys` → first physical mouse-free click (film — the "robot refuses to touch the mouse" gag).
-4. Wave 2 mouse decision (TFT drag requirement decides it) — brief 04.
-5. ~~84-key plate CAD~~ **DONE Jul 7 (as-built deviates from brief 03 — see Jul 7 record): 6-wall + tab screws, plate printed and fully populated.**
+**Next milestones — RESEQUENCED Jul 15 around the rebuild; brief 07 is the master plan:**
+1. **Track A (critical path, start now):** EasyEDA design session (Claude drives via Chrome; Daniel needs a JLCPCB account) → netlist check vs brief 06 → DRC → 1:1 paper print → **order 5 boards ASAP** (NOT gated on cell #1 — superseded Jul 13). Same day: export board outline + mounting-hole coords for the deck.
+2. **Track B (inside the ~2wk lead):** wire-tidy Phase 0 (snip frayed tips) → brief 03 caliper gates (d, body-top height, lead exits) → coupon print + **swap cycle + fire (breadboard driver)** → **GATE: coupon passes = old-plate teardown authorized** → full CAD (plate L/R + walls + clamp bars + deck L/R) → print.
+3. **Track C (boards arrive):** populate boards → continuity gate → WALK 0–87 (brief 06 DoD) → one rebuild session (teardown → drop-in populate → bars → deck → land 84 wires up through slots, label + log) → flash, MAP, WALK all 88 (brief 02). **Push — milestone of milestones.**
+4. Parallel/hardware-free: C920 tripod + `Vision.calibrate_screen()` + template capture; Mouse Keys + `calibrate.py mousekeys` → first mouse-free click (film the gag); `agent/tft/set_data.json`.
+5. Wave 2 mouse decision (TFT drag requirement decides it) — brief 04.
 6. TFT bring-up — brief 05.
 
 ---
@@ -178,6 +178,7 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, redesigned
 ### Driver design
 
 - Chain: **Arduino Mega → 11× 74HC595 (cascaded off D11/D12/D13) → 11× ULN2803A → 84 solenoids** (88 channels, 4 spare). ULN2803A = "the driver": 8 Darlington channels, 500mA each, built-in flyback diodes enabled by COM (pin 10) → +12V — **never skip**.
+- **CAPACITORS ON HAND (Daniel, Jul 13 — design to THESE, stop speccing others): 0.1µF (104) multilayer ceramic 5.08mm pitch, and 4700µF 25V electrolytic. Nothing else.** Usage: 100nF per chip (595 VCC/GND) + per-board decoupling; 4700µF on each board's 12V rail (+ to +12V, stripe to GND) — it exceeds the 470–1000µF minimum, correct per Soldering_Plan §B. The brief-06 "100µF on 5V" line: SKIP, 100nF alone is fine there.
 - **BUILD METHOD CHANGED Jul 10: custom PCB (brief 06), perfboard cancelled.** The chain/architecture above is unchanged — only its physical realization moved to copper. Two 6-cell boards (A = cells 1–6, B = 7–11 + empty last slot), DIP sockets, 5.08mm screw terminals for the 84 grey low-side wires, OE pullup improvement. Perfboard docs below are HISTORICAL: `TopSide_Wiring_CutList.md`, `Cell_TopSide_Routing.svg`, `Soldering_Plan.md` (the flipped-ULN + jumper-fan scheme was a perfboard artifact). `OneCell_595_ULN_Build_and_Fire_Guide.md`'s fire protocol still applies.
 
 ### Q→IN wiring with the flipped ULN — CANONICAL (as-built)
@@ -191,7 +192,7 @@ Printed the 2×2, test-fit the solenoids, found two coupled problems, redesigned
 
 All 84 solenoid leads are identical black → **position is identity**. Sharpie the key name beside each landing hole; log `cell · OUT · key` **at solder time**, one line per wire; type the table into firmware MAP when done. WALK mode is the final verification pass, not the primary method.
 
-### Harness: plate-side +12V distribution (DECIDED)
+### Harness: plate-side +12V distribution (DECIDED — **PARTIALLY SUPERSEDED Jul 15 by brief 07:** boards move onto a top deck above the plate → the 85-wire desk harness is gone, buses relocate wall-tops → deck, both leads route straight UP. Bus sizing, one-feed topology, no-ground-to-plate, MAP + cut-at-landing rules all carry over unchanged.)
 
 - Board's +12V rail **stays** (ULN COMs + reservoir cap). Added: **+12V distribution on the plate** — bare ~16 AWG bus wire along each mounting wall, walls tied by a trunk at one end, fed by **ONE 18 AWG +12V wire from the board rail**. **No ground wire to the plate** — return current comes back through the 84 low-side wires.
 - Per solenoid: high side → ~5cm hop to its wall bus; low side → 22 AWG stranded grey, cut to length, → its ULN OUT landing hole. Plate↔board harness = 84 grey + 1 orange = **85 wires (vs 168)**.
@@ -306,3 +307,51 @@ Brief 03's open problem worked out and written into `docs/briefs/03_84key_plate_
 - Also covered: solder-fume safety (rosin irritant not lead vapor — lead risk is hands→mouth; use the 80mm USB fan crosswind, wash hands).
 - Git: Jul 10 work (brief 06, CLAUDE.md, briefs README) found **uncommitted** in the working tree at session start — committed with this record. **Daniel: push origin/main from your Terminal (sandbox can't reach GitHub). Two milestones in this one: fire test + soldering unblock.**
 - Next steps: (1) finish the 5 remaining cell #1 joints; (2) continuity gate + walk; (3) EasyEDA design session → DRC → order 5 boards; (4) wait-window work: land 8 keys + MAP/WALK, wire-tidy Phases 0–2, vision calibration, `set_data.json`.
+
+### July 13 session (later, Fable) — cell #1 PARKED; capacitor inventory locked; FULL PLATE REBUILD decided
+
+- **Cell #1 parked as-is** (Daniel declined the remaining taps/caps for a board that retires in ~2wk). Value already banked: soldering skill + 4h data point. 8-key interim, if wanted, runs on the breadboard. **PCB order is NOT gated on cell #1** — the breadboard fire test was the design gate; "order same day the walk passes" is superseded: **order ASAP.**
+- **Capacitor inventory recorded** (see §Driver design + brief 06): 0.1µF 104 ceramic 5.08mm + 4700µF 25V electrolytic (~16mm can, pitch to re-measure in mm). Nothing else — stop speccing other values. Brief-06 "100µF on 5V" → skip.
+- **Cascade connector: dupont** (owns jumpers, zero purchase).
+- **DECISION — FULL PLATE REBUILD NOW (was: 6-wall tab-screw plate as-built Jul 7).** Daniel's drivers: wiring dread + repair fear + no PCB home + elegance. New requirements: (a) removable walls → **revive brief 03's drop-in pocket + clamp-bar scheme** (designed Jul 5, shelved Jul 7 — geometry already 2×2-validated); (b) **wires route straight UP** (not sideways over walls) to (c) a **top deck carrying both PCBs** (new part to design: PCB M3 mounts + wire pass-through slots). Old plate's 168 screws come out one-time; rebuild lands during the ~2wk PCB lead. Wire-tidy Phases 1–2 obsolete; Phase 0 (snip frayed tips) still do. §Harness plate-side +12V bus design carries over (buses now on/under the deck — detail in CAD). Sequence: EasyEDA + order FIRST (deck is designed around the board outline + mounting-hole coords) → brief 03 caliper gates + coupon → full CAD + print during lead → boards arrive → populate → one rebuild session.
+- UNVERIFIED: pocket/clamp scheme is still paper until the coupon swap-cycle test passes.
+- **Push still pending on Daniel's side (sandbox git locks): commits `4f86700` + cap-inventory + this record.**
+
+### July 15 session (Fable) — rebuild plan written: brief 07 + brief 03 amendments + resequenced milestones
+
+Planning session for the Jul 13 rebuild decision; no hardware, no code. Three choices confirmed with Daniel via options question:
+- **Deliverable = written plan + updated briefs** (not discussion-only, not straight to EasyEDA).
+- **Teardown gate: old plate stays fully assembled until the coupon passes swap + fire.** Coupon fails → T-stud fallback, old plate untouched.
+- **PCB order first, deck after** — deck is designed around the ordered board's exported outline + mounting-hole coords; nothing CAD blocks the order.
+
+Built/edited:
+- **`docs/briefs/07_plate_rebuild_deck.md` — NEW, the master plan.** Three tracks: A = EasyEDA → DRC → order ASAP (critical path); B = Phase-0 tip snips → caliper gates → coupon (= teardown gate) → full CAD (plate/walls/bars/deck) → print, all inside the ~2wk lead; C = boards populate/WALK → one rebuild session → MAP/WALK 88. Deck requirements section (8 items: PCB M3 mounts from EasyEDA coords, chamfered wire slots per row, 12V bus relocation, clearance stack, airflow, removability, cascade/Mega reach, L/R split). Key harness consequence documented: **boards live ON the plate assembly → the 85-wire desk harness is gone; both leads per solenoid route straight up (~40–80mm runs).**
+- **`docs/briefs/03_84key_plate_cad.md` amended [Jul 15]:** status header (revived, subordinate to 07); bar lead-slots are now VERTICAL pass-throughs; wall-top +12V bus SUPERSEDED (bus moves to deck); coupon fires on the breadboard driver (cell #1 parked) and doubles as the teardown gate.
+- **CLAUDE.md:** key-files line + Next milestones resequenced into tracks A/B/C; this record.
+- Spreadsheet still NOT edited (ask-first). Delta noted in brief 07: brief 03 clamp hardware (inserts ~30, M3×8 pan heads ~30, EVA foam) is back on the buy list; row 39 M3×3 goes legacy after the rebuild.
+- UNVERIFIED (inherited): pocket/clamp scheme until coupon; deck clearance stack has zero measured numbers until caliper gates; 4700µF can dia/pitch unmeasured.
+- Next session: **EasyEDA design session → DRC → order** (Track A step 1). Daniel: create a JLCPCB account beforehand.
+- **Push: Jul 13 commits (`4f86700` + cap-inventory/rebuild record) were still pending Daniel's push at last record — plus this session's brief 07 + amendments. Milestone (plan locked) → commit and push from your Terminal.**
+
+### July 15 session (later, Fable) — fastening scheme replaced: GROOVE-SANDWICH removable walls (brief 08)
+
+Daniel uploaded `Air75_84Key_Plate_Left/Right.stl` ("this plate design works — correct tilt, stagger") and described his own rebuild scheme, replacing brief 03's drop-in pockets.
+
+- **Mesh audit of the uploaded STLs (trimesh, in-sandbox), then FULL cross-check vs `Full_84Key_Hole_Coordinates.csv` at Daniel's request:** watertight; 84 Ø10 holes (41 L + 43 R) — **all XY positions match the CSV, mean err 0.067mm**; wall mounting faces at hole_y+8 with **0.000 deviation** (all 12 walls, both halves; both STLs live in the CSV coordinate frame); wall thickness 2.5 exact; **all 168 tab holes** at key-x ±0.003, Z11/Z26, Ø3.30, 15mm c-t-c; plate Z0–4; walls Z32. **Two as-built corrections (was X, now Y — as-built wins, 84 solenoids mounted and working): (a) tilt was "~4.5° measured, build to measurement" → now = 4.0° exactly (leg contacts: Z−33.5 @ y≈79 back, Z−23.9 @ y≈−58.5 front, 9.6/137.5mm); (b) counterbore was "1mm deep from back face" → now = floor 1.0mm from the MOUNTING face (1.5mm deep from back face).** Note: first-pass audit hit a trimesh `to_2D()` arbitrary-frame artifact that made walls look mis-offset — direct 3D face-normal measurement is the method of record.
+- **Decision (was X, now Y):** was = brief 03 drop-in pockets + clamp bars (revived Jul 13). Now = **groove-sandwich (Daniel's design): tab-screw mount KEPT; each wall is a separate part keyed into 2.75mm grooves in the plate (2mm deep) and matching grooves in the deck underside; rows assemble to their walls on the BENCH (kills the interior-access problem at the root); service = deck off, lift wall+row straight out.** Recoil load path explained to Daniel (body→wall→deck, straight up); hold-down confirmed via options question: **end posts (4 corners + 2 at seam, heat-set inserts) + wall-top pads (3/wall, insert + M3×8 through deck)**.
+- **Built: `docs/briefs/08_groove_sandwich_cad.md`** — parameter table (groove datum rule: wall mounting face = hole_y+8 EXACTLY, all clearance on the back face; groove_width 2.75 coupon-validated; tab holes Z11/Z26 untouched), staged Fusion instructions (Stage 1 now: grooves, wall components, pads, posts, coupon; Stage 2 gated on body_top_z caliper gate + EasyEDA export: deck, wire slots, PCB mounts), assembly sequence, buy-list delta (~45 inserts + ~45 M3×8; EVA foam/clamp hardware dropped; M3×3 tab screws live on).
+- **Amended:** brief 03 (drop-in scheme → FALLBACK #2; locked params/tilt/CSV guidance still current) + brief 07 (scheme pointer → brief 08; caliper gate `d` no longer needed, body-top + lead exits still are; coupon = groove coupon, still the teardown gate).
+- **Caliper gates now easier:** measure body_top_z + lead exits on the POPULATED plate (all rows in situ) — no 2×2 needed; `d` obsolete (no seat ledges in this scheme).
+- UNVERIFIED: groove clearance 0.25 until the coupon; body_top_z + lead exits unmeasured; PCB coords pending Track A; deck-lift-with-wires service flow paper (60–80mm loops = mitigation).
+- Sandbox git is still lock-blocked (`index.lock` undeletable). **Daniel: from your Terminal — `rm .git/index.lock`, then commit everything (Jul 13 + both Jul 15 sessions) and push. Milestone: rebuild scheme locked.**
+
+### July 16 session (late night) — Track A started: KiCad (not EasyEDA); cell 1 in progress; reset video scripted
+
+- **Video:** `Video_Script_Big_Reset.md` — NEW, 45–60s short on the big reset (plate rebuild + perfboard→PCB). Post AFTER the JLCPCB order (needs the order-confirmation shot). Footage on hand: cell #1 soldering clip.
+- **Tool change (was X, now Y):** was = EasyEDA via Claude-driven Chrome (Jul 10/15 plan). Now = **KiCad, Daniel driving, Claude guiding + file-verifying.** Trigger: Daniel preferred guided mode over Chrome control; KiCad's text-format files in-repo let Claude mechanically verify every net (the EasyEDA path had Claude blind without Chrome). Accepted cost: first-time KiCad learning curve. Same Gerbers → same JLCPCB order.
+- **Built: `docs/briefs/06a_kicad_build_sheet.md`** — KiCad recipe companion to brief 06: symbols/footprints table, ref-designator scheme (cell n: U{n}1=595, U{n}2=ULN, J{n}1–4, C{n}1; J70/J71/J72/R1/CB1–3 board-level), pin-by-pin tables, KiCad-vs-datasheet pin-name translation (SER=DS etc.), 10-step workflow with verification gates.
+- **MEASURED: 4700µF cap = Ø17mm can × 25mm tall, lead pitch ~8mm → footprint `CP_Radial_D18.0mm_P7.50mm`.** The 25mm height = first real number in brief 07's deck clearance stack (likely tallest part on the board).
+- **State: KiCad project at `pcb/solenoid_driver/solenoid_driver.kicad_pro`** (Claude fixed a macOS colon-in-filename from typing "pcb/solenoid_driver" as the project name). U11 (74HC595) + U12 (ULN2803A) placed, refs verified in-file. **Cell 1 wiring NOT started — Daniel went to sleep (good call over 2am wiring).**
+- **Verification protocol agreed (5 gates before ordering):** Claude file-checks cell 1 → paste ×5 → Claude re-checks all nets → ERC zero → DRC zero → 1:1 paper print with real parts. Nothing ordered until all pass.
+- **Next session (pick up exactly here):** open `solenoid_driver.kicad_pro` → wire cell 1 per the 06a pin tables (8 Q→IN wires, power symbols, 5 net labels, J11–J14, C11) → say "verify" → paste ×5 + cascade-label edits → board-level parts → ERC → footprints → layout → order. Build sheet 06a §Workflow is the checklist.
+- **Push:** everything from Jul 13 onward is still unpushed (sandbox git lock) — plus tonight's video script, build sheet, and pcb/ folder. From your Terminal: `rm .git/index.lock`, commit, push.
