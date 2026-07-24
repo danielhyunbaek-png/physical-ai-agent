@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 agent/logs/
 agent/calibration/
+.DS_Store
