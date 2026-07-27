@@ -18936,28 +18936,6 @@
 			)
 		)
 	)
-	(gr_text "+12V"
-		(at 201.0 146.2 0)
-		(layer "F.SilkS")
-		(uuid "8c03c01d-49a0-4648-ba26-37bfe5fbe627")
-		(effects
-			(font
-				(size 0.9 0.9)
-				(thickness 0.15)
-			)
-		)
-	)
-	(gr_text "GND"
-		(at 206.08 146.2 0)
-		(layer "F.SilkS")
-		(uuid "9505d77a-938d-4ff6-98d1-a0ee9670cfe1")
-		(effects
-			(font
-				(size 0.9 0.9)
-				(thickness 0.15)
-			)
-		)
-	)
 	(gr_text "CASC-IN"
 		(at 107.5 143.0 0)
 		(layer "F.SilkS")
