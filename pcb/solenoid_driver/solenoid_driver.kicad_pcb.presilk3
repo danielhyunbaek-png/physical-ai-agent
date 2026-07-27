@@ -18749,7 +18749,7 @@
 		(net "GND")
 		(uuid "fa4559c9-18a4-4a80-867d-27ce98d98597")
 	)
-	(gr_text "C1-OUT2/1"
+	(gr_text "C1-OUT1/2"
 		(at 116.14 102.5 0)
 		(layer "F.SilkS")
 		(uuid "e742f19d-29b8-42f6-aa61-bcd85b36c508")
@@ -18760,7 +18760,7 @@
 			)
 		)
 	)
-	(gr_text "C1-OUT4/3"
+	(gr_text "C1-OUT3/4"
 		(at 126.3 102.5 0)
 		(layer "F.SilkS")
 		(uuid "34ee66c6-de47-418a-b587-970f1f3dbcbf")
@@ -18771,7 +18771,7 @@
 			)
 		)
 	)
-	(gr_text "C2-OUT2/1"
+	(gr_text "C2-OUT1/2"
 		(at 136.46 102.5 0)
 		(layer "F.SilkS")
 		(uuid "52d677f0-ce75-4b98-b292-76b9cccef1df")
@@ -18782,7 +18782,7 @@
 			)
 		)
 	)
-	(gr_text "C2-OUT4/3"
+	(gr_text "C2-OUT3/4"
 		(at 146.62 102.5 0)
 		(layer "F.SilkS")
 		(uuid "678f60d1-d907-4a94-9a70-bcc09cc60c8f")
@@ -18793,7 +18793,7 @@
 			)
 		)
 	)
-	(gr_text "C3-OUT2/1"
+	(gr_text "C3-OUT1/2"
 		(at 156.78 102.5 0)
 		(layer "F.SilkS")
 		(uuid "17379bd3-f683-4ebd-96a5-55d4e3ce53fd")
@@ -18804,7 +18804,7 @@
 			)
 		)
 	)
-	(gr_text "C3-OUT4/3"
+	(gr_text "C3-OUT3/4"
 		(at 166.94 102.5 0)
 		(layer "F.SilkS")
 		(uuid "98d161a0-aff0-4448-b0d7-a94ff26ea2b2")
@@ -18815,7 +18815,7 @@
 			)
 		)
 	)
-	(gr_text "C4-OUT2/1"
+	(gr_text "C4-OUT1/2"
 		(at 177.1 102.5 0)
 		(layer "F.SilkS")
 		(uuid "c0c6f844-14a4-4cb5-be66-39c41b29422d")
@@ -18826,7 +18826,7 @@
 			)
 		)
 	)
-	(gr_text "C4-OUT4/3"
+	(gr_text "C4-OUT3/4"
 		(at 187.26 102.5 0)
 		(layer "F.SilkS")
 		(uuid "ca21bdf3-2bf8-45dd-b83f-57ff2e5a8672")

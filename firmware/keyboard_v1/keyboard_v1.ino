@@ -22,12 +22,16 @@
 //   flip CASCADE_REVERSED to 1 -- do not rewire.
 //
 // POWER-ON SAFETY (read before first flash on the full plate):
-//   With OE hard-wired to GND, all 11 595s output RANDOM data from power-up
-//   until setup() clears them. On 84 solenoids that's potential random 12V
-//   pulses at every boot. Operating rule: BRING UP THE ARDUINO (USB) FIRST,
-//   THEN switch on the 12V rail. Hardware fix if it ever bites: lift OE from
-//   GND, add 10k pullup to +5V, run OE to a Mega pin, define PIN_OE below --
-//   firmware then holds outputs disabled until the registers are cleared.
+//   A 595 outputs RANDOM data from power-up until setup() clears it. On 84
+//   solenoids that's potential random 12V pulses at every boot.
+//   FIXED IN HARDWARE on the driver PCB (Jul 2026): R1 (10k) pulls ~OE HIGH
+//   = outputs disabled, and ~OE is routed to J71 pin 6 -> Mega D10 (PIN_OE).
+//   setup() holds OE HIGH, clears all registers, and only then drives it LOW.
+//   CONSEQUENCE: D10 must actually be wired. If ~OE is left floating on the
+//   pullup, every channel is disabled and NOTHING FIRES -- serial still
+//   responds and WALK still prints, so the symptom looks like dead solenoids.
+//   Keep the operating rule anyway: BRING UP THE ARDUINO (USB) FIRST, THEN
+//   switch on the 12V rail.
 //
 // Serial commands (115200 baud, Newline):
 //   FIRE <ch> [ms]          fire one channel (0..87)
@@ -47,7 +51,9 @@
 //   ALLOFF                  force every channel low
 //
 // Wiring per cell is unchanged from keyboard_v0 / OneCell guide:
-//   595: DS<-prev(or D11), SH_CP=D12 (bused), ST_CP=D13 (bused), OE=GND, MR=+5V
+//   595: DS<-prev(or D11), SH_CP=D12 (bused), ST_CP=D13 (bused), MR=+5V,
+//        OE=~OE bus -> R1 10k pullup to +5V -> J71 pin 6 -> Mega D10
+//        (breadboard rig instead straps OE to GND; then set PIN_OE = 255)
 //   ULN: IN1-8 <- Q0-7 canonical, COM(10) -> +12V (flyback -- never skip),
 //        GND(9) -> star ground. 0.1uF per chip, bulk cap on the 12V rail.
 
@@ -57,8 +63,13 @@
 const uint8_t PIN_DATA  = 11;   // 595 DS (cell #1)
 const uint8_t PIN_CLOCK = 12;   // 595 SH_CP (bused to all cells)
 const uint8_t PIN_LATCH = 13;   // 595 ST_CP (bused to all cells)
-const uint8_t PIN_OE    = 255;  // 255 = OE hard-wired to GND (as-built).
-                                // Set to a real pin if the pullup mod is done.
+const uint8_t PIN_OE    = 10;   // 595 OE (active LOW), driver PCB J71 pin 6.
+                                // The PCB carries R1, a 10k pullup holding ~OE
+                                // HIGH (= outputs DISABLED) at power-up. This pin
+                                // MUST be driven or nothing ever fires: setup()
+                                // holds it HIGH, clears the registers, then drops
+                                // it LOW. Set back to 255 only for the breadboard
+                                // rig, where OE is strapped to GND.
 #define CASCADE_REVERSED 0      // set 1 if WALK proves cell order is flipped
 
 // ---- geometry ----------------------------------------------------------------

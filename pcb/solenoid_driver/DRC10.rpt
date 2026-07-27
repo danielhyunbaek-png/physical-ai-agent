@@ -1,0 +1,874 @@
+** Drc report for solenoid_driver.kicad_pcb **
+** Created on 2026-07-26T22:59:27 **
+** Report includes: Errors, Warnings **
+
+** Found 216 DRC violations **
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(153.6400 mm, 157.0000 mm): Footprint J33
+    @(143.4800 mm, 157.0000 mm): Footprint J24
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(153.6400 mm, 157.0000 mm): Footprint J33
+    @(163.8000 mm, 157.0000 mm): Footprint J34
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(169.4800 mm, 109.4500 mm): Footprint J32
+    @(159.3200 mm, 109.4500 mm): Footprint J31
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(169.4800 mm, 109.4500 mm): Footprint J32
+    @(179.6400 mm, 109.4500 mm): Footprint J41
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(139.0000 mm, 109.4500 mm): Footprint J21
+    @(128.8400 mm, 109.4500 mm): Footprint J12
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(139.0000 mm, 109.4500 mm): Footprint J21
+    @(149.1600 mm, 109.4500 mm): Footprint J22
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(133.3200 mm, 157.0000 mm): Footprint J23
+    @(123.1600 mm, 157.0000 mm): Footprint J14
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(133.3200 mm, 157.0000 mm): Footprint J23
+    @(143.4800 mm, 157.0000 mm): Footprint J24
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(113.0000 mm, 157.0000 mm): Footprint J13
+    @(123.1600 mm, 157.0000 mm): Footprint J14
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(184.1200 mm, 157.0000 mm): Footprint J44
+    @(173.9600 mm, 157.0000 mm): Footprint J43
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(128.8400 mm, 109.4500 mm): Footprint J12
+    @(118.6800 mm, 109.4500 mm): Footprint J11
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(189.8000 mm, 109.4500 mm): Footprint J42
+    @(179.6400 mm, 109.4500 mm): Footprint J41
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(173.9600 mm, 157.0000 mm): Footprint J43
+    @(163.8000 mm, 157.0000 mm): Footprint J34
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(159.3200 mm, 109.4500 mm): Footprint J31
+    @(149.1600 mm, 109.4500 mm): Footprint J22
+[starved_thermal]: Thermal relief connection to zone incomplete (layer B.Cu; 1 spokes connected to isolated island)
+    Local override; error
+    @(98.5000 mm, 98.5000 mm): Zone [GND] on B.Cu, priority 0
+    @(122.0000 mm, 118.0000 mm): PTH pad 2 [GND] of C11
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(169.4800 mm, 109.4500 mm): Footprint J32
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(139.0000 mm, 109.4500 mm): Footprint J21
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(128.8400 mm, 109.4500 mm): Footprint J12
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(189.8000 mm, 109.4500 mm): Footprint J42
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(118.6800 mm, 109.4500 mm): Footprint J11
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(159.3200 mm, 109.4500 mm): Footprint J31
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(179.6400 mm, 109.4500 mm): Footprint J41
+[lib_footprint_mismatch]: Footprint 'TerminalBlock_CUI_TB007-508-02_1x02_P5.08mm_Horizontal' does not match copy in library 'TerminalBlock_CUI'
+    Local override; warning
+    @(149.1600 mm, 109.4500 mm): Footprint J22
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 103.9800 mm): Segment of J11 on F.Silkscreen
+    @(120.5000 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(118.9800 mm, 103.9800 mm): Segment of J11 on F.Silkscreen
+    @(120.5000 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 103.9800 mm): Segment of J11 on F.Silkscreen
+    @(131.5000 mm, 105.1000 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 105.1000 mm): Segment of J12 on F.Silkscreen
+    @(121.3400 mm, 105.1000 mm): Segment of J11 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 105.1000 mm): Segment of J12 on F.Silkscreen
+    @(130.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 105.1000 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 105.1000 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 103.9800 mm): Segment of J11 on F.Silkscreen
+    @(131.5000 mm, 112.8500 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 112.8500 mm): Segment of J11 on F.Silkscreen
+    @(131.5000 mm, 112.8500 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 112.8500 mm): Segment of J12 on F.Silkscreen
+    @(130.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 112.8500 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 112.8500 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 103.9800 mm): Segment of J11 on F.Silkscreen
+    @(131.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+    @(119.5000 mm, 114.2500 mm): Reference field of C11
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+    @(121.3400 mm, 114.4700 mm): Segment of J11 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+    @(130.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(115.8400 mm, 115.4700 mm): Reference field of J11
+    @(115.3800 mm, 120.6200 mm): Segment of C11 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(115.8400 mm, 115.4700 mm): Reference field of J11
+    @(115.3800 mm, 115.3800 mm): Segment of C11 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(118.9800 mm, 103.9800 mm): Segment of J11 on F.Silkscreen
+    @(120.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(119.5000 mm, 114.2500 mm): Reference field of C11
+    @(120.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+    @(121.3400 mm, 105.1000 mm): Segment of J11 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 112.8500 mm): Segment of J11 on F.Silkscreen
+    @(120.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 114.4700 mm): Segment of J11 on F.Silkscreen
+    @(120.5000 mm, 114.4700 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 114.4700 mm): Segment of J11 on F.Silkscreen
+    @(119.5000 mm, 114.2500 mm): Reference field of C11
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(129.1400 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+    @(130.6600 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(129.1400 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+    @(130.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+    @(139.3000 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+    @(139.3000 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(130.6600 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+    @(141.6600 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+    @(151.8200 mm, 112.8500 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+    @(151.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 103.9800 mm): Segment of J21 on F.Silkscreen
+    @(151.8200 mm, 105.1000 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 105.1000 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+    @(141.6600 mm, 105.1000 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 105.1000 mm): Segment of J21 on F.Silkscreen
+    @(151.8200 mm, 105.1000 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 112.8500 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(151.8200 mm, 112.8500 mm): Segment of J22 on F.Silkscreen
+    @(141.6600 mm, 112.8500 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+    @(141.6600 mm, 112.8500 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+    @(131.5000 mm, 103.9800 mm): Segment of J12 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+    @(140.0000 mm, 114.2500 mm): Reference field of C21
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+    @(151.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+    @(141.6600 mm, 114.4700 mm): Segment of J21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 112.8500 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(151.8200 mm, 112.8500 mm): Segment of J22 on F.Silkscreen
+    @(161.9800 mm, 112.8500 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(151.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+    @(140.0000 mm, 114.2500 mm): Reference field of C21
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(149.4600 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 105.1000 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 114.4700 mm): Segment of J22 on F.Silkscreen
+    @(140.0000 mm, 114.2500 mm): Reference field of C21
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(149.4600 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+    @(150.9800 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 105.1000 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(151.8200 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+    @(161.9800 mm, 112.8500 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 103.9800 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 105.1000 mm): Segment of J31 on F.Silkscreen
+    @(151.8200 mm, 105.1000 mm): Segment of J22 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+    @(110.3400 mm, 151.9800 mm): Segment of J13 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+    @(110.3400 mm, 151.9800 mm): Segment of J13 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 153.6000 mm): Segment of J14 on F.Silkscreen
+    @(110.3400 mm, 153.6000 mm): Segment of J13 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+    @(110.3400 mm, 153.6000 mm): Segment of J13 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 151.9800 mm): Segment of J13 on F.Silkscreen
+    @(120.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(130.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+    @(120.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(130.6600 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+    @(120.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 151.9800 mm): Segment of J13 on F.Silkscreen
+    @(120.5000 mm, 153.6000 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 153.6000 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 153.6000 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 153.6000 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+    @(130.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+    @(140.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+    @(150.9800 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+    @(140.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 153.6000 mm): Segment of J24 on F.Silkscreen
+    @(130.6600 mm, 153.6000 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 153.6000 mm): Segment of J24 on F.Silkscreen
+    @(141.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 153.6000 mm): Segment of J24 on F.Silkscreen
+    @(150.9800 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 153.6000 mm): Segment of J24 on F.Silkscreen
+    @(150.9800 mm, 153.6000 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(136.1600 mm, 115.4700 mm): Reference field of J21
+    @(135.8800 mm, 115.3800 mm): Segment of C21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(136.1600 mm, 115.4700 mm): Reference field of J21
+    @(135.8800 mm, 120.6200 mm): Segment of C21 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(110.3400 mm, 161.3500 mm): Segment of J13 on F.Silkscreen
+    @(120.5000 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(110.3400 mm, 161.3500 mm): Segment of J13 on F.Silkscreen
+    @(120.5000 mm, 161.3500 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 151.9800 mm): Segment of J13 on F.Silkscreen
+    @(122.8600 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 151.9800 mm): Segment of J13 on F.Silkscreen
+    @(120.5000 mm, 161.3500 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 162.4700 mm): Segment of J13 on F.Silkscreen
+    @(120.5000 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(121.3400 mm, 162.4700 mm): Segment of J13 on F.Silkscreen
+    @(122.8600 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 161.3500 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 161.3500 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(120.5000 mm, 161.3500 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(133.0200 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+    @(131.5000 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 162.4700 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+    @(133.0200 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+    @(130.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 153.6000 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+    @(130.6600 mm, 153.6000 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(131.5000 mm, 151.9800 mm): Segment of J14 on F.Silkscreen
+    @(130.6600 mm, 161.3500 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+    @(130.6600 mm, 161.3500 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(130.6600 mm, 161.3500 mm): Segment of J23 on F.Silkscreen
+    @(140.8200 mm, 161.3500 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+    @(140.8200 mm, 161.3500 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(141.6600 mm, 151.9800 mm): Segment of J23 on F.Silkscreen
+    @(143.1800 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(140.8200 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+    @(141.6600 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(143.1800 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+    @(141.6600 mm, 162.4700 mm): Segment of J23 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+    @(151.8200 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(153.3400 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+    @(151.8200 mm, 162.4700 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 161.3500 mm): Segment of J33 on F.Silkscreen
+    @(140.8200 mm, 161.3500 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+    @(140.8200 mm, 161.3500 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 161.3500 mm): Segment of J33 on F.Silkscreen
+    @(151.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 161.3500 mm): Segment of J33 on F.Silkscreen
+    @(161.1400 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 161.3500 mm): Segment of J34 on F.Silkscreen
+    @(150.9800 mm, 161.3500 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(163.5000 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+    @(161.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+    @(161.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+    @(161.1400 mm, 153.6000 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 161.3500 mm): Segment of J34 on F.Silkscreen
+    @(161.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+    @(161.9800 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(163.5000 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+    @(161.9800 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(151.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+    @(153.3400 mm, 162.4700 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+    @(151.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(151.8200 mm, 151.9800 mm): Segment of J24 on F.Silkscreen
+    @(150.9800 mm, 153.6000 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+    @(161.1400 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+    @(150.9800 mm, 153.6000 mm): Segment of J33 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+    @(171.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+    @(161.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 151.9800 mm): Segment of J33 on F.Silkscreen
+    @(161.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 153.6000 mm): Segment of J43 on F.Silkscreen
+    @(161.1400 mm, 153.6000 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+    @(161.1400 mm, 153.6000 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(150.9800 mm, 153.6000 mm): Segment of J33 on F.Silkscreen
+    @(161.1400 mm, 153.6000 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 161.3500 mm): Segment of J34 on F.Silkscreen
+    @(171.3000 mm, 161.3500 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+    @(161.1400 mm, 161.3500 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+    @(173.6600 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+    @(171.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 153.6000 mm): Segment of J43 on F.Silkscreen
+    @(172.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 151.9800 mm): Segment of J34 on F.Silkscreen
+    @(171.3000 mm, 161.3500 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+    @(173.6600 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+    @(172.1400 mm, 162.4700 mm): Segment of J34 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(183.8200 mm, 162.4700 mm): Segment of J44 on F.Silkscreen
+    @(182.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(183.8200 mm, 162.4700 mm): Segment of J44 on F.Silkscreen
+    @(182.3000 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+    @(181.4600 mm, 162.4700 mm): Segment of J44 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 153.6000 mm): Segment of J43 on F.Silkscreen
+    @(181.4600 mm, 162.4700 mm): Segment of J44 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 162.4700 mm): Segment of J44 on F.Silkscreen
+    @(171.3000 mm, 161.3500 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 162.4700 mm): Segment of J44 on F.Silkscreen
+    @(182.3000 mm, 162.4700 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 151.9800 mm): Segment of J44 on F.Silkscreen
+    @(171.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 153.6000 mm): Segment of J43 on F.Silkscreen
+    @(181.4600 mm, 153.6000 mm): Segment of J44 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 161.3500 mm): Segment of J44 on F.Silkscreen
+    @(171.3000 mm, 161.3500 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 151.9800 mm): Segment of J44 on F.Silkscreen
+    @(182.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 153.6000 mm): Segment of J44 on F.Silkscreen
+    @(182.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 161.3500 mm): Segment of J44 on F.Silkscreen
+    @(182.3000 mm, 151.9800 mm): Segment of J43 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(159.6200 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+    @(161.1400 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(159.6200 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+    @(161.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+    @(161.1400 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 105.1000 mm): Segment of J31 on F.Silkscreen
+    @(161.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(161.9800 mm, 112.8500 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(161.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(160.5000 mm, 114.2500 mm): Reference field of C31
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+    @(171.3000 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 105.1000 mm): Segment of J41 on F.Silkscreen
+    @(172.1400 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 112.8500 mm): Segment of J41 on F.Silkscreen
+    @(172.1400 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+    @(182.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 105.1000 mm): Segment of J32 on F.Silkscreen
+    @(161.9800 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 105.1000 mm): Segment of J32 on F.Silkscreen
+    @(171.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 105.1000 mm): Segment of J32 on F.Silkscreen
+    @(161.9800 mm, 105.1000 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 105.1000 mm): Segment of J32 on F.Silkscreen
+    @(182.3000 mm, 105.1000 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+    @(172.1400 mm, 112.8500 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(171.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+    @(172.1400 mm, 112.8500 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 112.8500 mm): Segment of J32 on F.Silkscreen
+    @(161.9800 mm, 112.8500 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 112.8500 mm): Segment of J41 on F.Silkscreen
+    @(172.1400 mm, 112.8500 mm): Segment of J32 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(161.9800 mm, 103.9800 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(171.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(161.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(160.5000 mm, 114.2500 mm): Reference field of C31
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(172.1400 mm, 114.4700 mm): Segment of J32 on F.Silkscreen
+    @(182.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(169.7800 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+    @(171.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(169.7800 mm, 103.9800 mm): Segment of J32 on F.Silkscreen
+    @(171.3000 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(161.9800 mm, 114.4700 mm): Segment of J31 on F.Silkscreen
+    @(160.5000 mm, 114.2500 mm): Reference field of C31
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 105.1000 mm): Segment of J41 on F.Silkscreen
+    @(192.4600 mm, 105.1000 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 105.1000 mm): Segment of J41 on F.Silkscreen
+    @(181.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 112.8500 mm): Segment of J41 on F.Silkscreen
+    @(192.4600 mm, 112.8500 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 112.8500 mm): Segment of J41 on F.Silkscreen
+    @(181.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(192.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+    @(182.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.0000 mm, 114.2500 mm): Reference field of C41
+    @(182.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+    @(182.3000 mm, 114.4700 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 103.9800 mm): Segment of J42 on F.Silkscreen
+    @(179.9400 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+    @(181.4600 mm, 103.9800 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+    @(192.4600 mm, 105.1000 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+    @(192.4600 mm, 112.8500 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.0000 mm, 114.2500 mm): Reference field of C41
+    @(192.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(182.3000 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+    @(192.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(189.5000 mm, 114.2500 mm): Reference field of CB2
+    @(192.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.0000 mm, 114.2500 mm): Reference field of C41
+    @(181.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(181.4600 mm, 114.4700 mm): Segment of J42 on F.Silkscreen
+    @(179.9400 mm, 103.9800 mm): Segment of J41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(176.8000 mm, 115.4700 mm): Reference field of J41
+    @(176.8800 mm, 115.3800 mm): Segment of C41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(176.8000 mm, 115.4700 mm): Reference field of J41
+    @(176.8800 mm, 120.6200 mm): Segment of C41 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(185.3800 mm, 115.3800 mm): Segment of CB2 on F.Silkscreen
+    @(186.9600 mm, 115.4700 mm): Reference field of J42
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(193.6200 mm, 120.6200 mm): Segment of CB2 on F.Silkscreen
+    @(189.8100 mm, 120.5100 mm): Reference field of U42
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(189.5000 mm, 144.2500 mm): Reference field of CB3
+    @(187.1600 mm, 144.4900 mm): Segment of U42 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(186.9600 mm, 150.9800 mm): Reference field of J44
+    @(193.6200 mm, 150.6200 mm): Segment of CB3 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(156.4800 mm, 115.4700 mm): Reference field of J31
+    @(156.3800 mm, 115.3800 mm): Segment of C31 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(156.3800 mm, 120.6200 mm): Segment of C31 on F.Silkscreen
+    @(156.4800 mm, 115.4700 mm): Reference field of J31
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

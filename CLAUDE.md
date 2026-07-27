@@ -194,7 +194,10 @@ All 84 solenoid leads are identical black → **position is identity**. Sharpie 
 
 ### Harness: plate-side +12V distribution (DECIDED — **PARTIALLY SUPERSEDED Jul 15 by brief 07:** boards move onto a top deck above the plate → the 85-wire desk harness is gone, buses relocate wall-tops → deck, both leads route straight UP. Bus sizing, one-feed topology, no-ground-to-plate, MAP + cut-at-landing rules all carry over unchanged.)
 
-- Board's +12V rail **stays** (ULN COMs + reservoir cap). Added: **+12V distribution on the plate** — bare ~16 AWG bus wire along each mounting wall, walls tied by a trunk at one end, fed by **ONE 18 AWG +12V wire from the board rail**. **No ground wire to the plate** — return current comes back through the 84 low-side wires.
+- Board's +12V rail **stays** (ULN COMs + reservoir cap). Added: **+12V distribution on the plate** — bare ~16 AWG bus wire along each mounting wall, walls tied by a trunk at one end. **No ground wire to the plate** — return current comes back through the 84 low-side wires.
+- **BUS FEED — CORRECTED Jul 26 (was X, now Y). Was:** bus "fed by ONE 18 AWG +12V wire **from the board rail**." **Now:** bus is fed **ONE 18 AWG wire straight from PSU V+**, and each board's **J70 pin 1 taps a short stub off the bus** (not off the PSU). Rationale: what matters is whether coil current *passes through* board copper. Feeding the bus from a board rail makes that board a pass-through (2.1A in J70 → across board traces → out to bus), which the widened +12V traces (0.8mm, two 0.3mm necks ≈1.3A) are NOT sized for. Tapping J70 off the bus makes each board a **dead-end leaf** — the 2.1A never enters the board. Same net, opposite current path. Also solves the PSU terminal count (**BOSYTRO has 3× V+ / 3× V−**): **1 wire on V+** (to bus trunk) + **3 wires on V−** (one per board's J70 pin 2), 2 V+ terminals spare.
+- **CB1 (4700µF) stays useful under this topology** — with a short fat bus→J70 stub (~10cm ≈ 100nH, nothing on ms solenoid timescales) the cap still sits electrically on the bus and buffers switch-on surge. Keep the stubs short; don't move the cap.
+- **Return current still goes through the board either way and this is by design:** solenoid low → terminal → ULN → B.Cu ground plane → J70 pin 2 → PSU V−. No alternative path exists. The plane was measured for it (narrowest neck 1.13mm ≈ 2.4–2.6A vs 2.1A worst case); the +12V traces were not and now don't need to be.
 - Per solenoid: high side → ~5cm hop to its wall bus; low side → 22 AWG stranded grey, cut to length, → its ULN OUT landing hole. Plate↔board harness = 84 grey + 1 orange = **85 wires (vs 168)**.
 - Peak bus load ≈ 7 × 300mA ≈ 2A — 16 AWG has big margin. If ringing/resets under heavy typing: optional 470µF across the plate bus.
 - Solid→stranded transition **at the landing hole** (solid on board, stranded off-board), never mid-run.
@@ -475,3 +478,55 @@ git commit -m "PCB complete: routing closed, GND repaired, +12V widened, silkscr
 git push
 ```
 **Milestone: the driver PCB is finished and verified. This is the last gate before spending money.**
+
+### July 26 session (Opus) — pre-order assembly Q&A; power topology finalized; J70 polarity silk added
+
+Daniel came back with assembly questions *before* ordering. No routing changes; one silkscreen addition. Every answer below was verified against `solenoid_driver.kicad_pcb` (pad-by-pad net extraction), not given generically. **Nothing has been ordered yet.**
+
+**Q1 — screw terminals.** Confirmed: each terminal position is one ULN2803A output = the **low side** of a solenoid (the ULN is a low-side switch to ground). Coils aren't polarized, so "high"/"low" lead is whichever is convenient. **Count, corrected for the 3-board plan: 16 blocks × 2 screws = 32 positions/board → 96 physical, but only 88 are DRIVEN** (board C populates 3 cells, so its 4th cell's blocks J41–J44 are dead copper), **84 used, 4 driven spares.**
+
+**Q2 — do NOT bundle 84 high-side wires to the PSU.** §Harness already answers this: bare 16 AWG bus, ~5cm hop per solenoid, one feed. Restated for Daniel with the full loop.
+
+**POWER TOPOLOGY — FINALIZED (see the corrected §Harness bullets above; this is the substantive decision of the session).** Daniel confirmed "bus direct from PSU," then surfaced the real constraint: **his PSU has only 3× V+ and 3× V−.** Four wires on V+ (bus + 3 boards) doesn't fit. Resolution: make the **bus the trunk** — 1 wire on V+ to the bus; each board's J70 pin 1 stubs off the bus; 3 wires on V− (one per board). Fits with 2 V+ terminals spare, and is *better* than the 4-wire version because it makes each board a dead-end leaf. Full rationale + the CB1 consequence written into §Harness.
+
+**Full power system, as explained (two supplies, meeting only at ground):**
+- **12V rail:** AC → BOSYTRO 480W/40A → V+ → one 18 AWG → deck bus → ~5cm hop → solenoid high lead. Low lead → grey 22 AWG → screw terminal → ULN output → B.Cu ground plane → J70 pin 2 → V−. Separately: bus stub → J70 pin 1 → board +12V net → 4× ULN COM + CB1. **Peak 2.1A against 40A = ~5% loaded.**
+- **5V rail:** MacBook USB → Mega → 6 wires (5V/GND/D11 DATA/D12 CLK/D13 LATCH/D10 OE) → board A J71 → 595 VCC/MR + R1 pullup → passed onward via J72→J71 to boards B, C. **~10mA total** — trivial for the Mega's regulator.
+- **They meet at GND only.** Mega GND arrives at board A on J71 pin 2; board A's plane reaches V− on J70 pin 2 → same node. Mandatory: a 595 output only means anything to a ULN input if both reference the same ground. **+5V and +12V must meter OPEN.** Mega needs no PSU terminal of its own.
+- **Power-on order: USB first, THEN 12V** (595s hold garbage until clocked). The R1/OE-to-D10 pullup is the real fix; keep the habit anyway.
+
+**Q3 — cascade connectors. Verified from file: J71 and J72 are both `PinHeader_1x06_P2.54mm_Vertical`, straight-through pinout — 1:+5V · 2:GND · 3:DATA · 4:SCLK · 5:RCLK · 6:~OE** (J71 pin 3 = DATA_IN, J72 pin 3 = DATA_OUT). So a **pin-1-to-pin-1 6-wire cable, no crossover**. Chain: Mega → A.J71 · A.J72 → B.J71 · B.J72 → C.J71 · C.J72 unused.
+- **Gotcha found: Daniel's dupont stock (M-M and M-F only) cannot span board-to-board.** Male headers on both boards would need **F-F**, which he doesn't own.
+- **DECIDED (Daniel: "cheapest and easiest") — board-to-board links are HARDWIRED:** solder 6 short 22 AWG solid wires directly through J72's holes into the next board's J71 holes. Zero purchase, no contact resistance, can't vibrate loose; the 3 boards bolt to one deck and never separate. Cost: 6 desolder joints if a board ever comes out.
+- **Mega → A.J71 stays connectorized:** solder a 6-pin male header into J71, use 6× **male-to-female** dupont (female on the board pin, male into the Mega). Works with what he already owns. *(Supersedes the Jul 22 "JST-XH for the Mega link" note — not bought, not needed.)*
+
+**Q4 — J70. "12V-IN" names the whole 2-position block, not one screw; BOTH screws are used.** From the file: **pin 1 = +12V, roundrect pad, inboard at x=201.00**; **pin 2 = GND, circular pad, at x=206.08** (nearer the right board edge). Mouth faces +Y.
+
+**CAUGHT AND FIXED BEFORE ORDERING — J70 had no polarity marking.** The Jul 24 silkscreen pass added `12V-IN` but nothing saying which screw is which. Reversing the pair forward-biases all 8 ULN flyback diodes straight to ground = dead short through the chip. Fix: **two `gr_text` items on F.SilkS — `+12V` at (201.00, 146.2) and `GND` at (206.08, 146.2)**, directly beneath their screws on the wire-entry side, size 0.9 / thickness 0.15 (same as the Jul 24 batch). Verified numerically: nearest pad 2.48mm, nearest silk 1.60mm, no text-to-text collision, edge clear. **Copper untouched — still 503 segments / 35 vias, so DRC is unchanged.** Backup: `solenoid_driver.kicad_pcb.presilk2`. Render: `pcb/solenoid_driver/j70_polarity_labels.png`. Commit **`ae34946`**.
+- *Method note (holds up): board-level `gr_text` again, not unhidden footprint Value fields — footprint text inherits footprint rotation. And the free band **below** J70 (y 143.5–148.6) was chosen over the band above (y 129.1–133.0), which is only 2.9mm tall and already holds `12V-IN`.*
+
+**Assembly notes restated for when boards land** (from the Jul 24 later record, re-confirmed): solder **empty sockets**, press chips in after; order shortest-part-first — R1 → 100nF ceramics → DIP sockets (notch left) → screw terminals (mouths outboard) → **CB1 4700µF last** (25mm, fouls everything).
+
+**Files changed this session:** `pcb/solenoid_driver/solenoid_driver.kicad_pcb` (+2 gr_text), new `j70_polarity_labels.png`, new `.presilk2` backup, CLAUDE.md §Harness correction + this record.
+
+**UNVERIFIED / open:**
+- KiCad lock files (`~*.lck`) were still on disk from Jul 24 15:23 at session end — **stale, but unconfirmed.** If KiCad is open when Daniel returns, **quit discarding changes** before reopening, or the in-memory copy overwrites the new silk.
+- DRC not re-run after the silk addition (expect DRC4's exact 216 makeup, 0 unconnected — the labels sit in an empty silk band).
+- Deck bus stub lengths/gauge unbuilt; everything in §Harness is still paper.
+
+**RESUME HERE — nothing blocks the order:**
+1. Quit KiCad if open (discard) → reopen → **press `B`** to fill zones → DRC (expect 216 known/cosmetic, 0 unconnected).
+2. **1:1 paper print** (F.Cu + F.SilkS + Edge.Cuts). **Measure it: must be 120mm wide.** Dry-fit DIP sockets, 5.08 terminals (mouths outboard), CB1 Ø17×25mm.
+3. **Plot Gerbers** — format Gerber, layers F.Cu/B.Cu/F.SilkS/F.Mask/B.Mask/Edge.Cuts, coords 4.6, **uncheck** "Use extended X2 format" and "Include netlist attributes" → Plot → **Generate Drill Files** (Excellon, **check "Merge PTH and NPTH"**, mm, absolute origin) → zip. *(Daniel asked me to walk these settings when he gets there.)*
+4. **Order 5 from JLCPCB:** 2-layer, 1.6mm, 1oz, HASL. ~$10–20.
+5. Same day: deck CAD numbers → Fusion (briefs 07/08 Stage 2 unblocks): **outline 120×66mm · 4× Ø3.20 M3 holes board-relative (4,4)/(4,62)/(116,4)/(116,62) · tallest part CB1 Ø17×25mm · terminal mouths outboard off both long edges.**
+6. Then: `Video_Script_Big_Reset.md` short can post (needs the order-confirmation shot).
+
+**Git: committed `ae34946` (silk) — this record + the §Harness correction still need committing. Daniel, from your Terminal:**
+```
+cd ~/Documents/Claude/Projects/Physical\ AI\ Agent
+rm -f .git/HEAD.lock .git/index.lock
+git add -A && git commit -m "Power topology finalized (bus from PSU, boards as leaves); J70 polarity silk; Jul 26 record"
+git push
+```
+*(Sandbox git can create commits but cannot delete the stale lock files or reach GitHub — the push is always Daniel's.)*
