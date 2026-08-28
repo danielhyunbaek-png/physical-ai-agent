@@ -1,5 +1,51 @@
 # Brief 08 — Groove-sandwich removable walls + deck (Fusion execution)
 
+> ## AMENDED July 27, 2026 — DECK HEIGHT WAS WRONG. Read this box before the table below.
+>
+> **MEASURED (Daniel, calipers, on a mounted solenoid, from the plate's top face):**
+> body top **30mm** → `body_top_z = Z34`, so bodies rest on the plate top and `d = 7mm` exactly.
+> Plunger top **50mm** → `plunger_top_z = Z54`. Back-solving that against the ball tip at Z−4 gives a **58mm plunger**, matching the figure recorded as "confirmed" months ago — two independent paths agree.
+>
+> **Was X:** `deck_underside_z = body_top_z + 8` = **Z42**.
+> **Now Y:** `deck_underside_z = plunger_top_z + 4` = **Z58**.
+>
+> **Why:** the plunger is double-ended. Its upper end — shaft, return spring, clevis — stands **20mm above the body top**, so the tallest at-rest point on the populated plate is Z54, not Z34. Brief 08's rule would have put the deck 12mm *inside* 84 plungers. The caliper gate as originally written measured the wrong feature. (The plunger only travels DOWN when fired, so Z54 at rest is the worst case; no dynamic allowance needed.)
+>
+> **Knock-on changes, all confirmed with Daniel Jul 27:**
+> - **Deck stays overhead** (option 1 of three considered) — boards directly above the keyboard, every lead straight up, per brief 07. A low deck with plunger clearance holes was rejected: the PCBs would still have to clear Z54.
+> - `wall_top_z` = **Z60**; walls are now **58mm tall**, with 34mm above the upper tab screw.
+> - **Wall is STEPPED, not uniform.** 2.50mm only where it lives in the 16.55mm inter-body slot (below the body tops); **flared to 5.05mm above Z36** for stiffness. A plain 2.5mm × 58mm fin is 23:1 and floppy. The datum rule is unaffected — the flare grows BACKWARD only. Flare back face is limited by the NEXT row's return spring: `hole_y + 19.05 − spring_OD/2 − 1.0`. **`spring_OD` is estimated at 10mm from a photo — MEASURE it.**
+> - **Two groove widths now.** Plate groove **2.75** (engages the thin section); deck groove **5.30** (engages the flare). Same datum rule for both: front face at `hole_y + 8` exactly.
+> - **Wall-top pads are DELETED and replaced by an insert boss.** A 5mm flare can't hold a Ø4 insert, so a local boss thickens to `datum + 10` — but only in a ~7mm x band that slips between two of the next row's springs (9.05mm gap on 19.05 pitch). Put it anywhere else and it fouls a spring.
+> - **No pad pockets in the deck.** Boss top stops at the deck underside (Z58), so the M3×8 passes through the full 4mm slab and gets 4mm into a 6mm insert = 2mm of thread margin. *Brief 08's original pocket left 2mm of deck above the screw AND made an M3×8 bottom out in the insert before its head touched the deck — it would have felt tight while clamping nothing.* Claude implemented the working version after Daniel deferred the decision twice; say so and it reverts.
+> - **Deck-to-plate connection: metal M3 male-female standoffs, 54mm BODY length** (plate top Z4 → deck underside Z58), 6 positions (4 corners + 2 at the seam). Chosen over brief 08's printed posts because the length is exact and pickable *after* measurement, and a 54mm printed column would be the weakest thing in the assembly. **Gotcha: the stud must clear plate + washer + nut (~9mm for a 6mm plate) — standard M-F studs are 6mm, so either pocket the nut into the plate underside or use F-F standoffs with an M3×10 up from below.**
+>
+> ## AMENDED August 2, 2026 — STANDOFF GOTCHA RESOLVED, DECK HEIGHT MOVES AGAIN Z58 → Z64
+>
+> **Deck-to-plate columns are 60mm, built as a STACK: F-F 20mm (bottom) + M-F 20mm + M-F 20mm.** (Revised three times on Aug 2: single-piece M3×60 F-F → unobtainable; M-F-only kit → would have needed a nut pocket; **mixed F-F/M-F assortment kit → final.**) Standoffs screw into one another and the 6mm stud is consumed inside the next bore, so bodies butt and lengths add exactly — provided every joint is fully seated.
+>
+> **Starting the stack with an F-F piece puts a FEMALE end at both ends of the column, which deletes the Jul 27 gotcha entirely.** Bottom joint: kit M3×12 up from under the plate, 4mm plate → 8mm engagement into the F-F bore. Top joint: M3×8 flat-head countersunk down through the 4mm deck → 4mm engagement, flush (the column tops sit under the PCB footprint, so a proud pan head would stop a board seating). **No nut, no nut pocket, no CAD feature beyond plain holes + a countersink.**
+>
+> Two checks at assembly: bodies must butt metal-to-metal (a shallow bore makes the column long, and the six end up uneven), and the M3×12 must not bottom out in the F-F bore before its head clamps — if it does, use M3×8 there too.
+>
+> **Why 60 and not 54:** 54mm is not achievable from stock pieces, and the service gap above the plungers has to house the +12V bus and its 84 solder taps (brief 07 §3) — which brief 08's original 4mm never accounted for. 60mm gives 10mm and absorbs error in the single-reading plunger measurement.
+>
+> **Was X:** `deck_underside_z` = **Z58**, `wall_top_z` = **Z60**, walls **58mm**.
+> **Now Y:** `deck_underside_z` = plate top (Z4) + 60 = **Z64**, `wall_top_z` = **Z66**, walls **64mm tall**.
+>
+> Consequences, all benign:
+> - Clearance above the plungers (Z54) goes 4mm → **10mm**. More service room for landing 84 wires, and the wire loops get 6mm more slack.
+> - The wall aspect ratio worsens 23:1 → 25:1 *at the thin section only*; the flared T-section above Z36 is what actually carries load, and the wall is grooved at BOTH ends (plate and deck), so it is a fixed-fixed column, not a cantilever. The coupon still decides this.
+> - Insert boss top moves to Z64. M3×8 through the 4mm deck still gets 4mm of insert bite.
+> - **Unchanged:** the datum rule, both groove widths, tab holes at Z11/Z26, plate geometry, and the `plate 4→6mm downward` open question (it moves the plate *bottom*, not the top, so the 60mm standoff still lands at Z64 either way).
+>
+> **Action before printing: update `wall_top_z` and the post/boss heights in `cad/fusion_groove_coupon.py` and re-run `cad/verify_coupon_geometry.py`.** The 60mm standoff is a purchase; the Z64 is a consequence of it, and the coupon must be cut at the height you're actually going to build.
+>
+> **Executable version of all of the above: `cad/fusion_groove_coupon.py`**, with `cad/verify_coupon_geometry.py` asserting every invariant (0 failures) and cross-checking against `Air75_84Key_Plate_Left.stl`. `cad/README.md` has the Fusion click-path, slicer orientation, and the test sequence.
+>
+> **Still open:** whether the plate grows from 4mm to 6mm **downward** (bottom face Z0 → Z−2, legs 2mm shorter) to give the groove a 4mm floor instead of 2mm. Daniel's idea, correct instinct, and the keycap clearance he measured (1–2mm above the caps) makes it affordable. Growing *upward* is impossible — the plate would eat the bottom 2mm of every solenoid body.
+
+
 **Decision (July 15, 2026, Daniel's design):** the rebuild keeps the proven tab-screw solenoid mount but makes each wall a **separate part**, keyed into **grooves in the plate** (bottom) and **matching grooves in the deck underside** (top). The deck carries both PCBs. **This SUPERSEDES brief 03's drop-in-pocket + clamp-bar scheme** (kept on file as fallback #2, after T-studs). Brief 07's tracks/gates still govern; only the fastening scheme and the CAD work change.
 
 **Deck hold-down (confirmed with Daniel, Jul 15): end posts + wall-top screws.** Firing recoil pushes body → wall → deck straight UP; the deck must be pulled DOWN. 4–6 perimeter posts at the plate ends (outside the keyboard footprint, M3 heat-set inserts) take the main clamp; a thickened pad on each wall top (2–3 per wall, insert + M3 through the deck) stops mid-span deck flex on the ~320mm span.
@@ -22,11 +68,16 @@
 | groove length | wall length + 0.3 | groove ends register the wall in X |
 | wall bottom edge | 0.5mm chamfer | insertion lead-in |
 | tab holes | Z11 / Z26 absolute, Ø3.3 | UNCHANGED — physics-fixed by plunger rest; grooves don't move them |
-| body_top_z | **MEASURE (caliper gate)** | ≈Z30–34; sets deck height |
-| deck_underside_z | body_top_z + 8 | 8mm for lead exits + service; firm up after gate |
-| wall_top_z | deck_underside_z + groove_depth_deck | wall grows from current Z32 |
-| wall-top pads | 8×8×6mm bulge, +Y side, above body_top_z | M3 heat-set insert Ø4.0×6 deep, vertical; 3/wall (ends + middle) |
-| end posts | ~12×12mm, plate top → deck underside | 4 corners + 2 at the L/R seam; insert on top; post base blends into plate ≥3mm fillet |
+| body_top_z | **Z34 — MEASURED Jul 27** | 30mm above the plate top; bodies rest on the plate top, d=7 |
+| plunger_top_z | **Z54 — MEASURED Jul 27** | 50mm above the plate top; **this, not body_top_z, drives the deck** |
+| ~~deck_underside_z~~ | ~~body_top_z + 8~~ → **plunger_top_z + 4 = Z58** | see the AMENDED box at the top — the old rule collided with 84 plungers |
+| wall_top_z | deck_underside_z + groove_depth_deck = **Z60** | wall grows from current Z32; 58mm tall overall |
+| wall thickness (lower) | 2.50, below Z36 | must fit the 16.55mm inter-body slot |
+| wall thickness (flared) | **5.05, above Z36** | grows BACKWARD only; limited by the next row's spring |
+| groove_width (deck) | **5.30** | flare 5.05 + 0.25; distinct from the 2.75 plate groove |
+| spring_OD | **MEASURE** (est. 10mm from photo) | sets the flare thickness |
+| ~~wall-top pads~~ | **DELETED** → insert boss | see the AMENDED box; boss is 7mm wide × `datum+10` deep, in the spring gap, top at Z58, 1/wall |
+| ~~end posts~~ | **DELETED** → metal M3 M-F standoffs, 54mm body | 4 corners + 2 at the seam; exact height, pickable after measurement |
 | deck thickness | 4 | matches plate; stiffness comes from the box, not the slab |
 | deck wire slots | ~10mm wide, per inter-wall bay, chamfered both edges | exact position from lead-exit caliper gate |
 | PCB mounts | **from EasyEDA export** | M3 bosses/standoffs on deck top; do NOT guess coords |
@@ -64,7 +115,11 @@ M3 heat-set inserts ~45 (36 wall pads + ~6 posts + spares) · M3×8 pan heads ~4
 
 ## UNVERIFIED
 
-- Groove clearance 0.25 is a guess until the coupon (the whole scheme's risk concentrates here).
-- body_top_z, lead exits: unmeasured.
-- PCB coords: not yet exported (Track A).
+- Groove clearance 0.25 is a guess until the coupon (the whole scheme's risk concentrates here). Now applies to **two** groove widths: 2.75 plate / 5.30 deck.
+- ~~body_top_z~~ **MEASURED Jul 27 = Z34.** ~~PCB coords~~ **exported Jul 26: 120×66mm, Ø3.20 M3 at (4,4)(4,62)(116,4)(116,62).**
+- **`spring_OD` unmeasured** — estimated 10mm from a photo, and it sets the flare thickness. The coupon tests this clearance physically (Wall_A's flare passes within 1.0mm of Wall_B's spring), but measure it first; if the spring is fatter the flare must shrink.
+- Lead exit positions: still unmeasured (sets the deck wire-slot X/Y).
+- 58mm-tall walls: printability and stiffness are paper until the coupon. Print them **laid flat**, not upright.
+- Standoff stud length vs plate + washer + nut: not yet resolved, and standard M-F studs are too short. See the AMENDED box.
+- Plate 4mm→6mm downward: open decision.
 - Deck lift-with-wires-landed service flow: paper until tried; the 60–80mm loops are the mitigation.

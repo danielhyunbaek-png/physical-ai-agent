@@ -1,87 +1,73 @@
 # VIDEO: The Big Reset
-**Title options:** "I'm tearing apart a robot that works" · "84 solenoids, and I'm starting over" · "The most productive step backwards I've ever taken"
+**Title options:** "I'm tearing apart a robot that works" · "84 solenoids, and I'm starting over" · "4 hours to solder one. I need 11."
 **Platform:** All 4 (TikTok, Reels, Shorts, X)
-**Length:** 55–65 seconds
-**When to post:** After the KiCad design passes its gates and the JLCPCB order is placed (you want the order-confirmation shot). Ideally within days of ordering so "boards arrive in 2 weeks" sets up the next video.
-**Content pillar:** The Struggle / Pivot (historically your most relatable, best-performing bucket)
-**Status (Jul 17):** Not postable yet — KiCad cell 1 isn't wired and no order is placed. Script + shot list are ready; the only missing footage is the KiCad-layout screen recording and the JLCPCB order-confirmation shot. Shoot/finish the moment you order.
+**Length:** ~30 seconds
+**When to post:** Now — boards were ordered Jul 26 and **arrive in ~6 days (≈ Aug 5)**, not 2 weeks. Post immediately so the closer's "6 days" is still true.
+**Content pillar:** The Struggle / Pivot
+**Status (Jul 30):** POSTABLE. All four shots are in hand or grabbable today: cell #1 + soldering clip, populated plate w/ wire mess, KiCad screen recording, JLCPCB order confirmation. **Cut down from 60s → 30s because the new-plate CAD/coupon footage doesn't exist yet** — the plate rebuild is now its own video (see Arc below).
 
 ---
 
 ## Script
 
-**[HOOK — 0:00–0:04]**
-*Beauty shot: finished perfboard cell #1 in hand, slow rotate, good light.*
+**[HOOK — 0:00–0:05]**
+*Beauty shot: perfboard cell #1 in hand, slow rotate, good light.*
 
-> "This is driver cell number one. Took me 4 hours to solder, and honestly, it looks very pretty."
+> "This took me way too long to solder, and it drives 8 keys on my keyboard."
 
-**[WHAT IT IS — 0:04–0:10]**
-*Hold on the cell, quick point at the chips.*
+**[THE PROBLEM — 0:05–0:13]**
+*Cut to the soldering clip, speed-ramped. On-screen graphic: "170+ wires · 700+ joints · 25+ hrs."*
 
-> "This one cell drives 8 solenoids — so 8 keys on my robot keyboard."
+> "But I need 84 keys, which means 11 of these cells, and that adds up to over 170 wires and 700 solder joints."
 
-**[THE PROBLEM — 0:10–0:18]**
-*Cut to the cell #1 soldering clip (footage on hand), speed-ramped. On-screen graphic: "170+ wires · 700+ joints · 25+ hrs."*
+**Alt** (if you want the number to land harder): > "But 84 keys means 11 of these cells — which works out to over 170 wires and 700 solder joints."
 
-> "Then I realized, in order to drive 84 solenoids, I need to solder over 170 wires and 700 joints."
+**[THE PIVOT — 0:13–0:22]**
+*Screen recording: KiCad board, traces panning. Then hard cut to the JLCPCB order confirmation. Graphic: wire/joint numbers crossed out → "$40 · 6 days."*
 
-**[PIVOT 1: THE PCB — 0:18–0:28]**
-*Screen recording: KiCad schematic/board with traces, then the JLCPCB order confirmation. Graphic: the wire/joint numbers crossed out → "$40 · 2 weeks."*
+> "So instead, I designed a custom PCB. Every wire becomes a copper trace, and every cell comes out identical."
 
-> "That's why I decided to design a custom PCB instead. All those wires just become copper traces printed on the board, and every cell comes out identical. 40 bucks, 2 weeks."
+**[THE TEASE — 0:22–0:30]**
+*Overhead of the populated plate, wire mess fully visible. Deadpan beat. Then face cam for the last line.*
 
-**[PROBLEM 2: THE WIRING MESS — 0:28–0:36]**
-*Cut to the plate. Gesture at the tangle. Let the mess get a deadpan beat — it's funny.*
-
-> "Speaking of problems to fix, the current wiring on my plate is a complete mess. Trying to organize over 168 wires through these thin walls is going to be a pain in the ass."
-
-**[PROBLEM 3: REPAIRABILITY — 0:36–0:44]**
-*Finger taps an interior-row solenoid, then pan across the rows behind it.*
-
-> "Another problem is repairability. Because the rows can only screw on front to back, swapping one solenoid in the middle means unscrewing every row behind it — so repairability is a mess as well."
-
-**[THE NEW PLATE — 0:44–0:55]**
-*Cut to CAD / rough sketch / the coupon. Point out the removable walls, then the deck up top.*
-
-> "That's why I designed a new plate which has interchangeable walls, and a top deck where my PCB will sit, so the wires run straight up."
-
-**[CTA — 0:55–1:00]**
-*Face cam.*
-
-> "This is a pretty big reset. But once the boards arrive in 2 weeks, I'm tearing down the old plate, rebuilding it, and getting all 84 keys typing on their own. Stick around."
+> "6 days until the PCB shows up, which gives me 6 days to redesign the plate to fix this mess."
 
 ---
 
 ## Shot List
 
-- [ ] **HOOK SHOT:** finished perfboard cell #1 in hand, slow rotate, good light — this opens the video now
-- [ ] **HAVE:** cell #1 soldering clip (the 4-hour session) — speed-ramp for the PROBLEM section
-- [ ] Wide/overhead of the fully populated plate WITH the wire mess visible (don't tidy it first — the mess is the argument)
-- [ ] Screen recording: KiCad board layout (even 5 seconds of the traces looks great — the schematic view with the 595→ULN chain also reads well)
+- [ ] **HOOK:** cell #1 in hand, slow rotate, good light
+- [ ] **HAVE:** the 4-hour soldering clip — speed-ramp it
+- [ ] Screen recording: KiCad board layout (5s of traces is plenty)
 - [ ] Screenshot: JLCPCB order confirmation (blur address/payment)
-- [ ] Close-up: finger tapping an interior-row solenoid, then panning across the rows "behind" it
-- [ ] New-plate visual for PIVOT 3: CAD screengrab, a rough sketch, or the printed coupon — anything that shows removable walls + the top deck
-- [ ] Optional: one screw coming out with the driver (tease the teardown — even if the real teardown waits for the coupon gate, one screw is honest)
-- [ ] Face cam for the closer only (rest of the video is b-roll + voiceover)
+- [ ] Overhead of the populated plate WITH the wire mess visible — don't tidy it, the mess is the argument
+- [ ] Face cam: last line only
 
 ## Edit Notes
 
-- **The hook is now pride-before-the-fall** — open on the pretty cell, then the video spends 50 seconds explaining why it (and the plate) are obsolete. That reversal is the story.
-- On-screen math graphic at 0:14: `170+ wires · 700+ joints · 25+ hrs` → hard cut to `$40 · 2 weeks`. Specific numbers are your credibility engine.
-- Say "84 solenoids," not 88 — 88 is the channel count (4 spares); pedants will notice.
-- The wire-mess gesture at ~0:30 should be the comedic beat. One second of silence, deadpan.
-- Do NOT actually tear the plate down for this video — the coupon test gates the real teardown. One screw out is plenty of tease.
-- End card: "Rebuild starts when the boards land" + date estimate.
-- This sets up a 3-video arc: (1) this reset video → (2) boards arrive + first WALK across all 88 channels → (3) the rebuild timelapse + full-matrix fire. Tell the algorithm a story.
+- **Pride before the fall.** Open on the pretty cell, then spend 25 seconds explaining why it's obsolete.
+- Graphic at ~0:08: `170+ wires · 700+ joints · 25+ hrs` → hard cut to `$40 · 6 days`. The numbers are the credibility engine.
+- **The $40 is now only on-screen, not spoken** — the pivot line ends on "identical," and the closer carries the timing. Cleaner, and it keeps the VO conversational.
+- **The 6-day lead makes the plate rebuild the whole reason to keep watching.** The closer sets a hard deadline you're publicly on the hook for — that's the hook for video #2.
+- Say "84 solenoids," not 88 — 88 is the channel count (4 spares).
+- The wire-mess reveal at 0:22 is the comedic beat. One second of silence before the last line — and land "this mess" exactly on the overhead shot.
+- Do NOT tear the plate down for this video — the coupon test gates the real teardown.
+- Cut for this version: the repairability explanation (interior-row swap) and the new-plate reveal. **Both are the backbone of the next video** — don't spend them here without footage.
+
+## 3-video arc
+
+1. **This video** — the reset + the PCB order
+2. **The new plate** — removable walls, top deck, wires straight up (needs CAD screengrab + printed coupon; shoot during the lead window)
+3. **Boards land** — populate, WALK all 88 channels, rebuild timelapse, full-matrix fire
 
 ## Caption
 
 ```
 ripping apart a robot that already works lol
 
-4 hours to hand-solder ONE driver cell. i need 11. no thanks.
-so: custom PCB ($40) + redoing the whole plate while the boards ship.
-168 screws coming out. on purpose.
+way too long to hand-solder ONE driver cell. i need 11.
+so: custom PCB ($40). lands in 6 days.
+until then i'm redesigning the entire plate. 168 screws coming out, on purpose.
 .
 .
 .
@@ -92,8 +78,6 @@ so: custom PCB ($40) + redoing the whole plate while the boards ship.
 
 - 84 solenoids mounted, 168 screws
 - 1 driver cell = 8 solenoids (8 keys); 11 cells needed for the full board
-- ~170 wires and 700+ solder joints to hand-build all 11 cells (breakdown: 8 signal jumpers × 11 = 88 wires + 84 solenoid leads ≈ 170; joints = ~344 wire ends + 374 chip pins [16 per 595 + 18 per ULN, × 11] = 700+). Power/cascade jumpers push the wire count higher.
+- ~170 wires and 700+ solder joints to hand-build all 11 cells (8 signal jumpers × 11 = 88 wires + 84 solenoid leads ≈ 170; joints = ~344 wire ends + 374 chip pins [16/595 + 18/ULN × 11] = 700+)
 - 4 hours to solder cell #1
-- Custom PCB: ~$40, ~2-week lead, 5 boards ordered, 2 used
-- New plate: removable walls (groove-sandwich) for easy solenoid swaps, PCB sits on a top deck, wires route straight up instead of out the side
-- Interior-row swap on the current plate = unscrew the rows behind it
+- Custom PCB: ~$40, ordered Jul 26, **arriving in ~6 days (≈ Aug 5)**, 5 boards ordered, 3 populated (4-cell boards, 4/4/3 cells)

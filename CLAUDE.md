@@ -568,3 +568,55 @@ git add -A && git commit -m "Gerbers plotted + audited; silk digit order fixed; 
 git push
 ```
 **Milestone: the board is finished, verified, and ready to order — the last gate before spending money.**
+
+### July 27 session (Opus) — Track B opened in Fusion; DECK HEIGHT WAS WRONG BY 20mm; coupon scripted + verified
+
+Daniel: "connect to fusion." No Fusion MCP connector exists in the registry (checked — only "Autodesk Product Help", docs only), so the mode was chosen explicitly with him: **Fusion API Python scripts in the repo, Daniel runs them, Claude owns and verifies the file.** Same division of labour as KiCad, and better than GUI-clicking because the coupon is entirely coordinate-driven from data already on disk.
+
+**NEW: `cad/`** — `fusion_groove_coupon.py` (builds the whole brief-08 coupon in a fresh Fusion document), `verify_coupon_geometry.py` (runs outside Fusion; **0 failures / 0 warnings**), `README.md` (Fusion click-path, slicer orientation, test sequence, groove-clearance tuning log).
+- Script robustness pattern worth reusing: **every solid is sketched at mid-height and extruded SYMMETRICALLY, and every cut straddles a reference face so overshoot lands in air.** That makes the script independent of Fusion's construction-plane normal directions — the usual source of silent sign errors in API scripts. Plane placement is also self-checking (create at +offset, read `plane.geometry.origin`, flip if it landed wrong). Point placement uses `modelToSketchSpace` so it works on any plane orientation.
+- The one tunable, `GROOVE_CLEARANCE`, is a top-of-file constant, not a Fusion user parameter — for a reprint loop, "edit constant, re-run, fresh document" beats parametric sketch dimensions.
+
+**STL cross-check (independent confirmation of the as-built record).** `verify_coupon_geometry.py` parses `Air75_84Key_Plate_Left.stl` by face normal and area, and confirms on **all six** wall rows: mounting face at `hole_y + 8` exactly, back face at +2.50, and **a planar face at datum + 1.00 = the counterbore floor.** Also tab-hole rings at Z11/Z26, plate slab Z0–Z4, and Z-min −33.50 = the back leg contact (not the plate bottom — an earlier assertion of mine got that wrong and was corrected). The as-built counterbore number is now confirmed by geometry, not just by the Jul 15 note.
+
+**★ MEASUREMENTS (Daniel, calipers, mounted solenoid, from the plate's TOP face):**
+- body top **30mm** → **`body_top_z = Z34`**. Bodies rest on the plate top; **`d = 7mm` exactly**. The old June note "body sits flush with the plate BOTTOM" is WRONG — as-built wins. Brief 08's assumption was right.
+- plunger top **50mm** → **`plunger_top_z = Z54`**. Back-solving against the ball tip at Z−4 gives a **58mm plunger**, matching the figure recorded as "confirmed" months ago. Two independent paths agree.
+- keycap clearance: **1–2mm** above the caps (partially closes open question #7).
+
+**★ THE FINDING — brief 08's deck height was 20mm too low, and the caliper gate measured the wrong feature.** Triggered by Daniel's photo of a loose solenoid: the plunger is double-ended, and its upper end (shaft + return spring + clevis) stands **20mm above the body top**. So the tallest at-rest point on the populated plate is **Z54**, not Z34. Brief 08's `deck_underside_z = body_top_z + 8 = Z42` would have driven the deck 12mm *into* 84 plungers. The plunger only travels DOWN when fired, so rest is the worst case. **Was Z42, now Z58.** Full amendment box written into brief 08.
+
+**Consequences, all decided with Daniel:**
+- **Deck stays overhead** (option 1 of three presented). Boards directly above the keyboard, all 84 leads straight up, brief 07 intact. A low deck at Z38 with Ø10 plunger clearance holes was genuinely competitive on wall height and board access, but rejected: the PCBs sit on the deck and would still have to clear Z54, so it saves nothing.
+- `wall_top_z` **Z60**; walls **58mm tall**, 34mm of that above the upper tab screw.
+- **Wall is now STEPPED.** 2.50mm only below Z36 where it must fit the 16.55mm inter-body slot; **flared to 5.05mm above Z36.** A plain 2.5×58mm fin is 23:1 and floppy; the flare makes it a T-section for free. Datum rule untouched — the flare grows BACKWARD only. Its back face is limited by the **next row's return spring**: `hole_y + 19.05 − spring_OD/2 − 1.0`.
+- **Two groove widths now:** plate **2.75** (thin section), deck **5.30** (flare). Same datum rule for both.
+- **Wall-top pads DELETED → insert boss.** A 5mm flare can't hold a Ø4 insert (0.5mm walls), so a local boss thickens to `datum + 10` — but only in a ~7mm x band that slips between two of the next row's springs (9.05mm gap on 19.05 pitch). Anywhere else fouls a spring. 1 boss per wall instead of 3 pads: **6 tie-downs per half instead of 18.** Justified by load — MAX_ON=7 globally means any one wall sees ~10N.
+- **Pad-pocket problem resolved (Claude's call, flagged for override).** Brief 08's 2mm pocket left 2mm of deck above the screw *and* made an M3×8 bottom out in a 6mm insert before its head touched the deck — it would feel tight while clamping nothing. Boss top now stops at the deck underside: full 4mm slab, 4mm of insert bite, 2mm margin. Daniel deferred this twice; the bottoming-out failure is unambiguous so it was implemented the working way. **Honest re-derivation logged: I originally also claimed the 2mm shelf would peel in the load direction — at 5N per solenoid that claim was overweighted and I walked it back.**
+- **Deck→plate: metal M3 male-female standoffs, 54mm BODY length**, 6 positions (4 corners + 2 at the seam). Over brief 08's printed posts because the length is exact and pickable *after* measurement, and a 54mm printed column would be the weakest thing in the assembly. **Open gotcha: the stud must clear plate + washer + nut (~9mm for a 6mm plate) and standard M-F studs are 6mm** — either pocket the nut into the plate underside or use F-F standoffs with an M3×10 up from below. Also considered and rejected: extending the side rails to catch the deck (kills the open-sides rationale AND lengthens the tolerance chain from plate→post→deck to plate→rail→deck; short chain wins).
+
+**Daniel's own design description, compared to the record (he asked).** He independently re-derived brief 08's scheme — walls in plate divots, top plate with matching divots to sandwich them, top plate carrying the PCBs and cable management, open question being how to clamp the two plates. All correct. **His one addition is a real catch the brief got wrong:** don't accept a 2mm groove floor, add the thickness back. **Correction to his version: the plate must grow DOWNWARD** (bottom face Z0 → Z−2, legs 2mm shorter, tab holes and leg contacts unchanged). Growing upward would eat the bottom 2mm of every solenoid body, since the bodies sit at Z4. His measured 1–2mm keycap clearance makes downward affordable (ball protrusion below the plate goes 4mm → 2mm and the tip doesn't move). **Still an open decision.**
+
+**UNVERIFIED / open:**
+- **`spring_OD` unmeasured** — estimated 10mm from a photo, and it sets the flare thickness. Measure before printing; the coupon then tests the 1.0mm clearance physically.
+- Plate 4mm → 6mm downward: undecided.
+- Standoff stud length: unresolved (see gotcha above).
+- Lead exit positions: still unmeasured (sets the deck wire-slot positions).
+- 58mm walls: printability/stiffness are paper until the coupon. **Print them laid flat, not upright.**
+- Groove clearance 0.25 on both widths: the coupon's whole purpose.
+
+**RESUME HERE:**
+1. Measure `spring_OD` on a loose solenoid.
+2. Run `cad/fusion_groove_coupon.py` in Fusion (`cad/README.md` has the click-path), eyeball the assembly, export 4 STLs, print the coupon.
+3. Coupon test sequence in `cad/README.md` — **mount a solenoid on BOTH walls** so the flare-vs-spring clearance gets tested. Pass = old-plate teardown authorised.
+4. Decide the plate 4→6mm question and the standoff stud arrangement; then order standoffs + inserts + M3×8.
+5. Still outstanding from Jul 26: order 60 × KF301-5.08 2P terminals (pitch exactly 5.08, NOT 5.0); `Video_Script_Big_Reset.md` can post.
+
+**Git: sandbox still lock-blocked. `cad/` is a brand-new untracked folder — Daniel, from your Terminal:**
+```
+cd ~/Documents/Claude/Projects/Physical AI Agent
+rm -f .git/HEAD.lock .git/index.lock
+git add -A && git commit -m "cad/: Fusion coupon generator + geometry verifier; deck height corrected Z42->Z58 (plunger, not body); brief 08 amended"
+git push
+```
+**Milestone: a 20mm design error caught before it reached a printer, and Track B has executable CAD.**
