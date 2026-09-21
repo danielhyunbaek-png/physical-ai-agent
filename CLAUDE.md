@@ -14,7 +14,19 @@
 
 ## Project overview
 
-12-week summer build of a physical AI agent that types on a real keyboard and moves a real mouse, observed by a webcam. The agent runs on a MacBook Pro M4 and controls a Nuphy Air75 V3 keyboard (84 keys, Blush Nano linear switches) via an 84-solenoid matrix mounted above the keyboard. A second subsystem (Wave 2) is a Cartesian XY gantry that moves a Logitech B100 mouse, with SG90 servos for L/R click — **under re-evaluation, see Wave 2 brief**. Vision via a Logitech C920 webcam with template matching + OCR. **Ultimate goal: the agent plays TFT (Teamfight Tactics).**
+**★ NORTH STAR CHANGED Sep 20, 2026 (was X, now Y) — see the Sep 20 session record.**
+
+**Was:** a physical AI agent that types on a real keyboard AND moves a real mouse, observed by a webcam, whose ultimate goal was playing TFT (Teamfight Tactics).
+
+**Now: a keyboard that plays itself.** An 84-solenoid matrix mounted above a Nuphy Air75 V3 (84 keys, Blush Nano linear switches), driven from a MacBook Pro M4 via Arduino Mega → 11× 74HC595 → 11× ULN2803A, that physically types whatever it is told to type. Self-playing-piano energy, not AI-agent energy.
+
+**v1 is DONE when all 84 keys type any sentence on command.** Nothing beyond WALK → MAP → TYPE is required.
+
+**DROPPED Sep 20:** TFT (brief 05), and Wave 2 / the mouse gantry entirely (brief 04) — TFT's drag-and-drop was the only hard requirement for 2D mouse precision, so with TFT gone the project needs no mouse at all.
+
+**SHELVED, not deleted** (on disk, off the critical path, costs nothing to keep): the whole `agent/` stack — vision (C920 + template matching/OCR), `llm.py`, `runtime.py`, `agent_loop.py`, `agent/tft/`, `mouse_driver.py` — plus `firmware/mouse_gantry_v0`. All of it is built and its 20-test ladder passes. If an AI layer ever comes back it starts from there, but no session should treat any of it as work owed.
+
+Project folder and repo keep the name "Physical AI Agent" (decided Sep 20 — least disruption); the name is now a historical artifact, not a description.
 
 Budget ceiling: $1,500. Current estimate: ~$1,366.
 
@@ -25,14 +37,14 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 ## Key files in this folder
 
 - `docs/PLAYBOOK.md` — **Reasoning patterns + working style.** The "how to think" half of this brain.
-- `docs/briefs/` — Milestone briefs: 01 cell-#1 solder/fire (amended by 06) · 02 WALK/MAP · 03 84-key plate CAD (revived Jul 15, amended for the rebuild) · 04 Wave 2 mouse decision · 05 TFT bring-up · 06 driver PCB (replaces perfboard) · **07 plate rebuild + top deck (MASTER PLAN — read this first for anything hardware)**.
+- `docs/briefs/` — Milestone briefs: 01 cell-#1 solder/fire (amended by 06) · 02 WALK/MAP · 03 84-key plate CAD (revived Jul 15, amended for the rebuild) · ~~04 Wave 2 mouse decision~~ (**OBSOLETE — Wave 2 dropped Sep 20**) · ~~05 TFT bring-up~~ (**OBSOLETE — TFT dropped Sep 20**) · 06 driver PCB (replaces perfboard) · **07 plate rebuild + top deck (MASTER PLAN — read this first for anything hardware)**.
 - `.claude/commands/` — Claude Code slash commands: session-start, session-end, verify, brief.
 - `PRD_v2_Physical_AI_Agent.docx` — Product Requirements Document. Source of truth for *what* and *why*.
 - `Build_Walkthrough_Physical_AI_Agent.docx` — Week-by-week operational guide. Source of truth for *how* and *when*.
 - `Wave_1_Order_Checklist.xlsx` — Parts spreadsheet with audit trail. Wave 1 (essentials), Wave 2 (deferred), Tools, Optional. Audit Trail tab maps every line to PRD/walkthrough.
 - `Project_Timeline.md` — **The project's history**: every phase, mistake, dead end (incl. the abandoned card-cage architecture), and fix, plus the July 2026 folder-cleanup record. Old planning docs were deleted (recoverable from commit `84a796c`).
 - `2x2_Prototype_Dimensions.md` — Master dimension reference for the finished 2×2 prototype (`Prototype_2x2.stl`). Use for any 2×2 dimension question.
-- `firmware/` — `keyboard_v1` (production, 88ch), `mouse_gantry_v0` (Wave 2 contract), `keyboard_v0`, `sr_led_walk` (bring-up aids).
+- `firmware/` — `keyboard_v1` (production, 88ch), `mouse_gantry_v0` (**shelved — Wave 2 dropped Sep 20**), `keyboard_v0`, `sr_led_walk` (bring-up aids).
 - `agent/` — the complete software stack (see `agent/README.md`; `tests/run_tests.py` = 20-test hardware-free ladder).
 - Driver-board docs: `Soldering_Plan.md`, `OneCell_595_ULN_Build_and_Fire_Guide.md`, `TopSide_Wiring_CutList.md`, `Cell_TopSide_Routing.svg`, `Driver_Board_3Board_Layout.svg`, `Driver_Cell_Perfboard_Layout.svg`, `Driver_Board_Wiring_Map.svg`.
 - Content/social files: `Content_Calendar.xlsx`, `Social_Media_Strategy.md`, `Video_Scripts.md` + Video3/Video4 files.
@@ -40,6 +52,8 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 ---
 
 ## CURRENT STATE — as of July 13, 2026
+
+> **STALE HEADER — read the Sep 10 and Sep 20 session records first.** Since this section was written: the plate rebuild was PARKED (old 84-key plate is the vehicle), the harness reverted to the desk form, the project's north star changed to a self-playing keyboard with TFT and Wave 2 dropped, and **BOARD A IS BUILT AND PASSED ITS FULL CONTINUITY GATE (Sep 20)** — chips not yet inserted, never powered.
 
 **Software: COMPLETE production stack, all 20 ladder tests pass** (verified on Daniel's Mac Jul 4). Firmware `keyboard_v1` + `mouse_gantry_v0` mock-compile clean. Full detail in the July 2/July 4 session records below.
 
@@ -58,16 +72,15 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 **Pending TODOs gated on ask-first (spreadsheet NOT yet edited):**
 - Row 39: hardware → **M3×3 flat-head** (history: M2 → M2.5 → M3×6 cap → M3×3 flat-head + counterbore) + refresh search link.
 - Row 33: PSU → "Ordered"; row 34 (IEC cord) → "Skip" (bundled with BOSYTRO).
-- Row 40 (M5 standoffs): SKIP — replaced by side rails. M5 *screws* still needed (260pc assortment covers plate→rails, rails→base, Wave 2 V-slot).
+- Row 40 (M5 standoffs): SKIP — replaced by side rails. M5 *screws* still needed (260pc assortment covers plate→rails, rails→base; the Wave 2 V-slot use is void — Wave 2 dropped Sep 20).
 - NEW (Jul 10, brief 06 buy list): PCB order ~$20–40 + 5.08mm screw terminals ~$12 + DIP sockets ~$6 (reuse perfboard sockets if on hand) + 6-pin cascade cable. Perfboard line items for cells 2–11 become spares/unneeded.
 
 **Next milestones — RESEQUENCED Jul 15 around the rebuild; brief 07 is the master plan:**
 1. **Track A (critical path, start now):** EasyEDA design session (Claude drives via Chrome; Daniel needs a JLCPCB account) → netlist check vs brief 06 → DRC → 1:1 paper print → **order 5 boards ASAP** (NOT gated on cell #1 — superseded Jul 13). Same day: export board outline + mounting-hole coords for the deck.
 2. **Track B (inside the ~2wk lead):** wire-tidy Phase 0 (snip frayed tips) → brief 03 caliper gates (d, body-top height, lead exits) → coupon print + **swap cycle + fire (breadboard driver)** → **GATE: coupon passes = old-plate teardown authorized** → full CAD (plate L/R + walls + clamp bars + deck L/R) → print.
 3. **Track C (boards arrive):** populate boards → continuity gate → WALK 0–87 (brief 06 DoD) → one rebuild session (teardown → drop-in populate → bars → deck → land 84 wires up through slots, label + log) → flash, MAP, WALK all 88 (brief 02). **Push — milestone of milestones.**
-4. Parallel/hardware-free: C920 tripod + `Vision.calibrate_screen()` + template capture; Mouse Keys + `calibrate.py mousekeys` → first mouse-free click (film the gag); `agent/tft/set_data.json`.
-5. Wave 2 mouse decision (TFT drag requirement decides it) — brief 04.
-6. TFT bring-up — brief 05.
+4. **That's it — v1 is done when 84 keys type a sentence on command.** *(Items 4–6 here were C920 vision calibration, the Wave 2 mouse decision, and TFT bring-up. ALL DROPPED Sep 20 — do not revive them as work owed.)*
+5. Optional, after v1: a score player (timestamped key events over serial) so the keyboard can perform a pattern rather than just type. Not started, not required.
 
 ---
 
@@ -209,7 +222,10 @@ All 84 solenoid leads are identical black → **position is identity**. Sharpie 
 3. **Golden rule: cut each wire to length only at the moment it's landed. Never pre-cut.** Length = label.
 4. Optional: snap-on printed combs over the wall tops (plate already printed, so integrated troughs are out).
 
-### Wave 2 mouse — brainstorm only (NO decision yet) → see `docs/briefs/04`
+### Wave 2 mouse — **DROPPED Sep 20, 2026.** Historical; brief 04 is obsolete
+
+**Was:** undecided, explicitly gated on the TFT drag requirement. **Now:** dropped outright. TFT was the only hard requirement for real 2D mouse precision; with TFT gone the project needs no mouse subsystem at all. The shortlist below is kept as the record of the reasoning, NOT as an open question. Consequences: brief 04 obsolete, `firmware/mouse_gantry_v0` shelved, `agent/mouse_driver.py` shelved, the Wave 2 spreadsheet tab is void, and the Wave 2 V-slot/gantry budget is freed.
+
 
 - Daniel is open to replacing the XY-gantry + B100 plan; wants viral mix of "looks alive / real feats / absurd".
 - Shortlist: (1) **animatronic hand riding the mouse** over hidden gantry — best ROI; (2) **trackball + friction wheels** — **DEAD (no TFT drag)**; (3) **5-bar pantograph** — ~$60–90; (4) **holonomic rover** — highest novelty/risk. $0 gag: macOS Mouse Keys ("robot refuses to touch the mouse") — **driver already written**.
@@ -620,3 +636,108 @@ git add -A && git commit -m "cad/: Fusion coupon generator + geometry verifier; 
 git push
 ```
 **Milestone: a 20mm design error caught before it reached a printer, and Track B has executable CAD.**
+
+### September 10, 2026 session (Opus) — six-week gap closed; rebuild PARKED; old plate becomes the vehicle
+
+**Daniel returned after ~6 weeks away.** He opened with a design question (could breadboard power rails serve as the +12V high-side distribution?) and then asked whether the record still knew where he was. It did not, entirely — **no session record exists for Jul 28 – Sep 9**, and the last commit (`360b141`, Aug 28) contains only *plans*, never outcomes.
+
+**Status established by asking, not assuming:** the Aug 10–18 "84 keys before college" sprint **did not run at all.** No coupon, no boards soldered, no rebuild. Old 84-key plate still fully assembled and populated (84 solenoids, 168 tab screws). PCBs and FULARR 5.08 terminals both arrived. **Daniel is at college and brought everything** — YIHUA station + supplies, BOSYTRO PSU, Mega + breadboard + dupont, 22 AWG grey and 16 AWG bus wire. Campus makerspace printing available.
+
+- **★ DECISION — brief 07/08 rebuild PARKED until a home printer.** This is Gate 2's documented abort branch, taken deliberately rather than under deadline pressure. Rationale: 12 walls at 64mm ≈ 27h of printing is not a shared-makerspace job (queue, per-gram fees, no babysitting an overnight run); and the rebuild's entire payoff is *serviceability*, not capability — with 16 spare solenoids on hand. The old plate's tilt/stagger/84 hole positions were STL-verified against the CSV on Jul 15 (mean err 0.067mm). It works; it is merely annoying to service. `cad/fusion_groove_coupon.py` and its 0-failure verifier keep until December.
+
+- **★ RECORD CORRECTION (was X, now Y) — §Harness reverts to the desk form.** Was (Jul 15, brief 07): boards on a top deck, 85-wire desk harness gone, both leads straight up ~40–80mm. **Now: no deck → the 85-wire desk harness is BACK**, i.e. the original early-July §Harness design, unchanged in substance. Boards sit on the desk directly behind the keyboard (3 × 120mm = 360mm vs the 318.9mm keyboard), terminals facing it. **Low-side runs go ~40–80mm → ~300–450mm ≈ 34m of 22 AWG total — confirm the spool.** Wire-tidy **Phase 1 (velcro per-row bundles) comes back**, having been made obsolete by the deck plan. **Carries over untouched:** the Jul 26 power topology (one 18 AWG PSU V+ → bus trunk, each board's J70 pin 1 stubs off the bus, 3 wires on V− one per board → boards stay dead-end leaves, no coil current through board copper), CB1 electrically on the bus, MAP discipline, cut-at-landing.
+
+- **Breadboard-rails question answered — NO for the build, YES for bring-up.** Three reasons, in order of severity: (a) **the solenoid factory leads are stranded** (which is why the tips fray) — strands splay in a breadboard clip, some miss the contact, and one stray strand reaching the adjacent rail is a 12V short; tinning makes it worse (solder is soft, deforms the spring), and crimping a solid pigtail onto each is 84 operations, i.e. the work being avoided; (b) **no retention** — 84 friction-fit contacts on an assembly whose purpose is to slam, and an intermittent during MAP/WALK means chasing ghosts across 84 channels; (c) **current** — rail strip is ~1–2A aggregate against a 2.1A worst case (MAX_ON=7), mitigable by feeding each rail segment separately but a poor thing to design around on a 40A supply.
+
+- **★ Bus scheme re-derived for the no-deck geometry, and my own earlier pick walked back.** Four options were laid out (screw-terminal strip + soldered bus / bare 16 AWG wall-top bus / WAGO 221 cluster / breadboard interim). I first recommended the **terminal strip** — correct reasoning *for the deck world*, where all 84 leads converge upward and a strip sits where they arrive. **With the deck gone that inverts.** The governing principle is **the bus comes to the solenoid, not the solenoid to the bus**: on the old plate each high lead makes a ~5cm hop to a wire directly above it, whereas any centralized block means 84 long runs converging on one point — exactly the rat's nest being avoided. **Decision: bare tinned 16 AWG along each of the 6 wall tops**, trunk at one end, per the original §Harness. The old plate's walls are the mount, already printed, free. Cost ~84 wrap-and-flow joints ≈ 90 min; each has no hole, no clinch, nothing behind it — the easy joint the Jul 13 protocol breakthrough was for, not the 2.54mm point-to-point work that broke the perfboard. Payoff: 84 of 168 danglers gone in one session.
+
+- **★ SAFETY ITEM RAISED — the BOSYTRO is an open-frame 480W supply with exposed 120VAC terminals, now in a dorm room.** Highest-risk object in the project and very likely against housing rules. Three mitigations, ordered: printed terminal shroud (top of the makerspace queue), switched power strip / never energized unattended, off carpet and away from bedding.
+
+- **Built: `docs/Session_Card_Sep10_College_Restart.md`** — the working plan. Eight sessions: (1) Board A alive, 5V logic + multimeter, no 12V (the Aug 2 card is still valid word for word); (2) boards B/C + hardwired cascade links + WALK 0–87 on the bench — **the gate that matters, all 88 switching before a single solenoid wire lands**; (3) first fire from a real board with a clipped spare, USB-then-12V (and the video's payoff shot); (4) the six wall-top buses; (5–7) land the 84 low sides by row, MAP log at landing; (8) MAP → WALK 88 → TYPE. Plus a 3-part makerspace queue (PSU shroud · **wall-top wire combs ×6** · board tray) and an explicit NOT-now list.
+
+- **Wall-top comb caliper gate flagged before any CAD:** bodies top at **Z34**, wall top is **Z32** — bodies stand 2mm proud, so a comb straddling the wall fouls them unless its spine is ≤2.5mm below Z34 with the head above. Needs `M3c` (clear gap, wall back face → bodies behind) from the Caliper Gate Card first.
+
+- **Firmware re-verified from file this session:** `PIN_OE = 10` present at line 66, `NUM_CELLS = 11`, `NUM_CHANNELS = 88`, `MAX_ON = 7`. The J71-pin-6 → D10 wire remains the silent-failure trap — without it the board answers on serial, WALK prints all 88, and nothing ever switches with no diagnostic.
+
+**UNVERIFIED / open:**
+- 22 AWG grey spool length vs the ~34m the desk harness now needs.
+- Terminal mouth direction still unconfirmed physically (settle it the moment a block is in hand — screw on TOP face, wire hole on SIDE face).
+- `PIN_OE = 10` has still never run on hardware.
+- 3× CB1 = 14,100µF bus inrush may make the BOSYTRO hiccup at switch-on (cause, not fault).
+- Board C's J41–J44 are dead copper — Sharpie an X at build.
+- Wall-top comb geometry is paper until `M3c` is measured.
+
+**Next: Session 1 of the new card — Board A alive.** Everything needed is in the room.
+
+**Git: `main` is ahead of origin by 1 and the sandbox still cannot clear `.git/index.lock`. Daniel, from your Terminal:**
+```
+cd ~/Documents/Claude/Projects/Physical AI Agent
+rm -f .git/HEAD.lock .git/index.lock
+git add -A && git commit -m "Sep 10: college restart; rebuild parked, old plate is the vehicle; harness reverts to desk form; wall-top bus decided"
+git push
+```
+**Milestone: the six-week hole in the record is closed and the project has an executable path to 84 typing keys without a single printed part.**
+
+### September 19–20, 2026 session (Opus) — ★ PROJECT REDEFINED: TFT and Wave 2 dropped; board-assembly reference; first lab build session
+
+Daniel went to the campus lab to start populating the driver PCBs, asked assembly questions from the bench, then mid-session redefined the project. **This is the largest scope change in the project's history and it makes the finish line closer, not further.**
+
+**★ THE DECISION — "a keyboard that plays itself" replaces "an AI agent that plays TFT."** Daniel's framing: a personal fun project in the Mark-Rober self-playing-piano vein, not an AI-agent demo. Confirmed via options question, three answers:
+- **Wave 2 / mouse gantry: DROPPED ENTIRELY.** Brief 04 itself said the TFT drag requirement was what would decide the mouse architecture — that requirement is gone, so the whole subsystem goes with it. Not parked, dropped.
+- **Name: KEEP "Physical AI Agent"** for the folder and repo (least disruption). The name is now a historical artifact; the docs carry the real description.
+- **v1 DONE = all 84 keys type any sentence on command.** WALK → MAP → TYPE, nothing after it.
+
+**Why this is not a retreat, honestly derived:** the hardware critical path is *identical* under both goals — boards → solder → WALK 0–87 → MAP → TYPE. What changed is only what happens at the finish line, and the self-playing demo arrives one step EARLIER, because TYPE already exists in `keyboard_v1.ino`. TFT additionally required vision calibration, an LLM loop with per-game cost management, and an unresolved mouse subsystem stacked on top. Dropping it removes three unstarted workstreams and zero hardware.
+
+**Kept on disk, explicitly off the critical path** (see the amended §Project overview): the entire `agent/` stack (20-test ladder still passes), `agent/tft/`, `mouse_driver.py`, `firmware/mouse_gantry_v0`. No future session should treat any of it as work owed. Deleting it buys nothing; re-earning it would cost weeks.
+
+**Optional post-v1, recorded so it isn't re-invented:** a score player — timestamped key events streamed over serial, i.e. a piano roll for a keyboard, ~100 lines of Python. Design constraints already baked into the firmware: **`MAX_ON = 7`** caps simultaneous keys (no dense chords), and the **60ms per-channel cooldown** caps a single key at ~16 hits/sec. Neither limits percussive/rhythmic use. Not started, not required for v1.
+
+**BOARD ASSEMBLY REFERENCE — extracted from `solenoid_driver.kicad_pcb` this session, not from memory.** Orientation for every statement below: **J71 (CASC-IN) on the LEFT edge, CB1/J70/J72 on the RIGHT edge.** Solder order is shortest-part-first so the board lies flat:
+1. **R1** 10k — bottom-left, below J71. 2. **Six 100nF**: C11/C21/C31/C41 above their 595s; CB2 top-right beside C41; CB3 right side below the chips near J72. 3. **Four DIP-16 sockets**: U11/U21/U31/U41 (595s, left chip of each cell pair, centre spine). 4. **Four DIP-18 sockets**: U12/U22/U32/U42 (ULNs, right chip of each pair). 5. **Sixteen output terminals** — top edge L→R: J11 J12 J21 J22 J31 J32 J41 J42 (= each cell's OUT1/2 and OUT3/4); bottom edge L→R: J13 J14 J23 J24 J33 J34 J43 J44 (= OUT5/6 and OUT7/8). 6. **J70** 12V-in, right side below CB1 — **pin 1 (+12V) is the INBOARD screw, pin 2 (GND) the one nearer the right edge** (silk says so). 7. **J71** 6-pin male header, **board A only**, left edge, pin 1 (+5V) at top. 8. **CB1** 4700µF **last** (25mm, fouls everything) — **pin 1 (+) inboard/left, pin 2 (GND) nearer the edge; striped leg goes right.**
+- **Per board: 1 resistor · 6 ceramics · 1 electrolytic · 4× DIP-16 · 4× DIP-18 · 17 terminal blocks (16 output + J70) · 1 header on board A only.**
+- **Left empty by design:** J72 on boards A and B, J71 on boards B and C (the 6 hardwired board-to-board links pass through these, pin 1 → pin 1), and J72 on board C permanently.
+- **Board C:** 3 cells populated. Skip the U41/U42 chips, Sharpie an X across J41–J44 (dead copper). Its socket and C41 can still be fitted.
+
+**CORRECTION (was X, now Y) — DIP notch orientation.** Was: Claude told Daniel "sockets, notch left," carried over from the Jul 24 assembly note. **Now: pin 1 of every DIP is at the LOW-Y end, so all eight notches face the TOP edge of the board** (the same edge as the J11/J12 terminal row), in the J71-left orientation. Verified by extracting pad-1 coordinates from the `.kicad_pcb`, not by eye. Silkscreen is authoritative at the bench.
+
+**Also settled at the bench:** flux pen (thin alcohol-carried rosin, low solids) vs. his gel syringe — pen is the better tool for fresh plated through-holes, one swipe per row, solder that row immediately; wait ~1–2s for the alcohol to flash off so it doesn't spit, but no longer than ~30s or the film is spent. Gel is reserved for the six board-to-board cascade wires and any rework, where flux must survive a long dwell. Per-board gate before chips go in, unchanged: visual bridge check, then **+5V↔GND, +12V↔GND, and +5V↔+12V must all read OPEN.**
+
+**Content/brand consequences:**
+- **`Video_Script_Big_Reset.md` is STALE and must not be posted as written** — its closer is "6 days until the PCB shows up," written Jul 30. The boards arrived weeks ago. The footage it lists is still good and should be recycled.
+- **New hook direction for the comeback post: "I brought 84 solenoids to college."** Chosen over a generic "day in the life of an engineer" (saturated, and it discards the one asset nobody else has) and over the GPA-sacrifice angle (better as a recurring caption joke than as a video's spine). The self-playing framing is also strictly better for reach than TFT ever was: "a keyboard that types by itself" needs no explanation, "an AI agent that plays Teamfight Tactics" needs the viewer to know what TFT is.
+- Shot list given for the lab session: fixed-angle timelapse (the non-negotiable one), bare-board beauty rotate, parts-laid-out overhead, macro of a joint forming, the 16-terminal row going in, board-flip reveal, multimeter continuity beep, one face-cam line; plus dorm-desk overhead of the populated plate as the cold open. Warned about LED/fluorescent flicker banding at 60fps.
+- **OPEN QUESTION, unanswered:** does footage exist of the breadboard fire test (solenoid pressing a key, characters appearing)? That is the payoff shot the comeback video needs. If not, it is a ~10-minute reshoot at the dorm with the breadboard and one spare solenoid, and it is worth more than the rest of the shot list combined.
+
+**UNVERIFIED / open (inherited, still true):** terminal mouth direction unconfirmed physically (settle it the moment a block is in hand); `PIN_OE = 10` has still never run on hardware — **J71 pin 6 must actually land on Mega D10 or nothing fires, with no diagnostic**; 3× CB1 = 14,100µF bus inrush may make the BOSYTRO hiccup at switch-on (cause, not fault); 22 AWG grey spool length vs the ~34m the desk harness needs; BOSYTRO open-frame 120VAC terminals in a dorm room still need the printed shroud.
+
+**Next: unchanged, and now the whole project.** Session 1 — Board A alive, 5V logic only, no 12V. Then boards B/C + hardwired cascade links → **WALK 0–87 on the bench, the gate that matters** → first fire with a clipped spare → six wall-top +12V buses → land the 84 low sides by row with the MAP log → MAP → WALK 88 → TYPE. Done.
+
+**AMENDMENT (Sep 20, at the bench) — board-to-board links: HARDWIRED → CONNECTORIZED (was X, now Y).** Was (Jul 26): 6 short 22 AWG solid wires soldered straight through J72 into the next board's J71, chosen because Daniel owned only M-M and M-F dupont and the link needs F-F. **Now: male 6-pin headers on BOTH ends of every link + F-F dupont cables** — he has F-F after all. Better for bring-up (boards unplug freely during WALK debugging) and costs only contact resistance, irrelevant at ~10mA of logic current.
+- **Header count is 5, not 3:** A.J71 (Mega, M-F) · A.J72 → B.J71 → B.J72 → C.J71. C.J72 stays empty (chain tail).
+- Cable is **pin 1 → pin 1, no crossover** (both connectors run 1→6 in the same +Y direction, verified from the PCB Jul 26): 1 +5V · 2 GND · 3 DATA · 4 SCLK · 5 RCLK · 6 ~OE.
+- **New failure mode introduced by this change: off-by-one seating.** Six loose dupont strands plugged one pin over is invisible and gives bizarre half-working behaviour. Mitigations agreed: keep the six F-F wires as a bonded ribbon, Sharpie a pin-1 dot on every header, and tape/hot-glue each connector once WALK 0–87 passes (84 solenoids shake the desk; an intermittent on CLK or LATCH is the worst thing on this board to debug).
+- Unchanged: **J71 pin 6 must land on Mega D10** (`PIN_OE = 10`) or nothing fires, silently.
+
+**★ MILESTONE (Sep 20, ~evening, campus lab) — BOARD A FULLY POPULATED AND PASSED THE COMPLETE CONTINUITY GATE, chips out, never powered.** First driver board in the project's history to be finished and verified. Soldered in one lab session: R1 · C11/C21/C31/C41/CB2/CB3 · 4× DIP-16 + 4× DIP-18 sockets · 16 output terminals + J70 · J71 header · CB1 last.
+
+**The 7-part gate, as run (reusable verbatim for boards B and C — this is now the standard board acceptance test):**
+1. **Rails OPEN:** U11.16↔U11.8 (+5V/GND) · U12.10↔U12.9 (+12V/GND) · U11.16↔U12.10 (+5V/+12V). *CB1 makes the +12V/GND pair beep briefly while the meter charges it — not a short; use resistance mode and watch the number climb if unsure.*
+2. **R1 in circuit:** U11.13↔U11.16 in resistance mode. **MEASURED 9.94 kΩ** (0.6% off nominal — pass). One reading proves R1's value, both its joints, and that ~OE is pulled to +5V.
+3. Adjacent-pin sweep on all 8 sockets — all silent. **Board fact worth keeping: no two adjacent pins share a net on ANY socket, so the rule is simply "no neighbour pair may ever beep."**
+4. Adjacent-screw sweep along both terminal edges — all silent.
+5. **32 output paths:** ULN right column top→bottom = OUT1…OUT8 then +12V at pin 10; OUT1/2→J{c}1, OUT3/4→J{c}2 (top edge), OUT5/6→J{c}3, OUT7/8→J{c}4 (bottom edge). All beeped.
+6. **6 Mega-interface paths:** J71 pin1→U11.16 · 2→U11.8 · 3→U11.14 · 4→U11.11 · 5→U11.12 · 6→U11.13. All beeped. *Note the non-sequential tail: header 4/5/6 → chip 11/12/13.* J71 pin 1 is the TOP pin; its pad is square on the underside.
+7. **Power in:** J70 `+12V` (inboard screw) → U12/U22/U32/U42 pin 10, all four beeped (per-chip check, because COM is what enables the flyback diodes); J70 `GND` → U11.8; CB1 + leg → J70 `+12V`; CB1 − leg → J70 `GND`.
+
+**Probing technique that made this work, worth repeating:** probe **from the TOP, into the socket holes / at header pins / on screw heads** — never on the solder joints underneath, because the entire bottom is a ground plane and a probe slipping half a millimetre off a pad reads ground-to-ground and makes *everything* beep. That false alarm happened once this session and cost a few minutes of panic.
+
+**Board A status: electrically sound, chips NOT yet inserted, never powered.** Next action is chips in (notch toward the TOP edge — see the notch correction above) then 5V-only bring-up with the Mega, no PSU.
+
+**Git: milestone (project redefined). Daniel, from your Terminal:**
+```
+cd ~/Documents/Claude/Projects/Physical\ AI\ Agent
+rm -f .git/HEAD.lock .git/index.lock
+git add -A && git commit -m "Sep 20: project redefined (self-playing keyboard, TFT+Wave2 dropped); BOARD A built and passed full continuity gate"
+git push
+```
