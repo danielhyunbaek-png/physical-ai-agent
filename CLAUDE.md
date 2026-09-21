@@ -741,3 +741,36 @@ rm -f .git/HEAD.lock .git/index.lock
 git add -A && git commit -m "Sep 20: project redefined (self-playing keyboard, TFT+Wave2 dropped); BOARD A built and passed full continuity gate"
 git push
 ```
+
+### September 21, 2026 session (Opus) — ★ BOARD A ALIVE: first powered driver board, 32/32 channels switching, PIN_OE proven on hardware
+
+Short bench session, deliberately bounded (chemistry quiz next morning). **Decision at the top of the session: do NOT solder board B yet.** Board A had never been powered, so soldering B first would have replicated any systematic error before finding it once. Board A was already at its cheapest test point — populated, continuity-gated, nothing left to buy. Validate before replicating.
+
+**★ RESULT: all 32 channels on board A switch. Board A is electrically complete and verified.**
+
+**The gate as run (reusable for boards B and C):**
+1. **Chips in** — 4× 74HC595 (DIP-16: U11/U21/U31/U41, left chip of each pair) + 4× ULN2803A (DIP-18: U12/U22/U32/U42, right chip). **All eight notches toward the TOP edge** (the J11/J12 terminal-row edge, J71 on the left). Factory legs squared on a table edge first; pin count at the socket edge after each insertion.
+2. **Three rails OPEN re-checked WITH chips seated** — probed at connectors, not chip pins: +5V↔GND at J71 pin1↔pin2; +12V↔GND at J70's two screws; +5V↔+12V at J71 pin1↔J70 `+12V`. **+12V↔GND measured 30.86 MΩ after the CB1 ramp** — the climb is the 4700µF charging through the meter, not a fault. *Technique worth keeping: swap the probes to confirm a ramp is a capacitor — a resistor reads the same both ways, a cap restarts from the bottom.*
+3. **Mega → J71, six M-F dupont**, then — new step, and the one that retired the project's longest-standing silent-failure risk — **all six verified END-TO-END with continuity from the Mega pin to U11's chip pin**: D10→U11.13, D11→U11.14, D12→U11.11, D13→U11.12, 5V→U11.16, GND→U11.8. All six beeped. This tests dupont + header + trace + socket in one measurement and kills the entire class of off-by-one seating errors *before* power.
+4. **Flash `keyboard_v1`, 115200, USB only, no 12V.** `STATUS` → `pulse=22ms lead=1500ms fires=0 on=0 mapped=0/84`. Firmware live.
+5. **32 × `HOLD <ch>`, diode mode**, black probe clipped to J70 `GND` throughout. **ch 0 = 0.655V**, all 32 in the 0.6–0.9V band, `RELEASE ALL` → OL.
+
+**★ UNVERIFIED #`PIN_OE` CLOSED.** `PIN_OE = 10` had never run on hardware since the Jul 26 fix. It works. R1 holds ~OE high by default (outputs disabled, fail-safe at power-on) and the firmware pulls D10 low in `setup()`. Had the J71 pin 6 → D10 wire been missing, the board would have answered on serial, printed all 88 channels on WALK, and switched nothing, with no diagnostic. The step-3 end-to-end continuity check is now the standard way to retire that risk on every board.
+
+**★ METER-MODE CORRECTION (was X, now Y) — the session card was wrong and would have read as a dead board.** Was: "multimeter **continuity**: reads near-short to GND." **Now: DIODE-TEST mode, never the beeper.** A ULN2803A output is a Darlington; its ON-state floor is ~0.6–0.9V, not a short. In resistance mode at ~1mA a DMM reads that as several hundred Ω — above every continuity-beeper threshold (~30–50Ω) — so **a perfectly good channel does not beep.** Diode mode displays the drop directly: ON = 0.6–0.9V, OFF = OL. Written into `docs/Session_Card_Sep10_College_Restart.md`.
+
+**★ WALK IS NOT A METER TEST (new).** `WALK` *pulses* each channel (`firePulse`, min gap 200ms) — far too brief for a DMM to settle. All meter checks use `HOLD` / `RELEASE ALL`. `WALK` is only meaningful with a visible load (LED + ~330Ω from +5V to a terminal). The card previously implied WALK was part of the meter sweep; corrected.
+
+**`HOLD` auto-releases after 10s** (`MAX_HOLD_MS = 10000`, line 86) — a thermal safety for real 300mA coils, **not to be removed.** It breaks batched multi-channel holds (each channel's timer starts at its own HOLD), so the working rhythm is: probe on the screw FIRST, then send `HOLD <n>`, read, move on. No `RELEASE ALL` needed between channels.
+
+**SCOPE CALL — all 32 checked, not the card's 8 spot checks.** Daniel pushed back on the 8 and was right. The 8 prove each cell is alive at both ends (systematic faults: dead chip, bad socket, broken OE, cascade break), and the Sep 20 cold gate already proved all 32 copper paths ULN-pin→screw. But the *one* physical change since that gate is chip insertion, whose failure mode is a folded-under pin — and the 8 only exercise ULN pins 18 and 11, the two ENDS of the right column. A pin folded under at pins 12–17 sails through all eight and surfaces later as one dead key. **Asymmetry decides it: a bad channel costs one probe touch now, versus unlanding bundled wires later.** ~12 minutes. **New standard: sweep all 32 on boards B and C too.**
+
+**Terminal map VERIFIED from `solenoid_driver.kicad_pcb` this session** (pad coords + net tracing, not from the record): **top-edge blocks are rot 180 → pin 1 is the RIGHT screw; bottom-edge blocks are rot 0 → pin 1 is the LEFT screw.** Top edge L→R = J11 J12 J21 J22 J31 J32 J41 J42 (OUT1/2, OUT3/4); bottom edge L→R = J13 J14 J23 J24 J33 J34 J43 J44 (OUT5/6, OUT7/8). `ch → cell = ch/8+1, OUT = ch%8+1`; ULN right column top→bottom = OUT1(pin18)…OUT8(pin11). Full 32-row probe order is in the session card.
+
+**Also settled:** Mega is USB-B, MacBook Pro M4 has no USB-A → a USB-C→USB-B cable or a USB-A→USB-C adapter is required; if serial drops out mid-session, suspect a beat-up bench hub before the board.
+
+**Board A status: populated, continuity-gated, powered, 32/32 channels verified switching. Chips in. Never seen 12V.**
+
+**UNVERIFIED / open (inherited, still true):** terminal mouth direction unconfirmed physically; 3× CB1 = 14,100µF bus inrush may make the BOSYTRO hiccup at switch-on (cause, not fault); 22 AWG grey spool length vs the ~34m the desk harness needs; BOSYTRO open-frame 120VAC terminals in a dorm still need the printed shroud — **print it before Session 3, when 12V first enters.**
+
+**Next: Session 2 — populate boards B and C, connectorized cascade (5 male headers + F-F ribbons; A.J71 Mega · A.J72→B.J71 · B.J72→C.J71; C.J72 empty), then `WALK 0–87` on the bench.** Board boundaries are the spot checks that matter: **ch 31, 32, 63, 64, 87.** If channels light but in the wrong order, that is the `CASCADE_REVERSED` flag, not a wiring fault.

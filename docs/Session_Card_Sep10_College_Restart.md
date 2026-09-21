@@ -53,16 +53,44 @@ Not negotiable, and it costs one evening.
 
 > **The one wire that silently kills the session: J71 pin 6 → D10.** R1 (10k) holds ~OE HIGH = all outputs disabled. Miss it and the board answers on serial, `WALK` prints all 88 channels, and *nothing ever switches, with no error message.* `PIN_OE = 10` is already in the firmware (verified at line 66).
 
-4. **The test, no extra parts:** chips in (notch!), flash `keyboard_v1`, serial 115200, USB power only. Multimeter continuity: black on GND, red in an exposed terminal **hole**. `HOLD 0` → `C1-OUT1` reads near-short to GND. `RELEASE ALL` → open. Spot-check channels 0, 7, 8, 15, 16, 23, 24, 31, then `WALK 0 31 300 200`.
+4. **The test, no extra parts:** chips in (notch!), flash `keyboard_v1`, serial 115200, USB power only. Black probe on a fixed GND (**J70 `GND` screw** — the one nearer the right board edge — or U11 pin 8). Red probe into the terminal screw hole, or into a short wire stub clamped in that terminal (much easier than a bare probe).
+
+> **⚠ METER-MODE CORRECTION [Sep 21] (was X, now Y).** Was: "multimeter **continuity**, reads near-short to GND." **Now: use DIODE-TEST mode, not the beeper.** A ULN2803A output is a Darlington, and its ON-state floor is ~0.6–0.9V, not a short. In resistance mode a DMM sourcing ~1mA reads that as **several hundred Ω**, which is above every continuity beeper threshold (~30–50Ω) — so a **perfectly good channel will not beep**, and the old wording would have been read as a board failure. Diode mode (red on terminal, black on GND) displays the drop directly:
+> - `HOLD 0` → **~0.6–0.9V**  (channel ON)
+> - `RELEASE ALL` → **OL** (channel OFF)
+>
+> Resistance mode also works if you judge by *contrast* (OL vs a few hundred Ω), never by the beeper. Tiebreaker for an ambiguous reading: 1–10kΩ from +5V to the terminal, then read DC volts — OFF ≈ 5V, ON ≈ 0.1–0.9V.
+
+> **⚠ WALK IS NOT A METER TEST [Sep 21].** `WALK` *pulses* each channel (`firePulse`, default ~`defaultPulseMs`, min gap 200ms) — far too brief for a DMM to settle on. Use **`HOLD <ch>` / `RELEASE ALL`** for every meter check. `WALK 0 31 300 200` is only meaningful with a **visible** load: LED + ~330Ω from +5V to the terminal (the ULN sinks it, ~10mA — and it is the best video shot on this board).
+
+5. **Spot-check channels 0, 7, 8, 15, 16, 23, 24, 31** with `HOLD`. Terminal map verified from `solenoid_driver.kicad_pcb` [Sep 21] — **top-edge blocks are rot 180 (pin 1 = RIGHT screw), bottom-edge blocks are rot 0 (pin 1 = LEFT screw):**
+
+| ch | cell/OUT | ULN pin | terminal | screw | edge |
+|---:|---|---|---|---|---|
+| 0  | C1-OUT1 | U12.18 | J11 pin1 | RIGHT | TOP |
+| 7  | C1-OUT8 | U12.11 | J14 pin2 | RIGHT | BOTTOM |
+| 8  | C2-OUT1 | U22.18 | J21 pin1 | RIGHT | TOP |
+| 15 | C2-OUT8 | U22.11 | J24 pin2 | RIGHT | BOTTOM |
+| 16 | C3-OUT1 | U32.18 | J31 pin1 | RIGHT | TOP |
+| 23 | C3-OUT8 | U32.11 | J34 pin2 | RIGHT | BOTTOM |
+| 24 | C4-OUT1 | U42.18 | J41 pin1 | RIGHT | TOP |
+| 31 | C4-OUT8 | U42.11 | J44 pin2 | RIGHT | BOTTOM |
+
+General rule (all 32): `ch → cell = ch/8+1, OUT = ch%8+1`; OUT1/2→J{c}1, OUT3/4→J{c}2 (**top edge**), OUT5/6→J{c}3, OUT7/8→J{c}4 (**bottom edge**). ULN right column top→bottom = OUT1(pin18)…OUT8(pin11).
+
+6. **Before powering: re-run the 3 rail-OPEN checks** (+5V↔GND, +12V↔GND, +5V↔+12V) *with the chips seated.* A pin folded under a DIP on insertion is the single most common chip-insertion failure and it is invisible from above — count 8 pins a side before you press, and bend the splayed factory legs square on a flat surface first.
 
 **Pass = 8/8 spot checks switch.** The board is DRC-verified, so any failure is a solder bridge or cold joint, not the design.
 
 ## Session 2 — Boards B and C, cascade, WALK all 88 (3h)
 
 - Populate B and C the same way. C gets **3 cells only** (12 terminals + J70), 4th socket empty = chain tail.
-- **Cascade links are hardwired** (Jul 26 decision — dupont M-M/M-F can't span board-to-board and F-F isn't owned): six short 22 AWG solid wires soldered straight through J72 holes into the next board's J71 holes. Pin 1 to pin 1, no crossover. **Sharpie a dot on pin 1 at both ends of every hop.**
+- **Cascade links are CONNECTORIZED** — **CORRECTION [Sep 20/21] (was X, now Y).** Was (Jul 26): six 22 AWG solid wires soldered straight through J72 into the next board's J71, chosen because only M-M/M-F dupont was owned. **Now: male 6-pin headers on BOTH ends of every link + F-F dupont cables** — Daniel has F-F after all (confirmed Sep 21). Boards unplug freely during WALK debugging; cost is contact resistance, irrelevant at ~10mA of logic.
+  - **Header count is 5, not 3:** A.J71 (Mega, M-F) · A.J72 → B.J71 · B.J72 → C.J71. **C.J72 stays empty** (chain tail).
+  - Cable is **pin 1 → pin 1, no crossover** (both connectors run 1→6 in the same +Y direction, verified from the PCB Jul 26): 1 +5V · 2 GND · 3 DATA · 4 SCLK · 5 RCLK · 6 ~OE.
+  - **New failure mode this change introduces: off-by-one seating.** Six loose F-F strands plugged one pin over is invisible and gives bizarre half-working behaviour. Mitigations: keep the six wires as a **bonded ribbon**, **Sharpie a pin-1 dot on every header**, and **tape/hot-glue each connector once WALK 0–87 passes** (84 solenoids shake the desk; an intermittent on CLK or LATCH is the worst thing on this board to debug).
 - Chain: Mega → A.J71 · A.J72 → B.J71 · B.J72 → C.J71 · C.J72 unused.
-- `WALK 0 87` on the bench, 5V only, multimeter spot checks across all three boards.
+- `WALK 0 87` on the bench, 5V only. Meter checks use **`HOLD`, not `WALK`** (see the Session 1 correction); `WALK 0 87` itself is the LED/visual pass.
 
 **This is the gate that matters.** All 88 channels switching on the bench, before a single solenoid wire is landed.
 
