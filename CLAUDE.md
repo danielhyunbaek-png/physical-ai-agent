@@ -774,3 +774,28 @@ Short bench session, deliberately bounded (chemistry quiz next morning). **Decis
 **UNVERIFIED / open (inherited, still true):** terminal mouth direction unconfirmed physically; 3× CB1 = 14,100µF bus inrush may make the BOSYTRO hiccup at switch-on (cause, not fault); 22 AWG grey spool length vs the ~34m the desk harness needs; BOSYTRO open-frame 120VAC terminals in a dorm still need the printed shroud — **print it before Session 3, when 12V first enters.**
 
 **Next: Session 2 — populate boards B and C, connectorized cascade (5 male headers + F-F ribbons; A.J71 Mega · A.J72→B.J71 · B.J72→C.J71; C.J72 empty), then `WALK 0–87` on the bench.** Board boundaries are the spot checks that matter: **ch 31, 32, 63, 64, 87.** If channels light but in the wrong order, that is the `CASCADE_REVERSED` flag, not a wiring fault.
+
+### September 25, 2026 session (Opus, ~1am, planning) — ★ OVERHEAD SHELF PLAN: printed shelf halves + barrier-strip power; wall-top bus DROPPED
+
+Planning session before a ~4h lab day. Daniel came in with his own plan (a second "power PCB" with screw terminals, boards held above the solenoids so every lead routes UP, clear of the plunger shafts) and asked what the lab could make. **Priority stated explicitly: finish as fast as possible.**
+
+**State confirmed:** boards B and C are SOLDERED (not yet tested — the Mega has touched only board A). B and C both have male 6-pin headers fitted; F-F ribbons in hand. Board A's build list shows J71 only → **A.J72 header likely missing, check at the bench.** Daniel is not concerned about the PSU shroud (his call; dropped from the plan).
+
+**Decisions (was X, now Y):**
+- **+12V distribution: was bare 16 AWG along the 6 wall tops (Sep 10). Now: off-the-shelf barrier terminal strips with jumper bars** (~7–8 × 12-position = 84 high-side screw positions), mounted on the shelf. Zero soldering, zero design. Topology unchanged: PSU V+ → strips (the trunk), each J70 pin 1 stubs off the strips, each J70 pin 2 → its own PSU V−; boards stay dead-end leaves.
+  - Path to it: custom power PCB considered → **lab can't fab one**: NeoDen machines only ASSEMBLE SMD; Carvera approved list excludes copper-clad (FR-4 = "fibrous", explicitly barred; FR-1 = composite, "pending approval"). Claude first overstated Carvera feasibility (single-net board = drilling only, true) and corrected after reading the lab's Carvera page. JLC = 1–2 wk. Barrier strips beat all of them on speed.
+- **Boards: was on the desk behind the keyboard (Sep 10 desk harness). Now: on an OVERHEAD SHELF above the plate** → low-side runs short again (~40–80mm), the ~34m 22 AWG spool concern is void, wire-tidy Phase 1 obsolete again.
+- **Shelf = two 3D-printed halves (Daniel's call, Bambu X1C at the lab, overnight prints allowed).** Each half free-standing on its own **integral printed legs** (no joint between halves needed — split can follow the plate's own L/R split). Rejected en route: long 1/4-20 bolt legs (Daniel disliked), pegboard + separate legs (valid, more forgiving, but more parts/drilling), cardboard (crushes under 84 terminal screws, sags, scorches).
+  - **Design content (Claude to generate STLs, cad/ script like the coupon):** integral legs landing on the desk OUTSIDE the plate footprint (4 corners + 4 mid-side per half ≈ anti-sag); printed PCB standoffs at the board's **112 × 58mm Ø3.2 pattern**, ~10mm tall (clears underside joints); **wire slots directly above each solenoid row from `Full_84Key_Hole_Coordinates.csv`**; barrier-strip mounting holes at the purchased part's spacing; Mega mounts (default: Mega on the shelf).
+  - **Hard constraint: shelf underside ≥ Z58 (plate top = Z0 datum + 4 → i.e. ≥58mm above plate TOP face)** — plunger tops at rest Z54 (Jul 27 finding). From the STL: plate top ≈ 27.9mm (front) / 37.5mm (back) above desk → underside ≈ ≥100mm above desk. **Derived, not measured.**
+- **Why this is fastest:** after the B/C/chain gate, everything left (first fire, strips, 84 high sides, 84 low sides, MAP/WALK/TYPE) is screwdriver work in the dorm — no more lab soldering.
+
+**UNVERIFIED / blocking the shelf CAD:**
+1. Factory solenoid lead length + exit point (GO/NO-GO for routing up; if too short → 168 splices and the wall-top bus wins again).
+2. Plate top height above desk (front + back) and plate outer footprint incl. legs.
+3. Exact barrier-strip product (length, width, mounting-hole spacing).
+4. A.J72 header present?
+
+**Today's plan: `docs/Session_Card_Sep25_BoardsBC_Chain.md`** — B gate → C gate → chain A→B→C with unpowered end-to-end checks through the chain → HOLD 0/31/32/63/64/87 → PASS = all 88 channels proven.
+
+**Remaining path to v1:** (1) today: B/C/chain gate · (2) tonight: measurements + strip pick → Claude generates shelf STLs · (3) print 2 halves overnight · (4) dorm: first fire with a clipped spare · (5) dorm: mount shelf, 84 high sides → strips · (6) dorm: 84 low sides → terminals, MAP log at landing · (7) MAP → WALK 88 → TYPE.
