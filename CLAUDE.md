@@ -53,6 +53,8 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 
 ## CURRENT STATE — as of July 13, 2026
 
+> **★ LATEST (Sep 25 lab): boards A, B, C all gated and CHAINED — ALL 88 CHANNELS PROVEN on hardware. Next = shelf CAD (needs solenoid lead length, plate heights, barrier-strip pick). Read the last session record first.**
+>
 > **STALE HEADER — read the Sep 10 and Sep 20 session records first.** Since this section was written: the plate rebuild was PARKED (old 84-key plate is the vehicle), the harness reverted to the desk form, the project's north star changed to a self-playing keyboard with TFT and Wave 2 dropped, and **BOARD A IS BUILT AND PASSED ITS FULL CONTINUITY GATE (Sep 20)** — chips not yet inserted, never powered.
 
 **Software: COMPLETE production stack, all 20 ladder tests pass** (verified on Daniel's Mac Jul 4). Firmware `keyboard_v1` + `mouse_gantry_v0` mock-compile clean. Full detail in the July 2/July 4 session records below.
@@ -779,7 +781,7 @@ Short bench session, deliberately bounded (chemistry quiz next morning). **Decis
 
 Planning session before a ~4h lab day. Daniel came in with his own plan (a second "power PCB" with screw terminals, boards held above the solenoids so every lead routes UP, clear of the plunger shafts) and asked what the lab could make. **Priority stated explicitly: finish as fast as possible.**
 
-**State confirmed:** boards B and C are SOLDERED (not yet tested — the Mega has touched only board A). B and C both have male 6-pin headers fitted; F-F ribbons in hand. Board A's build list shows J71 only → **A.J72 header likely missing, check at the bench.** Daniel is not concerned about the PSU shroud (his call; dropped from the plan).
+**State confirmed:** boards B and C are SOLDERED (not yet tested — the Mega has touched only board A). B and C both have male 6-pin headers fitted; F-F ribbons in hand. Board A: J71 AND J72 headers both fitted (confirmed by Daniel Sep 25). Daniel is not concerned about the PSU shroud (his call; dropped from the plan).
 
 **Decisions (was X, now Y):**
 - **+12V distribution: was bare 16 AWG along the 6 wall tops (Sep 10). Now: off-the-shelf barrier terminal strips with jumper bars** (~7–8 × 12-position = 84 high-side screw positions), mounted on the shelf. Zero soldering, zero design. Topology unchanged: PSU V+ → strips (the trunk), each J70 pin 1 stubs off the strips, each J70 pin 2 → its own PSU V−; boards stay dead-end leaves.
@@ -794,8 +796,43 @@ Planning session before a ~4h lab day. Daniel came in with his own plan (a secon
 1. Factory solenoid lead length + exit point (GO/NO-GO for routing up; if too short → 168 splices and the wall-top bus wins again).
 2. Plate top height above desk (front + back) and plate outer footprint incl. legs.
 3. Exact barrier-strip product (length, width, mounting-hole spacing).
-4. A.J72 header present?
+4. ~~A.J72 header present?~~ **RESOLVED Sep 25: yes, fitted.**
 
 **Today's plan: `docs/Session_Card_Sep25_BoardsBC_Chain.md`** — B gate → C gate → chain A→B→C with unpowered end-to-end checks through the chain → HOLD 0/31/32/63/64/87 → PASS = all 88 channels proven.
 
 **Remaining path to v1:** (1) today: B/C/chain gate · (2) tonight: measurements + strip pick → Claude generates shelf STLs · (3) print 2 halves overnight · (4) dorm: first fire with a clipped spare · (5) dorm: mount shelf, 84 high sides → strips · (6) dorm: 84 low sides → terminals, MAP log at landing · (7) MAP → WALK 88 → TYPE.
+
+### September 25, 2026 session (Opus, ~4:45–10pm, lab) — ★ ALL 88 CHANNELS PROVEN: boards B + C gated, chain A→B→C passed
+
+Live bench coaching through `docs/Session_Card_Sep25_BoardsBC_Chain.md`. **The last soldering-station milestone of the project** — nothing was soldered today (A.J72 already fitted), and everything left is screwdriver work.
+
+**★ MILESTONE — results:**
+- **Board B cold gate (chips out): 8/8 PASS.** Rails open ×3 · R1 = 9.92k · adjacent-pin sweep (8 sockets) silent · adjacent-screw sweep silent · 32/32 output paths · J71 6/6 · J70 (+12V → 4× ULN pin 10, GND → U11.8, CB1 legs) · **J72 6/6 → U41.16/8/9/11/12/13**. Chips in, rails re-checked open.
+- **Board B powered: STATUS OK, HOLD 0–31 = 32/32** (ON ≈ 0.667V diode mode).
+- **Board C cold gate (cells 1–3): 7/7 PASS.** Rails open · R1 ≈ 10k · 6-socket sweep silent · screws J11–J34 silent · 24/24 output paths · J71 6/6 · J70 → U12/U22/U32 pin 10, U11.8, CB1.
+- **Board C powered: HOLD 0–31 = 32/32** — Daniel ALSO populated C's cell 4 (U41/U42) "for the visual" and it passed too.
+- **CHAIN A→B→C (F-F ribbons, pin-1 dots, 1→1 straight): HOLD 0 / 31 / 32 / 63 / 64 / 87 all PASS** on A.J11R / A.J44R / B.J11R / B.J44R / C.J11R / C.J34R. No `CASCADE_REVERSED` needed. **All 88 channels proven on hardware. This is the bench gate that mattered.**
+
+**Incident — reversed 5V/GND on board C (Mega → C.J71), ~20:35.** Daniel wired J71 pin 1↔2 swapped; the Mega got hot (its USB polyfuse doing its job). Recovery: unplugged, cooled, Mega alone → STATUS OK; C re-wired correctly → HOLD 0 = 0.67V ON / OL off, then full sweep 32/32. **No lasting damage found** to the Mega, C's 595s, ULNs or CB1. Lesson: a flipped ribbon does the same thing — hence the pin-1 dots + unpowered 5V/GND continuity check through the whole chain before USB (done, passed).
+
+**Decisions:**
+- **C's cell 4 chips (U41/U42) left IN** (Daniel's call). Harmless: firmware shifts 11 bytes into 12 registers, so channels 0–87 map unchanged and C.U41 only receives stale data (J41–J44 toggle with A-cell-1's previous frame). **Rule: NEVER land anything on C.J41–J44** (Sharpie X). They double as mounted spares.
+- Skipped the separate Mega→U11 end-to-end continuity on B (awkward to probe the Mega side); **superseded** by the powered sweep, which proves 5V/GND/D10–D13 functionally (OE is pulled HIGH by R1, so a missing D10 = nothing switches).
+
+**Corrections / notes (was X, now Y):**
+- **Diode-mode OFF reading:** was "OFF = OL" (session card). Now: with no 12V connected, OFF often reads **≈1.8V** on the lab meter (it charges CB1 through the ULN clamp diode) — sometimes OL. **Pass criterion = clear drop to 0.6–0.9V during HOLD.**
+- **Terminal screw order (confirmed on hardware):** top row (J_1, J_2) first channel of the pair = **RIGHT** screw; bottom row (J_3, J_4) first = **LEFT** screw (top-row blocks are flipped). ULN right row top→bottom = OUT1..OUT8 (pins 18→11), pin 10 = COM.
+- **Probing:** push probes DEEP into empty socket holes — the socket contact sits below the rim (two false "no beep" on B until pushed in). ULN pin 9↔10 (GND↔COM) "beep" = brief chirp from CB1 charging, not a short — hold 3s, must go silent.
+- Claude kept repeating "heat the iron" from the card after A.J72 was confirmed fitted — stale; no iron needed today.
+- Daniel's own "auto" multimeter has no clean diode mode (read 17.57→4, ambiguous) → **use the lab meter** for HOLD sweeps.
+
+**UNVERIFIED / still open (blocking the shelf CAD — carried from Sep 25 planning):**
+1. Factory solenoid **lead length + exit point** (GO/NO-GO for routing up) — not reported this session.
+2. Plate top height above desk (front + back) + outer footprint incl. legs.
+3. Barrier-strip product pick (length, width, mounting-hole spacing).
+4. Bambu X1C overnight booking + PLA source/cost (ask lab staff).
+- Boards currently wrapped in dry paper towel for transport/storage (unpowered) — fine until the shelf exists.
+
+**Git:** sandbox cannot commit — `.git/index.lock` is undeletable from here. **Daniel: from Terminal — `rm -f .git/index.lock`, then commit + PUSH (milestone: 88/88 proven).** Stray `CLAUDE.md.bak` and `docs/Session_Card_Sep25_BoardsBC_Chain.md.bak` are Claude's edit backups — safe to delete, do not commit.
+
+**Next session (pick up exactly here):** Daniel reports measurements 1–3 above → Claude generates the two shelf-half STLs (cad/ script, verified like the coupon) → print overnight on the X1C → dorm: first fire with a clipped spare solenoid at 12V → mount shelf, 84 high sides → strips, 84 low sides → terminals (MAP log at landing) → MAP → WALK 88 → TYPE.

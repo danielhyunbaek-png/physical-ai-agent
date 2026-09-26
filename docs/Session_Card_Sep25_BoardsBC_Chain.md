@@ -1,12 +1,14 @@
 # Session Card — Fri Sep 25, 2026 — Boards B + C gate, chain A→B→C (lab, ~4h)
 
+> **RESULT (Sep 25 evening): ALL PASSED — B 32/32, C 32/32, chain HOLD 0/31/32/63/64/87 PASS = 88/88 proven.** See CLAUDE.md Sep 25 (lab) record. OFF in diode mode may read ~1.8V instead of OL (no 12V) — pass = drop to 0.6–0.9V.
+
 Last soldering-station session of the project. After today everything is screwdriver work.
 
 ## Bring
 Boards A, B, C · 4× 74HC595 + 4× ULN2803A (B) · 3× 595 + 3× ULN (C) · Mega + USB-C→USB-B cable · F-F ribbons + M-F dupont · 1× 6-pin male header (for A.J72) · Sharpie · laptop w/ Arduino IDE · calipers/ruler · 1 loose spare solenoid · phone for b-roll.
 
-## 0 · First thing (iron still cold → heat it)
-- **Check board A for a J72 header.** A's Sep 20 build list has J71 only. If J72 is empty, solder a 6-pin male header now.
+## 0 · First thing (no soldering needed)
+- Board A J72 header: confirmed fitted (Sep 25). Nothing to solder — go straight to board B.
 
 ## 1 · Board B (~65 min)
 1. **Cold gate, chips OUT** — the 7 parts from the Sep 20 record (rails open ×3 · R1 = ~10k at U11.13↔U11.16 · adjacent-pin sweep all 8 sockets · adjacent-screw sweep · 32 output paths · J71 pins 1–6 → U11.16/8/14/11/12/13 · J70 +12V → U12/22/32/42 pin 10, J70 GND → U11.8, CB1 legs).
