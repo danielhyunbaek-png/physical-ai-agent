@@ -53,7 +53,7 @@ Daniel. Comfortable with basic Python and basic Arduino, beginner CAD (Fusion), 
 
 ## CURRENT STATE — as of July 13, 2026
 
-> **★ LATEST (Sep 25 lab): boards A, B, C all gated and CHAINED — ALL 88 CHANNELS PROVEN on hardware. Next = shelf CAD (needs solenoid lead length, plate heights, barrier-strip pick). Read the last session record first.**
+> **★ LATEST (Sep 26): OVERHEAD TABLE CAD DONE — `cad/table/Table_Left.stl`, `Table_Right.stl`, `Table_Leg.stl` ×12. Barrier strips = MILAPEAK 15A 12P (5 sets). Next = print (X1C) → first fire → wire. Read the Sep 26 record first.**
 >
 > **STALE HEADER — read the Sep 10 and Sep 20 session records first.** Since this section was written: the plate rebuild was PARKED (old 84-key plate is the vehicle), the harness reverted to the desk form, the project's north star changed to a self-playing keyboard with TFT and Wave 2 dropped, and **BOARD A IS BUILT AND PASSED ITS FULL CONTINUITY GATE (Sep 20)** — chips not yet inserted, never powered.
 
@@ -836,3 +836,43 @@ Live bench coaching through `docs/Session_Card_Sep25_BoardsBC_Chain.md`. **The l
 **Git:** sandbox cannot commit — `.git/index.lock` is undeletable from here. **Daniel: from Terminal — `rm -f .git/index.lock`, then commit + PUSH (milestone: 88/88 proven).** Stray `CLAUDE.md.bak` and `docs/Session_Card_Sep25_BoardsBC_Chain.md.bak` are Claude's edit backups — safe to delete, do not commit.
 
 **Next session (pick up exactly here):** Daniel reports measurements 1–3 above → Claude generates the two shelf-half STLs (cad/ script, verified like the coupon) → print overnight on the X1C → dorm: first fire with a clipped spare solenoid at 12V → mount shelf, 84 high sides → strips, 84 low sides → terminals (MAP log at landing) → MAP → WALK 88 → TYPE.
+
+
+### September 26, 2026 session (Opus) — ★ OVERHEAD TABLE DESIGNED + STLs GENERATED
+
+**Inputs measured / confirmed by Daniel:** solenoid leads **20 cm** (confirmed); leads exit the **LEFT side** of every body (assumed = left as seen from the keyboard front, same for all 84 — *not explicitly re-confirmed*); Q-row plunger top ≈ **80 mm** above desk (STL predicts 83 → consistent); base walls outer = **14.5 cm** front–back (STL: rails y −62…82 = 144 ✓ — Claude first quoted 164, which wrongly included the seam screw blocks; corrected). Base STL confirmed = the printed one (uploaded files byte-identical to repo copies). Board terminal wire-entries face **OUTWARD** toward the board long edges (UNVERIFIED #1 from Sep 10 — **CLOSED**). Board outline from KiCad = **120 × 66** (was quoted as 112×58 — that is the Ø3.2 hole pattern, 4 mm in from corners; holes are Edge.Cuts circles, not footprints).
+
+**Decisions (was X, now Y):**
+- **Shelf → "table": two printed halves on SEPARATE printed legs** (12 × 10×10×90 legs, peg Ø6 into underside sockets) standing in front of the front wall / behind the back wall, clear of the seam screw blocks. Legs separate so the tabletop prints underside-down with no supports.
+- **Tabletop underside flat at Z90 above desk** (max plunger top 85.8 by STL), 5 mm thick.
+- **Layout: Mega | A | B | C left→right; barrier strips "sandwich" the boards (2 strips in front, 2 behind).** Chain runs straight (J71 left edge, J72 right edge). Mega flat in a 3-sided tray, USB edge open toward the back. Rejected: A+B left / C+Mega right (C only has 24 ch → 19 keys cross the seam; no room for strips).
+- **Wire routing: was 2 long wire slots → now ONE OVAL HOLE PER SOLENOID (5×10 mm) directly above its lead exit** (Daniel's idea: slots force diagonal runs across plunger shafts). Holes at key_x − 9.5, Y shifted ≈ −2.9 mm for the 4° tilt. **Key name engraved beside each hole (right of it)** — MAP labels built into the print.
+- **Boards + strips raised 15 mm on posts (wiring layer underneath). No screws: pin posts** (Ø6.5 post, Ø2.9 × 3.5 pin through the board's Ø3.2 corner holes; board lifts off). Strips sit in **cradles** (U end-blocks with 3 mm lips + middle rib), tolerant of brand size (pocket 129 × 23 vs listing 124.5 × 22). Fallback if a board creeps: snip pin, drill Ø2.5, self-tap M3 (Daniel's standoff set = spare).
+- **Barrier strips: MILAPEAK "15A 12P" set (5 strips + 5 jumpers, $13.89, Amazon)** — listing 124.5 × 22 × 15 mm, TB-1512 type, 24 screws/strip jumpered → 96 landings for 84 high sides.
+- **Placement solved by search (`cad/table/optimize.py`)** so no post/cradle overlaps a lead hole: boards A/B/C at X −96.5 / 26.5 / 150.5, Y −17…49 (min post↔hole gap ≈ 0.7 mm); strips at Y −56 (front) / 80 (back) → 26 / 18 mm U-turn gaps to the boards.
+- **Stepped split:** X=81 for Y≥25, X=90.5 below — a straight split hits holes (holes sit exactly on the plate's own seam, half a pitch left of keys). Only board B bridges the halves.
+- **Key→board allocation by X:** A 28 keys (4 spare ch), B 32, C 24. Worst straight-line lead ≈ 130 mm of 200.
+
+**Files:** `cad/table/` — `Table_Left.stl` (250.5 × 174, fits X1C 256 bed), `Table_Right.stl` (201 × 174), `Table_Leg.stl` (print ×12), `make_table.py` + `table_params.py` (manifold3d; regenerate after any param change), `optimize.py`, renders, `Table_Layout_v2.png`. All meshes watertight; 84/84 labels engraved; all 12 legs checked clear of the base in desk frame.
+
+**Print notes:** tabletops UNDERSIDE DOWN (posts/cradles up, zero supports); legs standing. ~231 + 183 cm³ solid volume before infill.
+
+**UNVERIFIED:**
+1. Lead-exit side "left" convention (see above) — if any solenoid is mirrored its hole is on the wrong side (would need drilling).
+2. Barrier strip real dims + hole positions (listing only) — cradle has ±2 mm length / 0.5 mm width slack; **caliper one on arrival (Mon Sep 28) before printing if possible.**
+3. Mega pad positions use the standard Mega hole pattern from memory (pads only, tray walls use the known 101.6 × 53.34 outline — low risk).
+4. Pin-post fit (Ø2.9 in Ø3.2) and 0.7 mm post↔hole gaps are FDM-tight; first print = check.
+5. Bambu X1C overnight booking + PLA source.
+
+**Git trap found:** plain `git status` run from Claude's sandbox leaves an undeletable empty `.git/index.lock` — almost certainly the source of the recurring lock. Claude now uses `git --no-optional-locks` only. **Daniel: `rm -f .git/index.lock` before committing.**
+
+**12V wiring on the table (confirmed Sep 26: BOSYTRO has 3 × V+ and 3 × V−):** V+① → strip 1 → short 18 AWG link → strip 2; V+② → strip 3 → link → strip 4; V+③ spare (or feed pairs from both ends). V−①/②/③ → J70 pin 2 of A / B / C (one each, boards stay dead-end leaves). Each board's J70 pin 1 ← short stub from the nearest strip. Strip screws: 84 high sides + 3 J70 feeds = 87 / 96. **Rule: strips are +12V ONLY — never land a V− wire on a strip (dead short); mark strips red.** 18 AWG for all PSU runs. AC side still needs covering.
+
+**Late Sep 26 additions:**
+- **Strips: ordering MILAPEAK "15A 12P" (ASIN B07CLW5FPS, $13.89, arrives Mon Sep 28).** Spec table says **0.78" W = 19.8 mm** but the listing photo says 0.87" = 22.1 mm (length 124.5, height 15.2 agree). Cradle pocket is 23 mm → fits either; if real width is 19.8 there's ~3 mm front-back slop → **measure one strip, then tighten `POCKET_W` in `cad/table/table_params.py` and rerun `make_table.py` BEFORE printing.** Mounting-hole spacing still unknown (irrelevant — cradles, not pins).
+- **Strip wiring rule: max 2 things per screw, never stack 18 AWG with a solenoid lead.** Both screws of one position share a plate: jumper forks on side A (+ one solenoid lead each), **PSU/link feed alone on a side-B screw**, other side-B screws = one lead each → ~22–23 lead landings/strip, ~90 total ≥ 84 + 3 J70 feeds.
+- **Printing at the Fab Lab (Meloy):** email STLs to meloy.FabLab@gmail.com → lab PC → Bambu Studio: Device tab pick printer → Sync info → AMS Synchronize → import → slice at the lab → Print plate → Send. Job 1 = `Table_Left.stl` alone (250.5 mm on 256 bed: skirt loops 0 if it shows red). Job 2 = `Table_Right.stl` + 12× `Table_Leg.stl` (brim Auto). PLA, 0.2 mm, no supports. Four X1Cs (George/John/Paul/Ringo) → run both jobs in parallel.
+- **Legs = push-fit pegs (Ø6 × 3.5 into Ø6.4 × 4 sockets), no glue by design.** Weak point = shallow joint (5 mm top). Fallback: super glue, or Claude thickens the top locally to ~8 mm for a 7 mm peg. Integral legs rejected (needs full-area supports or 24 separate post parts).
+- **OPEN — narrow screwdriver TIP (Daniel wants a printed tip) for M3×3 flat-heads, working front row → back (16.55 mm slot between a wall back face and the next wall while the row behind is empty; 0.55 mm once populated).** Blocked on: **drive type (Phillips / hex 2 mm / slotted)** — not answered. Warned: PLA tip wears fast, Phillips worst; print spares at 100% infill.
+
+**Next:** buy strips → (caliper) → print table halves + 12 legs → first fire with a spare solenoid at 12V → set table over base, seat boards/strips → land 84 high sides (strips) + 84 low sides (terminals), MAP log from the engraved labels → MAP → WALK 88 → TYPE.

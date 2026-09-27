@@ -60,6 +60,8 @@ All 84 solenoid leads are identical black wire. Identity lives in WHERE a wire l
 - **Frayed 12V leads** = short waiting to happen; snip/tape immediately.
 - **M2.5 illusion:** it "threads" into an M3-tapped hole and falls out. M3 only.
 
+- **Sandbox git lock (Sep 26):** any git command that refreshes the index (plain `git status`) run from Claude's sandbox leaves an empty `.git/index.lock` it cannot delete → Daniel's next commit fails. Use `git --no-optional-locks status` / read-only commands only; never commit from the sandbox.
+
 ## 10. Cost discipline (agent/LLM work)
 
 Develop on `ollama` (free) → play on cheap cloud (~$0.10–0.50/game) → Anthropic only for hard turns (`--escalate-to`) or tuning. Always run with `--budget-usd`. Skip LLM calls during TFT combat phases once the combat-marker template exists (~70% of calls). Downscale screenshots. **Never propose a workflow whose default loop bills a frontier model per turn.**
