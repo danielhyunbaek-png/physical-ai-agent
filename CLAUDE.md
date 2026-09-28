@@ -876,3 +876,15 @@ Live bench coaching through `docs/Session_Card_Sep25_BoardsBC_Chain.md`. **The l
 - **OPEN — narrow screwdriver TIP (Daniel wants a printed tip) for M3×3 flat-heads, working front row → back (16.55 mm slot between a wall back face and the next wall while the row behind is empty; 0.55 mm once populated).** Blocked on: **drive type (Phillips / hex 2 mm / slotted)** — not answered. Warned: PLA tip wears fast, Phillips worst; print spares at 100% infill.
 
 **Next:** buy strips → (caliper) → print table halves + 12 legs → first fire with a spare solenoid at 12V → set table over base, seat boards/strips → land 84 high sides (strips) + 84 low sides (terminals), MAP log from the engraved labels → MAP → WALK 88 → TYPE.
+
+### September 27, 2026 session (Opus) — PRINT TODAY, caliper step skipped
+**Decision (was: caliper strip Mon → maybe tighten POCKET_W → print; now: print Sun with current STLs).** The 23 mm pocket fits either strip width; if the real strip is 19.8 mm, shim the ~3 mm front–back slop (foam/tape/printed shim) instead of reprinting. Pre-flight on the Sep 26 STLs: Left 250.5×174×23.5 / 231 cm³, Right 201×174×23.5 / 183 cm³, Leg 10×10×93.5 / 9 cm³. All watertight, tabletops flat underside-down, legs on a 10×10 foot → brim needed. Jobs are unchanged: Job 1 = Left alone, Job 2 = Right + 12 legs.
+**Git:** Sep 26 was already pushed (ddf625f). Claude ran a plain `git status` again → a stray `.git/index.lock` may exist → `rm -f .git/index.lock` before committing.
+
+### September 28, 2026 session (Opus) — ★ v1 SCOPE EXTENDED: break 320 WPM on Monkeytype
+**Decision (was X, now Y).** Was: v1 DONE = all 84 keys type any sentence on command. **Now: v1 DONE = that PLUS a Monkeytype 15-second test (default English, lowercase + space, no punctuation) above 320 WPM.** Words reach the Mega by **reading the page** (browser script reads Monkeytype's upcoming words → USB serial → Mega); camera/OCR rejected. Typing stays 100% physical.
+- **Target math:** 320 WPM × 5 = 26.7 keystrokes/s = **37.5 ms/char average**; ~400 correct chars in 15 s. The clock starts at the first keystroke, so the lead-in delay doesn't count. Default mode needs no shift → 27 keys only.
+- **Current firmware ceiling ≈ 146 WPM:** TYPE = 22 ms pulse + 60 ms `SETTLE_MS` = 82 ms/char (lines 80–85). Needs a rewrite: **overlapped, schedule-based firing** (next coil starts before the previous one returns; the Nuphy only cares about key-down order; use it wired, not Bluetooth). Hard limit = **double letters** (same coil; `REFIRE_MS` 60 ms ≈ 2× budget).
+- **GO/NO-GO gate (unmeasured):** single-solenoid minimum reliable pulse + full cycle time (extend → spring return → re-fire). Run on a spare at first fire.
+- Heat/power: non-issue for 15 s (~0.6 coil-equivalent average, far under `MAX_ON = 7`).
+- **Caveat:** Monkeytype's leaderboards ban automated typing → demo/video result only; don't submit it to the leaderboard.
