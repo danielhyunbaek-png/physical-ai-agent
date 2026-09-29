@@ -888,3 +888,9 @@ Live bench coaching through `docs/Session_Card_Sep25_BoardsBC_Chain.md`. **The l
 - **GO/NO-GO gate (unmeasured):** single-solenoid minimum reliable pulse + full cycle time (extend → spring return → re-fire). Run on a spare at first fire.
 - Heat/power: non-issue for 15 s (~0.6 coil-equivalent average, far under `MAX_ON = 7`).
 - **Caveat:** Monkeytype's leaderboards ban automated typing → demo/video result only; don't submit it to the leaderboard.
+
+### September 29, 2026 session (Opus, lab) — table printed, PCB fit confirmed, legs glued
+- **All table parts printed** (Left, Right, 12 legs). **PCB fit on the pin posts: GOOD** (UNVERIFIED #4 from Sep 26 partially closed — board pin posts OK).
+- **Legs: was push-fit, no glue by design → now hot-glued** (Daniel's call, lab glue gun). Method: dry-fit both halves over the base first; seat pegs fully DRY (keeps all legs equal length → level); hot-glue fillet around all 4 sides of the leg/underside joint; glue in the socket only if a peg is loose (0.2 mm radial clearance is too tight for glue to flow). Removable with isopropyl alcohol.
+- **Still open:** barrier-strip fit (strips arrive Sep 29 — shim if 19.8 mm wide); Mega pad positions; lead-exit "left" convention; screwdriver drive type; solenoid min pulse / cycle time (320 WPM gate).
+- **Next:** strip fit → first fire with a spare at 12V + speed test → set table over base → wire 84 high/low sides → MAP → WALK 88 → TYPE.
