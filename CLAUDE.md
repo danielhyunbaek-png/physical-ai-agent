@@ -894,3 +894,28 @@ Live bench coaching through `docs/Session_Card_Sep25_BoardsBC_Chain.md`. **The l
 - **Legs: was push-fit, no glue by design → now hot-glued** (Daniel's call, lab glue gun). Method: dry-fit both halves over the base first; seat pegs fully DRY (keeps all legs equal length → level); hot-glue fillet around all 4 sides of the leg/underside joint; glue in the socket only if a peg is loose (0.2 mm radial clearance is too tight for glue to flow). Removable with isopropyl alcohol.
 - **Still open:** barrier-strip fit (strips arrive Sep 29 — shim if 19.8 mm wide); Mega pad positions; lead-exit "left" convention; screwdriver drive type; solenoid min pulse / cycle time (320 WPM gate).
 - **Next:** strip fit → first fire with a spare at 12V + speed test → set table over base → wire 84 high/low sides → MAP → WALK 88 → TYPE.
+- **Driver knob (was: paddle driver, now: finger knob).** Phillips drive CONFIRMED (open item "screwdriver tip" closed). `cad/driver_tip/Knob_D12_x3.stl` = Ø12 knurled knob + PH1 tip, 11.4 mm long (fits the 16.55 slot; clears the plate by 1 mm at the lower hole). 3 tip scales, dots on back = 1/2/3 → 90/100/110%. Printed Sep 29 at 0.08 mm layers, 8 wall loops, no supports. **Which size fits: TBD (ask).** Paddle + Ø20 variants also in that folder, unused. Daniel has a regular driver for everything outside the slot.
+- **12V feed to the 4 strips (clarified):** V+① → strip → 18 AWG link → 2nd strip; V+② → strip → link → 4th strip; V+③ spare (or use it so only one link is needed). Pair SAME-SIDE strips (left-front↔left-back, right-front↔right-back, ~14 cm link). PSU feed and link each ALONE on their own screw; jumper bars make the whole strip one conductor.
+
+**★ RESUME HERE — Daniel returns after: all solenoids screwed in, legs hot-glued, PCBs + strips seated on the table. Then walk him through, in order:**
+1. **First fire + speed test** — clipped spare on board A, USB first THEN 12V; fire once (proves the 12V path); find min reliable pulse + full re-fire cycle (the 320 WPM GO/NO-GO). Do this BEFORE wiring.
+2. **Table over the base** — no leg/post touches base or plungers; engraved holes over lead exits.
+3. **Power wiring** — V+①② → strips (+links, above); V−①②③ → J70 pin 2 (GND) of A/B/C; each J70 pin 1 (+12V) ← short stub from nearest strip. Strips red, +12V ONLY, never a V− on a strip.
+4. **84 high sides → strips** (up through engraved hole, cut at landing, ≤2 wires/screw).
+5. **84 low sides → board terminals**, log `key · board · terminal` at landing (= MAP). Never land on C.J41–J44.
+6. **MAP + SAVE** → 7. **WALK 88** → 8. **TYPE hello world** (v1 part 1).
+9. **Fast-TYPE firmware rewrite** (overlapped/scheduled, tuned from step 1) → 10. **Monkeytype page-reader script** → 11. tune → 320 WPM run, film it.
+Buy/check: 18 AWG for 5 PSU runs + 3 J70 stubs; small flat driver for terminals. Push to GitHub after wiring and after TYPE works.
+
+### September 30, 2026 session (Opus, evening planning before a 1–2 h lab trip)
+- **Barrier strips arrived and FIT the cradles** (open item "strip width fit" closed).
+- **Knob tip: dot 2 (100%) fits** (open item closed). Use `Knob_D12_x3` dot-2 for all slot screws.
+- **CORRECTION to the Sep 29 record: the table legs are NOT glued yet.** Sep 29 described the method, not a done step.
+- **Solenoids: RIGHT half of the base screwed in; LEFT half not started.**
+- **Speed test deferred (Daniel's call):** first fire = fire once to prove the 12V path; no BURST command yet. The 320 WPM GO/NO-GO (min pulse + cycle time) is still unmeasured and still gates step 9.
+- **Tonight's lab plan (1–2 h):** (1) dry-fit both table halves over the base, check clearances on the populated right side; (2) hot-glue the 12 legs (fillet method, pegs seated dry); (3) while glue sets, screw in left-half solenoids with the dot-2 knob. Then dorm: first fire once (USB then 12V) with a clipped spare on board A.
+- **Lab list finalized (lab-only = glue gun):** dry-fit table over base → hot-glue 12 legs → **hot-glue the 4 barrier strips (slightly loose in cradles): small dabs at cradle ends / middle rib only, never on screws, plates or jumper bars; check strip orientation first.** PCBs stay unglued (lift-off pin posts). Left-half solenoids move to the dorm.
+- **9 pm: legs + 4 strips GLUED (done).** Order decided: (1) first fire once with clipped spare (USB then 12V) → (2) screw in all left-half solenoids with table OFF → (3) table on, power wiring → high sides → low sides + MAP log. Reason: once leads run up through the table it can't be lifted off, and the screw slots are only reachable with the table off.
+- **Jumper bars not yet fitted** on the 4 strips (Daniel unsure how). Explained: back out all 12 screws on ONE side a few turns, slide the comb's forks under the screw heads, tighten; beep end-to-end (plain metal, beeper mode OK here). Solenoid leads can share a jumper screw (fork under, lead on top); PSU feed + link go alone on the other side. First fire goes BEFORE left-side screwing: PSU straight to board A J70 + spare (no strips needed).
+- **Midnight: stopped for the night, first fire NOT done.** Open question to ask first next session: does the BOSYTRO already have a wall cord on its AC side (L/N/ground)? If NO → wire it at the lab with supervision, not alone. If YES → 3 short hookup wires on the 12V side (2× V+, 1× V−) and run the first-fire steps (PSU → A.J70; spare: V+ and A.J11 right screw = ch 0; USB first, 115200 Newline, STATUS, then 12V, FIRE 0).
+- **★ RESUME HERE (Oct 1):** first fire → 4 jumper bars → left-half solenoids (table off) → table on → power wiring → high sides → low sides + MAP log → MAP/WALK/TYPE.
