@@ -47,6 +47,7 @@
 //   MAP [<ch> <key|->]      set/clear/show channel->key map (MAP 12 Enter)
 //   SAVE / LOAD             persist / restore keymap to EEPROM
 //   LEAD [ms]               head-start delay before TYPE (default 1500)
+//   REPEAT <ch> <p> <per> <n> speed test: fire one coil n times every per ms
 //   STATUS                  pulse, lead, mapped count, held channels, fire count
 //   ALLOFF                  force every channel low
 //
@@ -420,6 +421,41 @@ void serviceHoldTimeouts() {
   }
 }
 
+// ---- speed test (320 WPM GO/NO-GO) ------------------------------------------------------
+// REPEAT <ch> <pulse> <period> <count>: fire ONE channel <count> times, a new
+// pulse starting every <period> ms. Bypasses REFIRE_MS on purpose -- this is
+// the test that measures it. Put the coil over a key in a text editor and
+// count the characters: count typed == count sent -> that period is reliable.
+// Limits: pulse 2..50 ms, period >= pulse+3, count 1..60. Any serial input aborts.
+void repeatTest(int ch, int pulse, int period, int count) {
+  if (ch < 0 || ch >= NUM_CHANNELS) { Serial.println(F("ERR bad channel")); return; }
+  if (pulse < 2) pulse = 2;
+  if (pulse > 50) pulse = 50;
+  if (period < pulse + 3) period = pulse + 3;
+  if (count < 1) count = 1;
+  if (count > 60) count = 60;
+  Serial.print(F("OK REPEAT ch ")); Serial.print(ch);
+  Serial.print(F(" pulse=")); Serial.print(pulse);
+  Serial.print(F(" period=")); Serial.print(period);
+  Serial.print(F(" count=")); Serial.print(count);
+  Serial.print(F("  (= ")); Serial.print(12000L / period);
+  Serial.println(F(" WPM if every key took this long)"));
+  delay(typeLeadMs);
+  uint32_t t0 = millis();
+  for (int i = 0; i < count; i++) {
+    if (Serial.available()) { allOff(); Serial.println(F("REPEAT aborted")); return; }
+    uint32_t start = t0 + (uint32_t)i * period;
+    while ((int32_t)(millis() - start) < 0) {}
+    setChannel((uint8_t)ch, true);
+    delay(pulse);
+    setChannel((uint8_t)ch, false);
+    fireCount++;
+  }
+  lastFireEndMs = lastFireEnd[ch] = millis();
+  Serial.print(F("REPEAT done in ")); Serial.print(millis() - t0);
+  Serial.println(F(" ms -- now count the characters"));
+}
+
 // ---- status ----------------------------------------------------------------------------------------------
 void printStatus() {
   Serial.print(F("STATUS pulse=")); Serial.print(defaultPulseMs);
@@ -542,6 +578,11 @@ void handleLine(char* line) {
       Serial.print(F("OK LEAD ")); Serial.println(typeLeadMs);
     } else { Serial.print(F("LEAD ")); Serial.println(typeLeadMs); }
 
+  } else if (strncmp(line, "REPEAT", 6) == 0) {
+    int ch = -1, p = 0, per = 0, n = 0;
+    if (sscanf(line + 6, "%d %d %d %d", &ch, &p, &per, &n) == 4) repeatTest(ch, p, per, n);
+    else Serial.println(F("ERR usage: REPEAT <ch> <pulse> <period> <count>"));
+
   } else if (strcmp(line, "STATUS") == 0) { printStatus();
   } else if (strcmp(line, "ALLOFF") == 0) {
     allOff();
@@ -571,7 +612,7 @@ void setup() {
   Serial.print(F("keyboard_v1 ready  cells=")); Serial.print(NUM_CELLS);
   Serial.print(F(" pulse=")); Serial.print(defaultPulseMs);
   Serial.print(F("ms map=")); Serial.println(loaded ? F("EEPROM") : F("empty"));
-  Serial.println(F("cmds: FIRE PULSE WALK TYPE KEY CHORD HOLD RELEASE MAP SAVE LOAD LEAD STATUS ALLOFF"));
+  Serial.println(F("cmds: FIRE PULSE WALK TYPE KEY CHORD HOLD RELEASE MAP SAVE LOAD LEAD REPEAT STATUS ALLOFF"));
 }
 
 void loop() {
