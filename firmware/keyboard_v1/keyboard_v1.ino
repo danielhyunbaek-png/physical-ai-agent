@@ -48,6 +48,26 @@
 //   SAVE / LOAD             persist / restore keymap to EEPROM
 //   LEAD [ms]               head-start delay before TYPE (default 1500)
 //   REPEAT <ch> <p> <per> <n> speed test: fire one coil n times every per ms
+//
+//   FAST-TYPE / STREAM (Oct 3 2026, brief 09 -- the 320 WPM Monkeytype path):
+//   Non-blocking, schedule-based. A new key-down every 12000/WPM ms; each coil
+//   ON for FPULSE ms; pulses of DIFFERENT keys overlap; the SAME key waits
+//   SAMEKEY ms start-to-start (measured Oct 3: 45 ms). Lowercase + space only
+//   (no shift in stream). Unmapped chars keep their time slot but fire nothing
+//   (so one mapped coil can be tested: FAST jajaja).
+//   Q <text>                append text VERBATIM to the stream queue (1024 B);
+//                           replies "K <free bytes>" (host waits for K = flow ctl)
+//   GO                      start typing the queue after LEAD ms
+//   END                     no more text coming: finish when the queue drains
+//   FAST <text>             = clear + Q <text> + END + GO  (Serial Monitor test)
+//   STOP                    abort now: queue cleared, all coils off, stats
+//   WPM [n]                 schedule speed (default 330 = 36.4 ms/char)
+//   FPULSE [ms]             stream pulse (default 20, measured Oct 3)
+//   SAMEKEY [ms]            same-coil start-to-start minimum (default 45)
+//   While a stream runs only Q/END/STOP/ALLOFF/STATUS/WPM/FPULSE/SAMEKEY are
+//   accepted (everything else blocks and would wreck the timing -> ERR busy).
+//   Finish prints:  DONE slots=.. fired=.. skipped=.. shift=.. same=..
+//                   under=.. lateMax=..us ms=.. wpm=..
 //   STATUS                  pulse, lead, mapped count, held channels, fire count
 //   ALLOFF                  force every channel low
 //
@@ -456,6 +476,218 @@ void repeatTest(int ch, int pulse, int period, int count) {
   Serial.println(F(" ms -- now count the characters"));
 }
 
+// ---- fast-TYPE stream scheduler (brief 09) ----------------------------------------------
+// Timeline rules, per char, in queue order:
+//   due = max( base slot,                         base advances 1 interval/char
+//              prev key-down + STREAM_STAGGER_US, keeps key-down ORDER on the Nuphy
+//              this coil's last start + SAMEKEY ) double letters (coil must return)
+// A same-key delay pushes only that char; the base timeline is kept, so the next
+// char is back on schedule. Empty queue at a due slot = underrun: when text
+// arrives the timeline restarts from "now" (no burst to catch up).
+const uint16_t SQ_SIZE  = 1024;                  // power of 2
+const uint16_t SQ_MASK  = SQ_SIZE - 1;
+const uint32_t STREAM_STAGGER_US = 10000;        // min start-to-start, different keys (UNVERIFIED)
+const uint32_t STREAM_STARVE_TIMEOUT_MS = 3000;  // no END and nothing to type -> finish
+const uint32_t STREAM_MAX_MS = 120000;           // hard cap on one run
+
+char     sq[SQ_SIZE];
+uint16_t sqHead = 0, sqTail = 0;                 // free-running indices
+inline uint16_t sqCount() { return (uint16_t)(sqTail - sqHead); }
+inline uint16_t sqFree()  { return SQ_SIZE - sqCount(); }
+
+uint16_t sWpm      = 330;
+uint32_t sIntervalUs = 12000000UL / 330;
+uint16_t sPulseMs  = 20;
+uint16_t sSameMs   = 45;
+
+enum StreamState : uint8_t { S_IDLE, S_LEAD, S_RUN };
+StreamState sState = S_IDLE;
+bool     sEnded = false, sStarved = false;
+uint32_t sLeadEndMs = 0, sStartMs = 0, sStarveMs = 0;
+uint32_t sNextDueUs = 0, sPrevStartUs = 0, sFirstUs = 0, sLastUs = 0;
+uint32_t sChStartUs[NUM_CHANNELS];               // last key-down per coil (this run)
+int8_t   sLut[128];                              // char -> ch; -1 unmapped, -2 needs shift
+struct ActivePulse { uint8_t ch; uint32_t offUs; };
+ActivePulse sAct[MAX_ON];
+uint8_t  sNAct = 0;
+// stats
+uint16_t stSlots, stFired, stSkipped, stShift, stSame, stUnder;
+uint32_t stLateMaxUs;
+
+inline bool usAfter(uint32_t a, uint32_t b) { return (int32_t)(a - b) > 0; }  // a later than b
+
+void streamSetWpm(int w) {
+  if (w < 30) w = 30;
+  if (w > 600) w = 600;
+  sWpm = (uint16_t)w;
+  sIntervalUs = 12000000UL / (uint32_t)w;
+}
+
+void buildLut() {
+  for (uint8_t c = 0; c < 128; c++) {
+    sLut[c] = -1;
+    if (c < 0x20 || c > 0x7E) continue;
+    int8_t ki; bool shift;
+    if (!asciiToKey((char)c, ki, shift)) continue;
+    if (shift) { sLut[c] = -2; continue; }
+    int ch = channelForKeyIndex(ki);
+    if (ch >= 0) sLut[c] = (int8_t)ch;
+  }
+}
+
+bool streamBusy() { return sState != S_IDLE; }
+
+// append text verbatim; returns false (nothing appended) if it doesn't fit
+bool streamEnqueue(const char* t) {
+  uint16_t n = strlen(t);
+  if (n > sqFree()) return false;
+  for (uint16_t i = 0; i < n; i++) sq[(sqTail++) & SQ_MASK] = t[i];
+  return true;
+}
+
+void streamGo() {
+  buildLut();
+  uint32_t now = micros();
+  for (uint8_t i = 0; i < NUM_CHANNELS; i++) sChStartUs[i] = now - 10000000UL;
+  sPrevStartUs = now - 10000000UL;
+  stSlots = stFired = stSkipped = stShift = stSame = stUnder = 0;
+  stLateMaxUs = 0;
+  sNAct = 0;
+  sStarved = false;
+  sStartMs = millis();
+  sLeadEndMs = sStartMs + typeLeadMs;
+  sState = S_LEAD;
+  Serial.print(F("OK GO in ")); Serial.print(typeLeadMs);
+  Serial.print(F(" ms  wpm=")); Serial.print(sWpm);
+  Serial.print(F(" pulse=")); Serial.print(sPulseMs);
+  Serial.print(F(" same=")); Serial.print(sSameMs);
+  Serial.print(F(" queued=")); Serial.println(sqCount());
+}
+
+void streamFinish(const __FlashStringHelper* why) {
+  // force every stream pulse off (held channels untouched unless STOP/ALLOFF)
+  for (uint8_t i = 0; i < sNAct; i++) {
+    shadow[sAct[i].ch >> 3] &= ~(1 << (sAct[i].ch & 7));
+    lastFireEnd[sAct[i].ch] = millis();
+  }
+  sNAct = 0;
+  writeShadow();
+  lastFireEndMs = millis();
+  sState = S_IDLE;
+  sEnded = false;
+  uint32_t span = (stSlots > 0) ? (sLastUs - sFirstUs + sIntervalUs) : 0;
+  Serial.print(F("DONE ")); Serial.print(why);
+  Serial.print(F(" slots=")); Serial.print(stSlots);
+  Serial.print(F(" fired=")); Serial.print(stFired);
+  Serial.print(F(" skipped=")); Serial.print(stSkipped);
+  Serial.print(F(" shift=")); Serial.print(stShift);
+  Serial.print(F(" same=")); Serial.print(stSame);
+  Serial.print(F(" under=")); Serial.print(stUnder);
+  Serial.print(F(" lateMax=")); Serial.print(stLateMaxUs);
+  Serial.print(F("us ms=")); Serial.print(span / 1000);
+  Serial.print(F(" wpm="));
+  if (span > 0) Serial.println((float)stSlots * 12000000.0f / (float)span, 1);
+  else Serial.println(0);
+  Serial.print(F("K ")); Serial.println(sqFree());
+}
+
+void streamStop() {
+  bool wasBusy = streamBusy();
+  sEnded = false;
+  sqHead = sqTail;                                // drop the queue
+  if (wasBusy) streamFinish(F("stopped"));
+  else { Serial.print(F("OK STOP  K ")); Serial.println(sqFree()); }
+}
+
+// one slot consumed (fired or silent): advance the base timeline
+void slotDone(uint32_t now) {
+  if (stSlots == 0) sFirstUs = now;
+  stSlots++;
+  sLastUs = now;
+  sNextDueUs += sIntervalUs;
+  if (usAfter(now, sNextDueUs)) sNextDueUs = now; // >1 slot behind: no catch-up burst
+}
+
+// call as often as possible (loop + between serial bytes); never blocks
+void streamService() {
+  if (sState == S_IDLE) return;
+  uint32_t nowMs = millis();
+  if (sState == S_LEAD) {
+    if ((int32_t)(nowMs - sLeadEndMs) < 0) return;
+    sState = S_RUN;
+    sNextDueUs = micros();
+  }
+  if (nowMs - sStartMs > STREAM_MAX_MS) { sqHead = sqTail; streamFinish(F("maxtime")); return; }
+
+  uint32_t now = micros();
+  bool dirty = false;
+
+  // 1) end expired pulses
+  for (uint8_t i = 0; i < sNAct; ) {
+    if (!usAfter(sAct[i].offUs, now)) {
+      uint8_t ch = sAct[i].ch;
+      shadow[ch >> 3] &= ~(1 << (ch & 7));
+      lastFireEnd[ch] = nowMs;
+      fireCount++;
+      sAct[i] = sAct[--sNAct];
+      dirty = true;
+    } else i++;
+  }
+
+  // 2) next char
+  if (sqCount() > 0) {
+    if (sStarved) { sStarved = false; sNextDueUs = now; }   // restart timeline after underrun
+    char c = sq[sqHead & SQ_MASK];
+    int8_t ch = ((uint8_t)c < 128) ? sLut[(uint8_t)c] : -1;
+    if (ch < 0) {                                          // silent slot
+      if (!usAfter(sNextDueUs, now)) {
+        sqHead++;
+        if (ch == -2) stShift++; else stSkipped++;
+        slotDone(now);
+      }
+    } else {
+      uint32_t due = sNextDueUs;
+      bool sameHit = false;
+      uint32_t t = sPrevStartUs + STREAM_STAGGER_US;
+      if (usAfter(t, due)) due = t;
+      t = sChStartUs[ch] + (uint32_t)sSameMs * 1000UL;
+      if (usAfter(t, due)) { due = t; sameHit = true; }
+      bool coilBusy = channelIsOn((uint8_t)ch);            // still on (or HELD)
+      if (!usAfter(due, now) && !coilBusy && sNAct < MAX_ON && countOn() < MAX_ON) {
+        shadow[ch >> 3] |= (1 << (ch & 7));
+        dirty = true;
+        sAct[sNAct].ch = (uint8_t)ch;
+        sAct[sNAct].offUs = now + (uint32_t)sPulseMs * 1000UL;
+        sNAct++;
+        sqHead++;
+        uint32_t late = now - due;
+        if (late > stLateMaxUs) stLateMaxUs = late;
+        if (sameHit) stSame++;
+        stFired++;
+        sChStartUs[ch] = now;
+        sPrevStartUs = now;
+        slotDone(now);
+      }
+    }
+  } else if (sState == S_RUN) {
+    // 3) nothing queued
+    if (!sStarved && !usAfter(sNextDueUs, now)) {
+      sStarved = true;
+      sStarveMs = nowMs;
+      if (stSlots > 0 && !sEnded) stUnder++;
+    }
+    if (dirty) { writeShadow(); dirty = false; }
+    if (sNAct == 0) {
+      if (sEnded) { streamFinish(F("end")); return; }
+      if (sStarved && nowMs - sStarveMs > STREAM_STARVE_TIMEOUT_MS) {
+        streamFinish(F("timeout")); return;
+      }
+    }
+  }
+  if (dirty) writeShadow();
+}
+
+
 // ---- status ----------------------------------------------------------------------------------------------
 void printStatus() {
   Serial.print(F("STATUS pulse=")); Serial.print(defaultPulseMs);
@@ -466,6 +698,12 @@ void printStatus() {
   for (uint8_t ch = 0; ch < NUM_CHANNELS; ch++) if (keymap[ch] >= 0) n++;
   Serial.print(F(" mapped=")); Serial.print(n);
   Serial.print('/'); Serial.println(NUM_KEYS);
+  Serial.print(F("  stream ")); Serial.print(streamBusy() ? F("RUNNING") : F("idle"));
+  Serial.print(F(" wpm=")); Serial.print(sWpm);
+  Serial.print(F(" fpulse=")); Serial.print(sPulseMs);
+  Serial.print(F(" samekey=")); Serial.print(sSameMs);
+  Serial.print(F(" queued=")); Serial.print(sqCount());
+  Serial.print(F(" free=")); Serial.println(sqFree());
   for (uint8_t ch = 0; ch < NUM_CHANNELS; ch++)
     if (holdStart[ch]) {
       Serial.print(F("  held: ch ")); Serial.println(ch);
@@ -473,10 +711,83 @@ void printStatus() {
 }
 
 // ---- serial parser ------------------------------------------------------------------------------------------
-char    buf[128];
+char    buf[200];                      // Q lines from the reader are <= 120 chars
 uint8_t bufLen = 0;
 
+// true if line is exactly <cmd> or <cmd> followed by a space
+bool isCmd(const char* line, const char* cmd) {
+  size_t n = strlen(cmd);
+  return strncmp(line, cmd, n) == 0 && (line[n] == ' ' || line[n] == 0);
+}
+
+// stream + tuning commands; returns true if the line was one of them
+bool handleStreamLine(char* line) {
+  if (line[0] == 'Q' && line[1] == ' ') {               // Q <text>, verbatim
+    if (!streamEnqueue(line + 2)) {
+      Serial.print(F("ERR qfull K ")); Serial.println(sqFree());
+    } else { Serial.print(F("K ")); Serial.println(sqFree()); }
+    return true;
+  }
+  if (isCmd(line, "GO")) {
+    if (streamBusy()) Serial.println(F("ERR already running"));
+    else streamGo();                                  // an END sent earlier still counts
+    return true;
+  }
+  if (isCmd(line, "END")) {
+    sEnded = true;
+    Serial.println(F("OK END"));
+    return true;
+  }
+  if (isCmd(line, "STOP")) { streamStop(); return true; }
+  if (isCmd(line, "FAST")) {
+    if (streamBusy()) { Serial.println(F("ERR busy (STOP first)")); return true; }
+    const char* txt = line + 4;
+    if (*txt == ' ') txt++;                              // keep any further spaces
+    if (*txt == 0) { Serial.println(F("ERR usage: FAST <text>")); return true; }
+    sqHead = sqTail;
+    streamEnqueue(txt);
+    streamGo();
+    sEnded = true;
+    return true;
+  }
+  if (isCmd(line, "WPM")) {
+    int w = -1;
+    if (sscanf(line + 3, "%d", &w) == 1 && w > 0) streamSetWpm(w);
+    Serial.print(F("WPM ")); Serial.print(sWpm);
+    Serial.print(F(" (")); Serial.print(sIntervalUs); Serial.println(F(" us/char)"));
+    return true;
+  }
+  if (isCmd(line, "FPULSE")) {
+    int ms = -1;
+    if (sscanf(line + 6, "%d", &ms) == 1 && ms > 0) {
+      if (ms < 5) ms = 5;
+      if (ms > 50) ms = 50;
+      sPulseMs = (uint16_t)ms;
+    }
+    Serial.print(F("FPULSE ")); Serial.println(sPulseMs);
+    return true;
+  }
+  if (isCmd(line, "SAMEKEY")) {
+    int ms = -1;
+    if (sscanf(line + 7, "%d", &ms) == 1 && ms > 0) {
+      if (ms < 20) ms = 20;
+      if (ms > 200) ms = 200;
+      sSameMs = (uint16_t)ms;
+    }
+    Serial.print(F("SAMEKEY ")); Serial.println(sSameMs);
+    return true;
+  }
+  return false;
+}
+
 void handleLine(char* line) {
+  if (handleStreamLine(line)) return;
+  if (streamBusy()) {                                  // only safe commands mid-run
+    if (strcmp(line, "STATUS") == 0) { printStatus(); return; }
+    if (strcmp(line, "ALLOFF") == 0) { sqHead = sqTail; streamFinish(F("alloff")); allOff(); return; }
+    if (line[0] != 0) Serial.println(F("ERR busy (STOP first)"));
+    return;
+  }
   if (strncmp(line, "FIRE", 4) == 0) {
     int ch = -1, ms = -1;
     int n = sscanf(line + 4, "%d %d", &ch, &ms);
@@ -613,10 +924,26 @@ void setup() {
   Serial.print(F(" pulse=")); Serial.print(defaultPulseMs);
   Serial.print(F("ms map=")); Serial.println(loaded ? F("EEPROM") : F("empty"));
   Serial.println(F("cmds: FIRE PULSE WALK TYPE KEY CHORD HOLD RELEASE MAP SAVE LOAD LEAD REPEAT STATUS ALLOFF"));
+  Serial.println(F("fast: Q GO END FAST STOP WPM FPULSE SAMEKEY"));
+}
+
+// Oct 5 2026 safety net: noise on CLK/LATCH can latch random coils ON and,
+// with the firmware idle, they stayed ON for minutes (pop + smoke incident).
+// Re-assert the intended state (shadow[]) every REFRESH_MS while no stream runs,
+// so any glitch is overwritten within a few ms. Costs ~1.3 ms per refresh.
+const uint16_t REFRESH_MS = 5;
+uint32_t lastRefreshMs = 0;
+void refreshRegisters() {
+  if (streamBusy()) return;                 // stream rewrites shadow itself
+  uint32_t now = millis();
+  if (now - lastRefreshMs >= REFRESH_MS) { lastRefreshMs = now; writeShadow(); }
 }
 
 void loop() {
+  refreshRegisters();
+  streamService();
   while (Serial.available()) {
+    streamService();                   // keep the schedule alive between bytes
     char c = Serial.read();
     if (c == '\r') continue;
     if (c == '\n' || bufLen >= sizeof(buf) - 1) {

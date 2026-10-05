@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyboard Auto-Map</title>
+<style>
+:root{--bg:#fafaf8;--fg:#1d1d1b;--mut:#6b6b66;--line:#ddd9d0;--ok:#1f7a3a;--warn:#b26a00;--bad:#b3261e;--acc:#2856c7;--row:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--fg:#ecebe6;--mut:#9a998f;--line:#34332f;--ok:#5cc47d;--warn:#e0a040;--bad:#ef6a5f;--acc:#7da2ff;--row:#1e1e1c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:16px;max-width:1100px;margin:auto}
+h1{font-size:20px;margin:0 0 4px}
+p{margin:4px 0;color:var(--mut)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+button{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--row);color:var(--fg);cursor:pointer}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+button:disabled{opacity:.4;cursor:default}
+input{font:inherit;width:60px;padding:4px;border:1px solid var(--line);border-radius:4px;background:var(--row);color:var(--fg)}
+#status{padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--row);font-weight:600;min-height:20px}
+#status.bad{border-color:var(--bad);color:var(--bad)}
+#summary{margin:10px 0;color:var(--mut)}
+#summary b{color:var(--fg)}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left}
+th{position:sticky;top:0;background:var(--bg);font-weight:600}
+tr.cur td{background:color-mix(in srgb,var(--acc) 15%,transparent)}
+tr.dup td{color:var(--bad)}
+tr.none td.det{color:var(--warn)}
+td.det{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+select{font:inherit;padding:2px;background:var(--row);color:var(--fg);border:1px solid var(--line);border-radius:4px}
+td button{padding:2px 8px;font-size:12px}
+pre{background:var(--row);border:1px solid var(--line);border-radius:6px;padding:8px;max-height:180px;overflow:auto;font-size:12px}
+</style>
+</head>
+<body>
+<h1>Keyboard Auto-Map</h1>
+<p>Fires every channel 0–87 one at a time and records which key the Nuphy reports. Chrome or Edge only, with the Nuphy plugged in by USB.</p>
+<p><b>While it runs:</b> keep this window in front and don't touch the keyboard or mouse. If the window loses focus, the run pauses.</p>
+
+<div class="bar">
+  <button id="bConnect" class="primary">1. Connect Mega</button>
+  <button id="bRun" disabled>2. Run auto-map</button>
+  <button id="bPause" disabled>Pause</button>
+  <button id="bSend" disabled>3. Send MAP + SAVE</button>
+  <label>pulse ms <input id="pulse" value="35"></label>
+  <label>gap ms <input id="gap" value="700"></label>
+  <label>start ch <input id="startCh" value="0"></label>
+</div>
+<div id="status">Not connected.</div>
+<div id="summary"></div>
+
+<table>
+  <thead><tr><th>ch</th><th>board</th><th>silk label</th><th>detected</th><th>key</th><th></th></tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<h3>Serial log</h3>
+<pre id="log"></pre>
+
+<script>
+"use strict";
+// Firmware KEY_NAMES (keyboard_v1.ino), CSV order.
+const KEY_NAMES = ["Esc","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
+ "PrtSc","Cust1","Cust2",
+ "`","1","2","3","4","5","6","7","8","9","0","-","=","Bksp","nav-Home",
+ "Tab","Q","W","E","R","T","Y","U","I","O","P","[","]","\\","nav-PgUp",
+ "Caps","A","S","D","F","G","H","J","K","L",";","'","Enter","nav-PgDn",
+ "LShift","Z","X","C","V","B","N","M",",",".","/","RShift","Up","nav-End",
+ "LCtrl","LOpt","LCmd","Space","RCmd","Fn","RCtrl","Left","Down","Right"];
+
+// KeyboardEvent.code -> firmware name
+const CODE_TO_NAME = {Escape:"Esc",Backquote:"`",Minus:"-",Equal:"=",Backspace:"Bksp",Home:"nav-Home",
+ Tab:"Tab",BracketLeft:"[",BracketRight:"]",Backslash:"\\",PageUp:"nav-PgUp",CapsLock:"Caps",
+ Semicolon:";",Quote:"'",Enter:"Enter",PageDown:"nav-PgDn",ShiftLeft:"LShift",Comma:",",Period:".",
+ Slash:"/",ShiftRight:"RShift",ArrowUp:"Up",End:"nav-End",ControlLeft:"LCtrl",AltLeft:"LOpt",
+ MetaLeft:"LCmd",Space:"Space",MetaRight:"RCmd",ControlRight:"RCtrl",ArrowLeft:"Left",
+ ArrowDown:"Down",ArrowRight:"Right",PrintScreen:"PrtSc"};
+for (let i=1;i<=12;i++) CODE_TO_NAME["F"+i]="F"+i;
+for (let i=0;i<=9;i++) CODE_TO_NAME["Digit"+i]=String(i);
+for (const c of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") CODE_TO_NAME["Key"+c]=c;
+
+const NCH = 88;
+const rows = [];   // {ch, detected, key}
+const $ = id => document.getElementById(id);
+const st = {port:null, writer:null, reader:null, buf:"", waiters:[], running:false, paused:false, armed:false, caught:[], cur:-1};
+
+function boardOf(ch){const cell=Math.floor(ch/8)+1; return cell<=4?"A":cell<=8?"B":"C";}
+function silkOf(ch){const cell=Math.floor(ch/8)+1; const local=cell<=4?cell:cell<=8?cell-4:cell-8; return "C"+local+"-OUT"+(ch%8+1);}
+
+function log(s){const l=$("log"); l.textContent+=s+"\n"; l.scrollTop=l.scrollHeight;}
+function status(s,bad){$("status").textContent=s; $("status").className=bad?"bad":"";}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+// ---------- table ----------
+function buildTable(){
+  const tb=$("tbody"); tb.innerHTML="";
+  for (let ch=0; ch<NCH; ch++){
+    rows[ch]={ch, detected:"", key:""};
+    const tr=document.createElement("tr"); tr.id="r"+ch;
+    const sel=document.createElement("select");
+    sel.innerHTML='<option value="">(none / empty)</option>'+KEY_NAMES.map(n=>`<option>${n.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</option>`).join("");
+    sel.onchange=()=>{rows[ch].key=sel.value; refresh();};
+    const fb=document.createElement("button"); fb.textContent="Fire"; fb.title="Fire this channel again (watch/listen which key moves)";
+    fb.onclick=()=>fireOne(ch);
+    tr.innerHTML=`<td>${ch}</td><td>${boardOf(ch)}</td><td>${silkOf(ch)}</td><td class="det"></td><td></td><td></td>`;
+    tr.children[4].appendChild(sel); tr.children[5].appendChild(fb);
+    tb.appendChild(tr);
+  }
+  refresh();
+}
+function refresh(){
+  const count={};
+  rows.forEach(r=>{ if(r.key) count[r.key]=(count[r.key]||0)+1; });
+  rows.forEach(r=>{
+    const tr=$("r"+r.ch);
+    tr.children[3].textContent=r.detected;
+    const sel=tr.querySelector("select"); if (sel.value!==r.key) sel.value=r.key;
+    tr.classList.toggle("dup", !!r.key && count[r.key]>1);
+    tr.classList.toggle("none", r.detected.startsWith("no key"));
+    tr.classList.toggle("cur", r.ch===st.cur);
+  });
+  const mapped=new Set(rows.filter(r=>r.key).map(r=>r.key));
+  const missing=KEY_NAMES.filter(n=>!mapped.has(n));
+  const dups=Object.keys(count).filter(k=>count[k]>1);
+  const noKey=rows.filter(r=>r.detected.startsWith("no key")).map(r=>r.ch);
+  $("summary").innerHTML=
+    `<b>${mapped.size}/84</b> keys mapped. `+
+    (dups.length?`<b style="color:var(--bad)">Duplicates: ${dups.join(" ")}</b>. `:"")+
+    (noKey.length?`Channels with no key detected: <b>${noKey.join(", ")}</b> (4 of these are expected to be empty). `:"")+
+    (missing.length && missing.length<84?`Keys not found yet: <b>${missing.join(" ")}</b>`:"");
+}
+
+// ---------- key capture ----------
+function onKey(e){
+  if (!st.running && !st.armed) return;
+  e.preventDefault(); e.stopPropagation();
+  if (e.repeat) return;
+  if (st.armed) st.caught.push(e.code || ("key:"+e.key));
+}
+window.addEventListener("keydown", onKey, true);
+// Caps Lock on macOS: only keydown when turning ON, only keyup when turning OFF
+window.addEventListener("keyup", e=>{
+  if (!st.running && !st.armed) return;
+  e.preventDefault(); e.stopPropagation();
+  if (st.armed && e.code==="CapsLock") st.caught.push("CapsLock");
+}, true);
+window.addEventListener("blur", ()=>{
+  if (st.running && !st.paused){ st.paused=true; $("bPause").textContent="Resume";
+    status("Paused: this window lost focus (a key may have triggered something on the Mac, e.g. a screenshot tool; press Esc if needed). Click back in this page, then Resume.", true); }
+});
+
+// ---------- serial ----------
+async function connect(){
+  try{
+    st.port = window.AM_FAKE ? makeFakePort() : await navigator.serial.requestPort();
+    await st.port.open({baudRate:115200});
+    st.writer = st.port.writable.getWriter();
+    readLoop();
+    status("Connected. Waiting for the Mega to restart (opening the port resets it)…");
+    const ok = await waitFor(l=>l.includes("ready"), 4000);
+    await sleep(300);
+    status(ok ? "Mega ready. Turn the PSU on now (USB first, then 12V), click into this page, then Run." :
+                "Connected (no ready banner seen, continuing). Turn the PSU on, then Run.");
+    $("bConnect").disabled=true; $("bRun").disabled=false; $("bSend").disabled=false;
+  }catch(err){ status("Connect failed: "+err.message, true); }
+}
+async function readLoop(){
+  const reader = st.port.readable.getReader(); st.reader=reader;
+  const dec=new TextDecoder();
+  try{
+    for(;;){
+      const {value,done}=await reader.read(); if(done) break;
+      st.buf+=dec.decode(value,{stream:true});
+      let i;
+      while((i=st.buf.indexOf("\n"))>=0){
+        const line=st.buf.slice(0,i).replace(/\r$/,""); st.buf=st.buf.slice(i+1);
+        if(!line) continue;
+        log("< "+line);
+        st.waiters = st.waiters.filter(w=>{ if(w.test(line)){ w.res(line); return false;} return true; });
+      }
+    }
+  }catch(e){ log("read error: "+e.message); }
+}
+function waitFor(test, timeout){
+  return new Promise(res=>{
+    const w={test,res}; st.waiters.push(w);
+    setTimeout(()=>{ if(st.waiters.includes(w)){ st.waiters=st.waiters.filter(x=>x!==w); res(null);} }, timeout);
+  });
+}
+async function send(cmd){ log("> "+cmd); await st.writer.write(new TextEncoder().encode(cmd+"\n")); }
+async function cmd(c, test, timeout=1500){ const p=waitFor(test,timeout); await send(c); return p; }
+
+// ---------- run ----------
+function identify(caught){
+  const codes=[...new Set(caught)];
+  if (!codes.length) return {detected:"no key (empty, Fn, or a Mac-handled key)", key:""};
+  const names=codes.map(c=>CODE_TO_NAME[c]||null);
+  const firstKnown=names.find(n=>n);
+  const det=codes.join(" + ");
+  return {detected: codes.length>1 ? det+"  (check!)" : det, key: firstKnown||""};
+}
+async function fireCapture(ch){
+  st.caught=[]; st.armed=true;
+  const pms=Math.max(5,Math.min(200,+$("pulse").value||35));
+  const r = await cmd("FIRE "+ch+" "+pms, l=>l.startsWith("OK FIRE "+ch)||l.startsWith("ERR"), 1500);
+  await sleep(Math.max(250, +$("gap").value||700));
+  st.armed=false;
+  if (!r || r.startsWith("ERR")) return {detected:"serial error: "+(r||"timeout"), key:""};
+  return identify(st.caught);
+}
+async function run(){
+  if (st.running) return;
+  st.running=true; st.paused=false;
+  $("bRun").disabled=true; $("bPause").disabled=false; $("bSend").disabled=true;
+  window.focus();
+  const start=Math.max(0,Math.min(87,+$("startCh").value||0));
+  for (let ch=start; ch<NCH; ch++){
+    while (st.paused) await sleep(150);
+    if (!st.running) break;
+    st.cur=ch; refresh();
+    $("r"+ch).scrollIntoView({block:"nearest"});
+    status(`Firing ch ${ch} (${boardOf(ch)} ${silkOf(ch)})… hands off the keyboard.`);
+    const res = await fireCapture(ch);
+    rows[ch].detected=res.detected; rows[ch].key=res.key; refresh();
+  }
+  st.cur=-1; st.running=false; refresh();
+  $("bRun").disabled=false; $("bPause").disabled=true; $("bSend").disabled=false;
+  status("Run finished. Fix any orange/red rows with the dropdowns (use Fire to re-test one), then Send MAP + SAVE.");
+}
+async function fireOne(ch){
+  if (!st.writer || st.running) return;
+  st.cur=ch; refresh();
+  const res=await fireCapture(ch);
+  rows[ch].detected=res.detected; if(res.key) rows[ch].key=res.key;
+  st.cur=-1; refresh();
+  status(`ch ${ch}: ${res.detected}`);
+}
+function togglePause(){
+  st.paused=!st.paused; $("bPause").textContent=st.paused?"Resume":"Pause";
+  if(!st.paused){ window.focus(); status("Resumed."); }
+}
+async function sendMap(){
+  if (st.running) return;
+  $("bSend").disabled=true;
+  const dupCount={}; rows.forEach(r=>{ if(r.key) dupCount[r.key]=(dupCount[r.key]||0)+1; });
+  if (Object.values(dupCount).some(n=>n>1)){ status("Fix the duplicate (red) rows first.", true); $("bSend").disabled=false; return; }
+  let errs=0, n=0;
+  for (const r of rows){
+    const c = r.key ? `MAP ${r.ch} ${r.key}` : `MAP ${r.ch} -`;
+    const reply = await cmd(c, l=>l.startsWith("OK MAP "+r.ch)||l.startsWith("ERR"), 1500);
+    if (!reply || reply.startsWith("ERR")) errs++; else if (r.key) n++;
+    status(`Sending… ch ${r.ch}`);
+  }
+  const s = await cmd("SAVE", l=>l.startsWith("OK SAVE")||l.startsWith("ERR"), 3000);
+  status(errs ? `${errs} MAP commands failed (see log).` : `Sent ${n} mappings${s&&s.startsWith("OK SAVE")?" and SAVED to EEPROM":" (SAVE not confirmed, check log)"}. Next: WALK and TYPE hello world.`, !!errs);
+  $("bSend").disabled=false;
+}
+
+// ---------- fake port for dry runs (window.AM_FAKE = true before clicking Connect) ----------
+function makeFakePort(){
+  const fakeMap = window.AM_FAKE_MAP || {};
+  let ctrl; const enc=new TextEncoder();
+  const emit = s => ctrl && ctrl.enqueue(enc.encode(s+"\r\n"));
+  let lineBuf="";
+  return {
+    async open(){ setTimeout(()=>emit("keyboard_v1 ready  cells=11 pulse=22ms map=empty"),400); },
+    readable: new ReadableStream({start(c){ctrl=c;}}),
+    writable: new WritableStream({write(chunk){
+      lineBuf+=new TextDecoder().decode(chunk);
+      let i; while((i=lineBuf.indexOf("\n"))>=0){
+        const line=lineBuf.slice(0,i); lineBuf=lineBuf.slice(i+1);
+        let m;
+        if ((m=line.match(/^FIRE (\d+)/))){
+          const ch=+m[1], code=fakeMap[ch];
+          setTimeout(()=>{ if(code){ window.dispatchEvent(new KeyboardEvent("keydown",{code,bubbles:true}));
+                                     window.dispatchEvent(new KeyboardEvent("keyup",{code,bubbles:true})); }
+                           emit(`OK FIRE ${ch} 22`); }, 30);
+        } else if ((m=line.match(/^MAP (\d+) (\S+)/))){
+          setTimeout(()=>emit(m[2]==="-"?`OK MAP ${m[1]} cleared`:`OK MAP ${m[1]} ${m[2]}`),5);
+        } else if (line==="SAVE") setTimeout(()=>emit("OK SAVE"),5);
+      }
+    }})
+  };
+}
+
+$("bConnect").onclick=connect; $("bRun").onclick=run; $("bPause").onclick=togglePause; $("bSend").onclick=sendMap;
+if (!("serial" in navigator) && !window.AM_FAKE) status("This browser has no Web Serial. Open this file in Chrome or Edge.", true);
+buildTable();
+</script>
+</body>
+</html>
