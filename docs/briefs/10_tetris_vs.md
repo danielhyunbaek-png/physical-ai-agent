@@ -40,9 +40,9 @@
 - Later upgrade, not for this video: our own hold-a-mouse-button push-to-talk with a local speech model.
 
 ## Daniel's to-do
-- [ ] Anthropic API key (console.anthropic.com, separate from the Pro plan; $5 credit is plenty). `export ANTHROPIC_API_KEY=...` in every new Terminal.
-- [ ] Map keys + `SAVE`: **Enter, LShift, Bksp**, digits, and `( ) : = ' " . , - _ [ ] + * < > / #` (Serial Monitor: `FIRE <ch>` → watch → `MAP <ch> <Name>` → `SAVE`). `python3 tools/selfwrite/selfwrite.py check` lists what's missing.
-- [ ] `pip install pygame` in the `agent/.venv`.
+- [x] (done Oct 7) Anthropic API key (console.anthropic.com, separate from the Pro plan; $5 credit is plenty). `export ANTHROPIC_API_KEY=...` in every new Terminal.
+- [x] (done Oct 7: 67 keys, nothing missing; `-` maps as `MAP 72 Minus`) Map keys + `SAVE`: **Enter, LShift, Bksp**, digits, and `( ) : = ' " . , - _ [ ] + * < > / #` (Serial Monitor: `FIRE <ch>` → watch → `MAP <ch> <Name>` → `SAVE`). `python3 tools/selfwrite/selfwrite.py check` lists what's missing.
+- [x] (done Oct 7, pygame 2.6.1) `pip install pygame` in the `agent/.venv`.
 - [ ] Confirm Wispr Flow can type into Terminal (and whether its hotkey can be a mouse button; otherwise hold its normal key).
 - [ ] Find the melted ULN2803A for b-roll (optional).
 
