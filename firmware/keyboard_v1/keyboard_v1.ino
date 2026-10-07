@@ -518,7 +518,7 @@ inline bool usAfter(uint32_t a, uint32_t b) { return (int32_t)(a - b) > 0; }  //
 
 void streamSetWpm(int w) {
   if (w < 30) w = 30;
-  if (w > 600) w = 600;
+  if (w > 1000) w = 1000;              // Oct 5: was 600 (541 result); 10 ms stagger allows ~1200
   sWpm = (uint16_t)w;
   sIntervalUs = 12000000UL / (uint32_t)w;
 }
