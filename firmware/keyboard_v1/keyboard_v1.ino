@@ -863,6 +863,9 @@ void handleLine(char* line) {
         Serial.print(F("OK MAP ")); Serial.print(ch); Serial.println(F(" cleared"));
       } else {
         int ki = findKeyByName(name);
+        // "-" alone means "clear", so the minus key is mapped as "Minus"
+        if (ki < 0 && (strcmp(name, "Minus") == 0 || strcmp(name, "minus") == 0))
+          ki = findKeyByName("-");
         if (ki < 0) { Serial.print(F("ERR unknown key name: ")); Serial.println(name); }
         else {
           int prev = channelForKeyIndex((int8_t)ki);
