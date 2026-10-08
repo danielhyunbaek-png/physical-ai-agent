@@ -1,6 +1,8 @@
 # Brief 10: "Me vs Claude: Tetris" (Video 2)
 
-**Status (Oct 6, 2026, 11pm):** plan approved by Daniel. Nothing built yet. Building starts **after the ENGR midterm (Fri Oct 9)** unless Daniel says otherwise. Replaces `tools/selfwrite/` as the Video 2 build (selfwrite is kept on disk; its Keyboard helper gets reused).
+**Status (Oct 7, 2026, 1pm):** BUILT and dry-tested in `tools/tetris_vs/` (Daniel chose to build before the midterm). Run card + verification: `tools/tetris_vs/README.md`. Not yet run on the robot or against the real API.
+
+**Status (Oct 6, 2026, 11pm):** plan approved by Daniel. Replaces `tools/selfwrite/` as the Video 2 build (selfwrite is kept on disk; its Keyboard helper gets reused).
 
 ## Why this video
 - Answers the top comment on Video 1 (698 likes): "let Claude control it and write its own software."
