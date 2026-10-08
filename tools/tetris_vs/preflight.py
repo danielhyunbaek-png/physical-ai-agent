@@ -119,7 +119,7 @@ def run_headless(path, secs=40):
     if r.get("presses", 0) < 20:
         problems.append("Claude's player pressed only %d keys" % r.get("presses", 0))
     lines = max(r.get("claude_lines", 0), r.get("best_claude_lines", 0))
-    if r.get("wins_DANIEL"):
+    if r.get("wins_HUMAN") or r.get("wins_DANIEL"):
         problems.append("Claude's player LOST to a simulated opponent that never "
                         "hard-drops (it is far too weak to lose to)")
     if lines < 1:

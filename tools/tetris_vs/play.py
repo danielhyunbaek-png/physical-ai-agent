@@ -87,7 +87,7 @@ def call_claude(messages):
 def get_game(sentence, typeable, run_dir, fake):
     spec = open(os.path.join(HERE, "game_spec.md")).read()
     messages = [{"role": "user", "content":
-                 'Daniel just said to you, out loud: "%s"\n\n%s' % (sentence, spec)}]
+                 'A human just said to you, out loud: "%s"\n\n%s' % (sentence, spec)}]
     for attempt in range(1, 5):
         if fake:
             raw = open(os.path.join(HERE, "reference_game.py")).read()
@@ -136,6 +136,8 @@ def main():
     robot_mode = "sim" if a.dry else "real"
 
     if a.game:
+        if not os.path.isfile(a.game):
+            sys.exit("no such game file: %s  (tip: type runs/ then press Tab)" % a.game)
         return launch(os.path.abspath(a.game), robot_mode, None)
 
     stamp = time.strftime("%Y%m%d-%H%M%S")
@@ -179,6 +181,10 @@ def main():
         say("the robot will now type %d lines, %d keystrokes (~%d min)." % (
             code.count("\n"), n, n * editor.SEC_PER_CHAR / 60 + 1))
         say("click THIS Terminal window. Ctrl-P pause, Ctrl-R resume, Ctrl-C abort.")
+        try:
+            input("\033[1;35m   press Enter when the camera is rolling and the PSU is ON > \033[0m")
+        except (EOFError, KeyboardInterrupt):
+            sys.exit("\nbye")
         for i in (5, 4, 3, 2, 1):
             sys.stdout.write("\r   starting in %d " % i)
             sys.stdout.flush()

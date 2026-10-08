@@ -1,6 +1,6 @@
 Write a complete two-player VERSUS Tetris game in ONE Python file.
 
-Context: you are playing against Daniel, the person who just spoke to you. Every
+Context: you are playing against a human, the person who just spoke to you. Every
 character of your file will be typed by a physical robot keyboard (84 solenoids
 pressing real keys), then run. During the game YOU play too, but you can only
 act by pressing real keys through those same solenoids, so every move you make
@@ -30,7 +30,7 @@ is physically slow and a press can occasionally be missed. Design for that.
     robot.report(name, value)   # status for the test harness, see below
 
 ## Controls (two keyboards feed the same Mac, so the keys MUST differ)
-- DANIEL (left board, Mac's built-in keyboard): Left/Right arrows move,
+- HUMAN (left board, Mac's built-in keyboard): Left/Right arrows move,
   Up rotates clockwise, Down soft-drops one row, Right Shift OR Return
   hard-drops.
 - CLAUDE (right board, the robot keyboard): J left, L right, I rotate
@@ -52,13 +52,13 @@ is physically slow and a press can occasionally be missed. Design for that.
 - If a new piece cannot spawn, that player tops out and the OTHER player wins.
 
 ## Screens
-- Menu: big title "DANIEL vs CLAUDE", the controls for both players,
+- Menu: big title "HUMAN vs CLAUDE", the controls for both players,
   "click to start". A mouse click starts a 3-2-1 countdown, then play.
-- Play: DANIEL board on the left, CLAUDE board on the right, names above them,
+- Play: HUMAN board on the left, CLAUDE board on the right, names above them,
   lines cleared, next-piece preview for each, match timer in the middle.
-- Game over: a big "CLAUDE WINS" or "DANIEL WINS" overlay plus
+- Game over: a big "CLAUDE WINS" or "HUMAN WINS" overlay plus
   "press R for rematch". R starts a new countdown with a new seed and keeps a
-  running match score (e.g. "DANIEL 1 - 3 CLAUDE").
+  running match score (e.g. "HUMAN 1 - 3 CLAUDE").
 
 ## Claude's player (the important part)
 - When Claude's piece spawns, pick a placement: for every rotation and every
@@ -80,16 +80,16 @@ variants per moment, picked at random:
 - when the match starts,
 - when Claude clears 2+ lines (sending garbage),
 - when Claude clears 4 lines at once,
-- when Daniel tops out (Claude wins),
-- when Claude tops out (Daniel wins; be a gracious but salty loser).
-You know the context: Daniel is a college freshman who built this robot
-keyboard; it went viral typing 618 words per minute; it has a sagging plate
-and once melted a chip at 1am; you are an AI who can only move by solenoid.
+- when the human tops out (Claude wins),
+- when Claude tops out (the human wins; be a gracious but salty loser).
+Keep it general: call the opponent "human", never use a name, and never
+mention who built the robot or anything about its history. Human-vs-machine
+banter, and jokes about you moving only by solenoid, are fine.
 
 ## Reports for the test harness (required)
     robot.report("state", s)        # s in "menu","countdown","playing","over"
     robot.report("claude_lines", n) # total lines Claude cleared this match
     robot.report("daniel_lines", n)
-    robot.report("winner", w)       # "CLAUDE" or "DANIEL", when a match ends
+    robot.report("winner", w)       # "CLAUDE" or "HUMAN", when a match ends
 
 Reply with ONLY the Python code. No markdown fences, no explanation.

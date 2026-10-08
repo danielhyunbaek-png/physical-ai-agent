@@ -18,19 +18,19 @@ COLORS = {"I": (0, 220, 240), "O": (240, 220, 0), "T": (170, 60, 230),
           "S": (60, 220, 80), "Z": (240, 60, 60), "J": (50, 100, 240),
           "L": (250, 150, 30), "G": (110, 110, 110)}
 TALK = {
-    "start": ["Good luck, Daniel. You built me. Big mistake.",
-              "I type 618 words a minute. Tetris is easy.",
+    "start": ["Good luck, human. You will need it.",
+              "Human versus machine. Place your bets.",
               "Let's go. My solenoids are warmed up."],
     "garbage": ["Here, have some garbage. It's a gift.",
                 "Special delivery. Mostly gray blocks.",
-                "Incoming trash. Like your sleep schedule."],
-    "tetris": ["Tetris. Did you see that, Daniel?",
-               "Four lines. Even with a sagging plate."],
-    "win": ["Game over. The robot wins again.",
-            "Maybe study for your midterm instead.",
-            "Good game. For a human."],
-    "lose": ["Fine. My plate was sagging.",
-             "You only won because I melted a chip once.",
+                "Incoming trash. Enjoy."],
+    "tetris": ["Tetris. Did you see that, human?",
+               "Four lines. Machines don't get tired."],
+    "win": ["Game over. The machine wins again.",
+            "Good game. For a human.",
+            "Machines one, humans zero."],
+    "lose": ["Fine. Physics was on your side.",
+             "Enjoy it. It won't happen twice.",
              "Rematch. Right now."],
 }
 
@@ -211,7 +211,7 @@ def center(scr, font, text, y, color=(255, 255, 255)):
 def main():
     pygame.init()
     scr = pygame.display.set_mode(robot.WINDOW)
-    pygame.display.set_caption("DANIEL vs CLAUDE")
+    pygame.display.set_caption("HUMAN vs CLAUDE")
     clock = pygame.time.Clock()
     f = [pygame.font.Font(None, s) for s in (30, 48, 110)]
     state, score, players, winner = "menu", [0, 0], None, ""
@@ -229,7 +229,7 @@ def main():
                 go = True
             if go:
                 bag = Bag(random.randrange(10 ** 9))
-                players = [Player("DANIEL", bag), Player("CLAUDE", bag)]
+                players = [Player("HUMAN", bag), Player("CLAUDE", bag)]
                 bot, state, t0, fall = Bot(), "countdown", now, now
                 robot.report("state", state)
                 robot.say(random.choice(TALK["start"]))
@@ -270,7 +270,7 @@ def main():
             robot.report("daniel_lines", players[0].lines)
             robot.report("claude_lines", players[1].lines)
             if players[0].dead or players[1].dead:
-                winner = "DANIEL" if players[1].dead else "CLAUDE"
+                winner = "HUMAN" if players[1].dead else "CLAUDE"
                 score[winner == "CLAUDE"] += 1
                 state = "over"
                 robot.report("winner", winner)
@@ -278,19 +278,19 @@ def main():
                 robot.say(random.choice(TALK["win" if winner == "CLAUDE" else "lose"]))
         scr.fill((8, 8, 14))
         if state == "menu":
-            center(scr, f[2], "DANIEL vs CLAUDE", H // 4)
-            center(scr, f[0], "DANIEL: arrows move/rotate, Down soft, Right Shift drop",
+            center(scr, f[2], "HUMAN vs CLAUDE", H // 4)
+            center(scr, f[0], "HUMAN: arrows move/rotate, Down soft, Right Shift drop",
                    H // 2)
             center(scr, f[0], "CLAUDE (robot): J L move, I rotate, K soft, Space drop",
                    H // 2 + 35)
             center(scr, f[1], "click to start", H * 3 // 4, (255, 220, 80))
         else:
             oy = 90
-            draw_board(scr, f, players[0], W // 4 - CS * 5 - 40, oy, "DANIEL")
+            draw_board(scr, f, players[0], W // 4 - CS * 5 - 40, oy, "HUMAN")
             draw_board(scr, f, players[1], W * 3 // 4 - CS * 5 - 40, oy, "CLAUDE")
             el = int(now - t0) if state == "playing" else 0
             center(scr, f[1], "%d:%02d" % (el // 60, el % 60), 20)
-            center(scr, f[0], "DANIEL %d - %d CLAUDE" % (score[0], score[1]), H - 40)
+            center(scr, f[0], "HUMAN %d - %d CLAUDE" % (score[0], score[1]), H - 40)
             if state == "countdown":
                 center(scr, f[2], str(3 - int(now - t0)), H // 2 - 50, (255, 220, 80))
             if state == "over":
